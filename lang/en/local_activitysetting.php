@@ -33,4 +33,5 @@ $string['pluginname'] = 'Activity Setting Report';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin doesn\'t store any personal data.';
 $string['privacy:metadata:desc'] = 'The Activity Setting Report plugin doesn\'t store any personal data.';
 $string['privacy:metadata:pluginname'] = 'Activity Setting Report';
+$string['urlastext'] = 'URL as text';
 $string['visibleold'] = 'Visible Old';
