@@ -437,10 +437,10 @@ class course_module extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_options([
-                get_string_manager()->get_list_of_translations()
+                get_string_manager()->get_list_of_translations(),
             ]);
 
-    return $filters;
+        return $filters;
 
     }
 
