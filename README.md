@@ -31,7 +31,8 @@ Usage & Settings
 
 Go to Site Administration > Reports > Custom Reports
 New report
-Select one of the sources from the dropdown under the Activity Setting report section.
+Select one of the sources from the dropdown under the Activity Setting report section. If any of the included datasources
+is not installed on your system, it will not appear in the dropdown.
 You need to know the corresponding database tables and the meaning of their columns, but most of them are self-explanatory.
 
 Entities included
