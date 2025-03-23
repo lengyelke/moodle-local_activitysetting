@@ -27,7 +27,7 @@ See http://docs.moodle.org/en/Installing_plugins for details on installing Moodl
 Usage & Settings
 ----------------
 
-Go to Site Administration > ReportS > Custom Reports
+Go to Site Administration > Reports > Custom Reports
 New report
 Select one of the sources from the dropdown under the Avtivity Setting report section
 You need to know the corresponding database tables and their columns
