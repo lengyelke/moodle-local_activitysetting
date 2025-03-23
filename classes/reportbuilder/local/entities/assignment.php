@@ -118,6 +118,18 @@ class assignment extends base {
             ->set_is_sortable(true)
             ->add_field("{$assignalias}.name");
 
+        // Assignment alwaysshowdescription column.
+        $columns[] = (new column(
+            'submissionattachments',
+            new lang_string('alwaysshowdescription', 'mod_assign'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$assignalias}.alwaysshowdescription")
+            ->add_callback([format::class, 'boolean_as_text']);
+
         // Assignment submissionattachments column.
         $columns[] = (new column(
             'submissionattachments',
@@ -460,53 +472,23 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment nosubmissions filter.
+        // Assignment alwaysshowdescription filter.
         $filters[] = (new filter(
             boolean_select::class,
-            'nosubmissions',
-            new lang_string('assignmentplugins', 'mod_assign'),
+            'alwaysshowdescription',
+            new lang_string('alwaysshowdescription', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.nosubmissions"
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment submissiondrafts filter.
+        // Assignment submissionattachments filter.
         $filters[] = (new filter(
             boolean_select::class,
-            'submissiondrafts',
-            new lang_string('submissiondrafts', 'mod_assign'),
+            'submissionattachments',
+            new lang_string('submissionattachments', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.submissiondrafts"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment sendnotifications filter.
-        $filters[] = (new filter(
-            boolean_select::class,
-            'sendnotifications',
-            new lang_string('sendnotifications', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.sendnotifications"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment sendlatenotifications filter.
-        $filters[] = (new filter(
-            boolean_select::class,
-            'sendlatenotifications',
-            new lang_string('sendlatenotifications', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.sendlatenotifications"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment duedate filter.
-        $filters[] = (new filter(
-            date::class,
-            'duedate',
-            new lang_string('duedate', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.duedate"
+            "{$assignalias}.submissionattachments"
         ))
             ->add_joins($this->get_joins());
 
@@ -520,43 +502,13 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment grade filter.
-        $filters[] = (new filter(
-            number::class,
-            'grade',
-            new lang_string('gradeoutofhelp', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.grade"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment timemodified filter.
+        // Assignment duedate filter.
         $filters[] = (new filter(
             date::class,
-            'timemodified',
-            new lang_string('timemodified', 'mod_assign'),
+            'duedate',
+            new lang_string('duedate', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.timemodified"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment requiresubmissionstatement filter.
-        $filters[] = (new filter(
-            boolean_select::class,
-            'requiresubmissionstatement',
-            new lang_string('requiresubmissionstatement', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.requiresubmissionstatement"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment completionsubmit filter.
-        $filters[] = (new filter(
-            boolean_select::class,
-            'completionsubmit',
-            new lang_string('completionsubmit', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.completionsubmit"
+            "{$assignalias}.duedate"
         ))
             ->add_joins($this->get_joins());
 
@@ -580,6 +532,55 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
+        // Assignment timelimit filter.
+        $filters[] = (new filter(
+            duration::class,
+            'timelimit',
+            new lang_string('timelimit', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.timelimit"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment submissiondrafts filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'submissiondrafts',
+            new lang_string('submissiondrafts', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.submissiondrafts"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment requiresubmissionstatement filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'requiresubmissionstatement',
+            new lang_string('requiresubmissionstatement', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.requiresubmissionstatement"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment maxattempts filter.
+        $filters[] = (new filter(
+            number::class,
+            'maxattempts',
+            new lang_string('maxattempts', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.maxattempts"
+        ))
+            ->add_joins($this->get_joins());
+        // Assignment attemptreopenmethod filter.
+        $filters[] = (new filter(
+            text::class,
+            'attemptreopenmethod',
+            new lang_string('attemptreopenmethod', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.attemptreopenmethod"
+        ))
+            ->add_joins($this->get_joins());
+
         // Assignment teamsubmission filter.
         $filters[] = (new filter(
             boolean_select::class,
@@ -590,6 +591,16 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
+        // Assignment preventsubmissionnotingroup filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'preventsubmissionnotingroup',
+            new lang_string('preventsubmissionnotingroup', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.preventsubmissionnotingroup"
+        ))
+            ->add_joins($this->get_joins());
+
         // Assignment requireallteammemberssubmit filter.
         $filters[] = (new filter(
             boolean_select::class,
@@ -597,6 +608,46 @@ class assignment extends base {
             new lang_string('requireallteammemberssubmit', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.requireallteammemberssubmit"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment sendnotifications filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'sendnotifications',
+            new lang_string('sendnotifications', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.sendnotifications"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment sendlatenotifications filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'sendlatenotifications',
+            new lang_string('sendlatenotifications', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.sendlatenotifications"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment sendstudentnotifications filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'sendstudentnotifications',
+            new lang_string('sendstudentnotifications', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.sendstudentnotifications"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment grade filter.
+        $filters[] = (new filter(
+            number::class,
+            'grade',
+            new lang_string('gradeoutofhelp', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.grade"
         ))
             ->add_joins($this->get_joins());
 
@@ -617,36 +668,6 @@ class assignment extends base {
             new lang_string('hidegrader', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.hidegrader"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment revealidentities filter.
-        $filters[] = (new filter(
-            boolean_select::class,
-            'revealidentities',
-            new lang_string('revealidentities', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.revealidentities"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment attemptreopenmethod filter.
-        $filters[] = (new filter(
-            text::class,
-            'attemptreopenmethod',
-            new lang_string('attemptreopenmethod', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.attemptreopenmethod"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment maxattempts filter.
-        $filters[] = (new filter(
-            number::class,
-            'maxattempts',
-            new lang_string('maxattempts', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.maxattempts"
         ))
             ->add_joins($this->get_joins());
 
@@ -680,43 +701,43 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment sendstudentnotifications filter.
+        // Assignment revealidentities filter.
         $filters[] = (new filter(
             boolean_select::class,
-            'sendstudentnotifications',
-            new lang_string('sendstudentnotifications', 'mod_assign'),
+            'revealidentities',
+            new lang_string('revealidentities', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.sendstudentnotifications"
+            "{$assignalias}.revealidentities"
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment preventsubmissionnotingroup filter.
+        // Assignment completionsubmit filter.
         $filters[] = (new filter(
             boolean_select::class,
-            'preventsubmissionnotingroup',
-            new lang_string('preventsubmissionnotingroup', 'mod_assign'),
+            'completionsubmit',
+            new lang_string('completionsubmit', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.preventsubmissionnotingroup"
+            "{$assignalias}.completionsubmit"
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment timelimit filter.
+        // Assignment nosubmissions filter.
         $filters[] = (new filter(
-            duration::class,
-            'timelimit',
-            new lang_string('timelimit', 'mod_assign'),
+            boolean_select::class,
+            'nosubmissions',
+            new lang_string('assignmentplugins', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.timelimit"
+            "{$assignalias}.nosubmissions"
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment submissionattachments filter.
+        // Assignment timemodified filter.
         $filters[] = (new filter(
-            boolean_select::class,
-            'submissionattachments',
-            new lang_string('submissionattachments', 'mod_assign'),
+            date::class,
+            'timemodified',
+            new lang_string('timemodified', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.submissionattachments"
+            "{$assignalias}.timemodified"
         ))
             ->add_joins($this->get_joins());
 

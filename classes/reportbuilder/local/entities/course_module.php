@@ -29,7 +29,7 @@ use html_writer;
 use lang_string;
 use moodle_url;
 use stdClass;
-use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text};
+use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text, select};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -208,6 +208,77 @@ class course_module extends base {
             ->add_field("{$modulealias}.completionview")
             ->add_callback([format::class, 'boolean_as_text']);
 
+        // Course module completionexpected.
+        $columns[] = (new column(
+            'completionexpected',
+            new lang_string('completionexpected', 'completion'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.completionexpected")
+            ->add_callback([format::class, 'userdate']);
+
+        // Course module completionpassgrade.
+        $columns[] = (new column(
+            'completionpassgrade',
+            new lang_string('completionpassgrade', 'completion'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.completionpassgrade")
+            ->add_callback([format::class, 'boolean_as_text']);
+
+        // Course module showdescription.
+        $columns[] = (new column(
+            'showdescription',
+            new lang_string('showdescription', 'core'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.showdescription")
+            ->add_callback([format::class, 'boolean_as_text']);
+
+        // Course module deletioninprogress.
+        $columns[] = (new column(
+            'deletioninprogress',
+            new lang_string('deletioninprogress', 'local_activitysetting'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.deletioninprogress")
+            ->add_callback([format::class, 'boolean_as_text']);
+
+        // Course module downloadcontent.
+        $columns[] = (new column(
+            'downloadcontent',
+            new lang_string('downloadcontent', 'course'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.downloadcontent")
+            ->add_callback([format::class, 'boolean_as_text']);
+
+        // Course module lang.
+        $columns[] = (new column(
+            'lang',
+            new lang_string('forcelanguage', 'core'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.lang");
+
         return $columns;
     }
 
@@ -225,7 +296,151 @@ class course_module extends base {
 
         $modulealias = $this->get_table_alias('course_modules');
 
-        return $filters;
+        // General filters
+        // Course module visible.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'visible',
+            new lang_string('visible', 'core'),
+            $this->get_entity_name(),
+            "{$modulealias}.visible"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module hideoncoursepage.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'visibleoncoursepage',
+            new lang_string('hideoncoursepage', 'core'),
+            $this->get_entity_name(),
+            "{$modulealias}.visibleoncoursepage"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module visibleold.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'visibleold',
+            new lang_string('visibleold', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$modulealias}.visibleold"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module ID number.
+        $filters[] = (new filter(
+            number::class,
+            'idnumber',
+            new lang_string('idnumber', 'core'),
+            $this->get_entity_name(),
+            "{$modulealias}.idnumber"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module groupmode.
+        $filters[] = (new filter(
+            select::class,
+            'groupmode',
+            new lang_string('groupmode', 'core'),
+            $this->get_entity_name(),
+            "{$modulealias}.groupmode"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                NOGROUPS => new lang_string('groupsnone', 'core'),
+                SEPARATEGROUPS => new lang_string('groupsseparate', 'core'),
+                VISIBLEGROUPS => new lang_string('groupsvisible', 'core'),
+            ]);
+
+        // Course module completion.
+        $filters[] = (new filter(
+            select::class,
+            'completion',
+            new lang_string('completion', 'completion'),
+            $this->get_entity_name(),
+            "{$modulealias}.completion"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                COMPLETION_TRACKING_NONE => new lang_string('completion_none', 'completion'),
+                COMPLETION_TRACKING_MANUAL => new lang_string('completion_manual', 'completion'),
+                COMPLETION_TRACKING_AUTOMATIC => new lang_string('completion_automatic', 'completion'),
+            ]);
+
+        // Course module completionview.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'completionview',
+            new lang_string('completionview_desc', 'completion'),
+            $this->get_entity_name(),
+            "{$modulealias}.completionview"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module completionexpected.
+        $filters[] = (new filter(
+            date::class,
+            'completionexpected',
+            new lang_string('completionexpected', 'completion'),
+            $this->get_entity_name(),
+            "{$modulealias}.completionexpected"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module completionpassgrade.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'completionpassgrade',
+            new lang_string('completionpassgrade', 'completion'),
+            $this->get_entity_name(),
+            "{$modulealias}.completionpassgrade"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module showdescription.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'showdescription',
+            new lang_string('showdescription', 'core'),
+            $this->get_entity_name(),
+            "{$modulealias}.showdescription"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module deletioninprogress.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'deletioninprogress',
+            new lang_string('deletioninprogress', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$modulealias}.deletioninprogress"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module downloadcontent.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'downloadcontent',
+            new lang_string('downloadcontent', 'course'),
+            $this->get_entity_name(),
+            "{$modulealias}.downloadcontent"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module lang.
+        $filters[] = (new filter(
+            select::class,
+            'lang',
+            new lang_string('forcelanguage', 'core'),
+            $this->get_entity_name(),
+            "{$modulealias}.lang"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                get_string_manager()->get_list_of_translations()
+            ]);
+
+    return $filters;
 
     }
 

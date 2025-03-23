@@ -43,6 +43,19 @@ class assignments extends datasource {
     }
 
     /**
+     *  Check if the datasource is enabled
+     *
+     * @return bool
+    */
+    public static function is_available(): bool {
+        global $DB;
+
+        // Check for required table
+        return $DB->get_manager()->table_exists('assign');
+    }
+
+
+    /**
      * Initialize the datasource
      *
      * @return void
