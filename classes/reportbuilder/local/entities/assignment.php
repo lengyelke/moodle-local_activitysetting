@@ -118,18 +118,6 @@ class assignment extends base {
             ->set_is_sortable(true)
             ->add_field("{$assignalias}.name");
 
-        // Assignment alwaysshowdescription column.
-        $columns[] = (new column(
-            'submissionattachments',
-            new lang_string('alwaysshowdescription', 'mod_assign'),
-            $this->get_entity_name()
-            ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_BOOLEAN)
-            ->set_is_sortable(true)
-            ->add_field("{$assignalias}.alwaysshowdescription")
-            ->add_callback([format::class, 'boolean_as_text']);
-
         // Assignment submissionattachments column.
         $columns[] = (new column(
             'submissionattachments',
@@ -202,6 +190,18 @@ class assignment extends base {
             ->set_is_sortable(true)
             ->add_field("{$assignalias}.timelimit")
             ->add_callback([format::class, 'format_time'], 2);
+
+        // Assignment alwaysshowdescription column.
+        $columns[] = (new column(
+            'submissionattachments',
+            new lang_string('alwaysshowdescription', 'mod_assign'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$assignalias}.alwaysshowdescription")
+            ->add_callback([format::class, 'boolean_as_text']);
 
         // Submission settings columns
         // Assignment submissiondrafts column.
@@ -489,16 +489,6 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment alwaysshowdescription filter.
-        $filters[] = (new filter(
-            boolean_select::class,
-            'alwaysshowdescription',
-            new lang_string('alwaysshowdescription', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.nosubmissions"
-        ))
-            ->add_joins($this->get_joins());
-
         // Assignment submissionattachments filter.
         $filters[] = (new filter(
             boolean_select::class,
@@ -556,6 +546,16 @@ class assignment extends base {
             new lang_string('timelimit', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.timelimit"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment alwaysshowdescription filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'alwaysshowdescription',
+            new lang_string('alwaysshowdescription', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$assignalias}.nosubmissions"
         ))
             ->add_joins($this->get_joins());
 
