@@ -1,6 +1,8 @@
 moodle-local-activitysetting
 ============================
 
+A collection of report sources for Custom Reports (ReportBuilder) to see activity settings.
+
 Requirements
 ------------
 
