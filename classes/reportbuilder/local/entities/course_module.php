@@ -122,7 +122,12 @@ class course_module extends base {
             // Optional: Trim extra whitespace and normalize line breaks
             $clean_text = trim(preg_replace('/\s+/', ' ', $clean_text));
 
-            return $clean_text;
+            if (isset($GLOBALS['download']) && ($GLOBALS['download']=='html' || $GLOBALS['download']=='pdf')
+                || !isset($GLOBALS['download'])) {
+                return $html;
+            } else {
+                return $clean_text;
+            }
 
         } catch (Exception $e) {
             return get_string('error');
