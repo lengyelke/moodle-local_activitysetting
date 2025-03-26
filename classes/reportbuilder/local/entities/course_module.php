@@ -93,6 +93,42 @@ class course_module extends base {
 
     }
 
+    // Convert availability JSON to human-readable format
+    private static function format_availability($id) {
+        global $OUTPUT;
+
+        // First get the basic course module record
+        $cm = get_coursemodule_from_instance('assign', $id, 0, false, MUST_EXIST);
+        $json = $cm->availability;
+
+        if (empty($json)) {
+            return get_string('none', 'core');
+        }
+
+        // Then get the cm_info object
+        $modinfo = get_fast_modinfo($cm->course);
+        $cm_info = $modinfo->get_cm($cm->id);
+
+        try {
+            $info = new \core_availability\info_module($cm_info);
+            $tree = new \core_availability\tree(json_decode($json));
+            $converted = $tree->get_full_information($info);
+            $renderable = new \core_availability\output\availability_info($converted);
+            $html = $OUTPUT->render($renderable);
+
+            // Remove HTML tags and decode HTML entities
+            $clean_text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            // Optional: Trim extra whitespace and normalize line breaks
+            $clean_text = trim(preg_replace('/\s+/', ' ', $clean_text));
+
+            return $clean_text;
+
+        } catch (Exception $e) {
+            return get_string('error');
+        }
+    }
+
     /**
      * Returns list of all available columns
      *
@@ -243,6 +279,21 @@ class course_module extends base {
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.showdescription")
             ->add_callback([format::class, 'boolean_as_text']);
+
+
+        // Course module availability.
+        $columns[] = (new column(
+            'availability',
+            new lang_string('accessrestrictions', 'availability'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.instance")
+            ->add_callback(function($value) {
+                return self::format_availability($value);
+            });
 
         // Course module deletioninprogress.
         $columns[] = (new column(
