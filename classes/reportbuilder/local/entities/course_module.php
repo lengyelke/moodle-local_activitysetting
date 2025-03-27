@@ -93,11 +93,18 @@ class course_module extends base {
 
     }
 
-    // Convert availability JSON to human-readable format
+    /**
+     * Convert the availability json to a human readable format based on the course module ID.
+     * This function is used in the format_availability column callback.
+     * The result is either HTML or plain text based on the download parameter.
+     *
+     * @param int $id
+     * @return string
+     */
     private static function format_availability($id) {
         global $OUTPUT;
 
-        // First get the basic course module record
+        // First get the basic course module record.
         $cm = get_coursemodule_from_instance('assign', $id, 0, false, MUST_EXIST);
         $json = $cm->availability;
 
@@ -105,28 +112,36 @@ class course_module extends base {
             return get_string('none', 'core');
         }
 
-        // Then get the cm_info object
+        // Then get the cm_info object.
         $modinfo = get_fast_modinfo($cm->course);
-        $cm_info = $modinfo->get_cm($cm->id);
+        $cminfo = $modinfo->get_cm($cm->id);
 
         try {
-            $info = new \core_availability\info_module($cm_info);
+            $info = new \core_availability\info_module($cminfo);
             $tree = new \core_availability\tree(json_decode($json));
             $converted = $tree->get_full_information($info);
-            $renderable = new \core_availability\output\availability_info($converted);
-            $html = $OUTPUT->render($renderable);
+            if (!is_string($converted)) {
+                $renderable = new \core_availability\output\availability_info($converted);
+                $html = $OUTPUT->render($renderable);
+            } else {
+                $html = $converted;
+            }
 
-            // Remove HTML tags and decode HTML entities
-            $clean_text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            // Remove HTML tags and decode HTML entities.
+            $nonhtml = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
-            // Optional: Trim extra whitespace and normalize line breaks
-            $clean_text = trim(preg_replace('/\s+/', ' ', $clean_text));
+            // Optional: Trim extra whitespace and normalize line breaks.
+            $nonhtml = trim(preg_replace('/\s+/', ' ', $nonhtml));
 
-            if (isset($GLOBALS['download']) && ($GLOBALS['download']=='html' || $GLOBALS['download']=='pdf')
-                || !isset($GLOBALS['download'])) {
+            // Return the HTML or non-HTML version based on the download parameter.
+            if (!isset($_GET['download'])) {
                 return $html;
             } else {
-                return $clean_text;
+                if ($_GET['download'] == 'html' || $_GET['download'] == 'pdf') {
+                    return $html;
+                } else {
+                    return $nonhtml;
+                }
             }
 
         } catch (Exception $e) {
@@ -284,7 +299,6 @@ class course_module extends base {
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.showdescription")
             ->add_callback([format::class, 'boolean_as_text']);
-
 
         // Course module availability.
         $columns[] = (new column(
