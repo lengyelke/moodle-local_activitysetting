@@ -28,6 +28,7 @@ use core_date;
 use html_writer;
 use lang_string;
 use moodle_url;
+use mod_assign\assign;
 use stdClass;
 use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text};
 use core_reportbuilder\local\report\{column, filter};
@@ -101,6 +102,8 @@ class assignment extends base {
     protected function get_all_columns(): array {
 
         global $DB, $CFG;
+
+        require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
         $columns = [];
 
@@ -248,7 +251,16 @@ class assignment extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$assignalias}.attemptreopenmethod");
+            ->add_field("{$assignalias}.attemptreopenmethod")
+            ->add_callback(static function(string $attemptreopenmethod): string {
+                $modes = [
+                    ASSIGN_ATTEMPT_REOPEN_METHOD_MANUAL => new lang_string('attemptreopenmethod_manual', 'mod_assign'),
+                    ASSIGN_ATTEMPT_REOPEN_METHOD_AUTOMATIC => new lang_string('attemptreopenmethod_automatic', 'mod_assign'),
+                    ASSIGN_ATTEMPT_REOPEN_METHOD_UNTILPASS => new lang_string('attemptreopenmethod_untilpass', 'mod_assign'),
+                ];
+
+                return (string) ($modes[$attemptreopenmethod] ?? $attemptreopenmethod);
+            });
 
         // Group submission settings columns
         // Assignment teamsubmission column.
