@@ -30,7 +30,7 @@ use lang_string;
 use moodle_url;
 use mod_assign\assign;
 use stdClass;
-use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text};
+use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text, select};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -602,13 +602,18 @@ class assignment extends base {
             ->add_joins($this->get_joins());
         // Assignment attemptreopenmethod filter.
         $filters[] = (new filter(
-            text::class,
+            select::class,
             'attemptreopenmethod',
             new lang_string('attemptreopenmethod', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.attemptreopenmethod"
         ))
-            ->add_joins($this->get_joins());
+            ->add_joins($this->get_joins())
+            ->set_options([
+                ASSIGN_ATTEMPT_REOPEN_METHOD_MANUAL => new lang_string('attemptreopenmethod_manual', 'mod_assign'),
+                ASSIGN_ATTEMPT_REOPEN_METHOD_AUTOMATIC => new lang_string('attemptreopenmethod_automatic', 'mod_assign'),
+                ASSIGN_ATTEMPT_REOPEN_METHOD_UNTILPASS => new lang_string('attemptreopenmethod_untilpass', 'mod_assign'),
+            ]);
 
         // Assignment teamsubmission filter.
         $filters[] = (new filter(
