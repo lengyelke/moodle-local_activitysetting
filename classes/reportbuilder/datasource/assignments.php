@@ -23,6 +23,7 @@ use core_reportbuilder\local\entities\course;
 use core_course\reportbuilder\local\entities\course_category;
 use local_activitysetting\reportbuilder\local\entities\assignment;
 use local_activitysetting\reportbuilder\local\entities\course_module;
+use local_activitysetting\reportbuilder\local\entities\grade_item;
 
 /**
  * Assignmnent settings datasource
@@ -88,6 +89,14 @@ class assignments extends datasource {
         $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $assignalias.id = $coursemodulealias.instance
                             and $coursemodulealias.module = (SELECT id FROM {modules} WHERE name = 'assign')";
         $this->add_entity($coursemoduleentity->add_join($coursemodulejoin));
+
+        // Add the grade item entity.
+        $gradeitementity = new grade_item();
+        $gradeitemalias = $gradeitementity->get_table_alias('grade_items');
+        $gradeitementity->add_joins($courseentity->get_joins());
+        $gradeitemjoin = "JOIN {grade_items} $gradeitemalias ON $gradeitemalias.iteminstance = $assignalias.id
+                            AND $gradeitemalias.itemmodule = 'assign'";
+        $this->add_entity($gradeitementity->add_join($gradeitemjoin));
 
         $this->add_all_from_entities();
     }

@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['assignmentsetting'] = 'Assignment Settings';
 $string['coursemodulesetting'] = 'Course Module Settings';
+$string['deletioninprogress'] = 'Deletion in progress';
 $string['gradeitemsetting'] = 'Grade Item Settings';
 $string['pluginname'] = 'Activity Setting Report';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin doesn\'t store any personal data.';

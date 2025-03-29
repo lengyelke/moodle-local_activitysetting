@@ -53,7 +53,7 @@ class grade_item extends base {
      */
     protected function get_default_tables(): array {
         return [
-            'garde_items',
+            'grade_items',
             'scale',
         ];
     }
@@ -106,8 +106,9 @@ class grade_item extends base {
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
 
+        // Grade items grade type.
         $columns[] = (new column(
-            'visible',
+            'gradetype',
             new lang_string('gradetype', 'grades'),
             $this->get_entity_name()
             ))
@@ -115,18 +116,51 @@ class grade_item extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradetype")
-            ->add_callback(static function(int $groupmode): string {
+            ->add_callback(static function(int $gradetype): string {
                 $types = [
-                    GRADE_TYPE_NONE => new lang_string('typenone', 'grades'),
-                    GRADE_TYPE_VALUE => new lang_string('typevalue', 'grades'),
-                    GRADE_TYPE_SCALE => new lang_string('typescale', 'grades'),
+                    GRADE_TYPE_NONE => new lang_string('modgradetypenone', 'grades'),
+                    GRADE_TYPE_VALUE => new lang_string('modgradetypepoint', 'grades'),
+                    GRADE_TYPE_SCALE => new lang_string('modgradetypescale', 'grades'),
                     GRADE_TYPE_TEXT => new lang_string('typetext', 'grades'),
                 ];
 
                 return (string) ($types[$gradetype] ?? $gradetype);
             });
 
-            return $columns;
+        // Grade items grade min.
+        $columns[] = (new column(
+            'grademin',
+            new lang_string('grademin', 'grades'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.grademin");
+
+        // Grade items grade max.
+        $columns[] = (new column(
+            'grademax',
+            new lang_string('grademax', 'grades'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.grademax");
+
+        // Grade items grade pass.
+        $columns[] = (new column(
+            'gradepass',
+            new lang_string('gradepass', 'grades'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.gradepass");
+
+        return $columns;
     }
 
     /**
@@ -143,21 +177,51 @@ class grade_item extends base {
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
 
-        $filters[] = (new select(
+        // Grade items grade type.
+        $filters[] = (new filter(
+            select::class,
             'gradetype',
             new lang_string('gradetype', 'grades'),
-            $this->get_entity_name()
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.gradetype"
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
-            ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.gradetype")
-            ->add_options([
+            ->set_options([
                 GRADE_TYPE_NONE => new lang_string('typenone', 'grades'),
                 GRADE_TYPE_VALUE => new lang_string('typevalue', 'grades'),
                 GRADE_TYPE_SCALE => new lang_string('typescale', 'grades'),
                 GRADE_TYPE_TEXT => new lang_string('typetext', 'grades'),
             ]);
+
+        // Grade items grade min.
+        $filters[] = (new filter(
+            number::class,
+            'grademin',
+            new lang_string('grademin', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.grademin"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Grade items grade max.
+        $filters[] = (new filter(
+            number::class,
+            'grademax',
+            new lang_string('grademax', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.grademax"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Grade items grade pass.
+        $filters[] = (new filter(
+            number::class,
+            'gradepass',
+            new lang_string('gradepass', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.gradepass"
+        ))
+            ->add_joins($this->get_joins());
 
         return $filters;
     }
