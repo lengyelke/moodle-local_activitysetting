@@ -31,5 +31,7 @@ $string['deletioninprogress'] = 'Deletion in progress';
 $string['gradeitemsetting'] = 'Grade Item Settings';
 $string['pluginname'] = 'Activity Setting Report';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin doesn\'t store any personal data.';
+$string['timemodified'] = 'Last modified';
+$string['unlocked'] = 'Unlocked';
 $string['urlastext'] = 'URL as text';
 $string['visibleold'] = 'Visible Old';

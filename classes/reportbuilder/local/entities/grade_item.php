@@ -160,7 +160,91 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradepass");
 
+        // Hidden column with formatted display.
+        $columns[] = (new column(
+            'hidden',
+            new lang_string('hidden', 'grades'),
+            $this->get_entity_name()
+           ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.hidden")
+            ->add_callback(function($value) {
+                return self::format_hidden_value($value);
+            });
+
+        // Locked column with formatted display.
+        $columns[] = (new column(
+                'locked',
+                new lang_string('locked', 'grades'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_TEXT)
+                ->set_is_sortable(true)
+                ->add_field("{$gradeitemsalias}.locked")
+                ->add_callback(function($value) {
+                    return self::format_locked_value($value);
+                });
+
+        // Grade items timemodified.
+        $columns[] = (new column(
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.timemodified")
+            ->add_callback([format::class, 'userdate']);
+
         return $columns;
+    }
+
+    /**
+     * Format hidden value for display
+     */
+    private static function format_hidden_value(string $hidden): string {
+        global $CFG;
+
+        if ($hidden == 0) {
+            // Visible.
+            return get_string('visible', 'core');
+        } else {
+            if ($hidden == 1) {
+                // Hidden indefinitely.
+                return get_string('hidden', 'grades');
+            } else {
+                // Hidden until date.
+                require_once($CFG->libdir . '/gradelib.php');
+                $date = userdate($hidden, get_string('strftimedatetimeshort', 'core_langconfig'));
+                return get_string('hiddenuntildate', 'grades', $date);
+            }
+        }
+    }
+
+    /**
+     * Format locked value for display
+     */
+    private static function format_locked_value(string $locked): string {
+        global $CFG;
+
+        if ($locked == 0) {
+            // Not locked.
+            return get_string('unlocked', 'local_activitysetting');
+        } else {
+            if ($locked == 1) {
+                // Locked indefinitely.
+                return get_string('locked', 'grades');
+            } else {
+                // Locked after date.
+                require_once($CFG->libdir . '/gradelib.php');
+                $date = userdate($locked, get_string('strftimedatetimeshort', 'core_langconfig'));
+                return get_string('locktimedate', 'grades', $date);
+            }
+        }
     }
 
     /**
