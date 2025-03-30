@@ -189,8 +189,9 @@ class grade_item extends base {
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.hidden")
-            ->add_callback(function($value) {
-                return self::format_hidden_value($value);
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+                return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_hidden_value($value);
             });
 
         // Locked column with formatted display.
@@ -203,8 +204,9 @@ class grade_item extends base {
                 ->set_type(column::TYPE_TEXT)
                 ->set_is_sortable(true)
                 ->add_field("{$gradeitemsalias}.locked")
-                ->add_callback(function($value) {
-                    return self::format_locked_value($value);
+                ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+                ->add_callback(function($value, $row) use ($gradeitemsalias) {
+                    return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_locked_value($value);
                 });
 
         // Add the new 'scalename' column.
