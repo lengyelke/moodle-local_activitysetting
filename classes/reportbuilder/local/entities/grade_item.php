@@ -140,7 +140,12 @@ class grade_item extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.grademin");
+            ->add_field("{$gradeitemsalias}.grademin")
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+                // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
+                return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
+            });
 
         // Grade items grade max.
         $columns[] = (new column(
@@ -151,7 +156,12 @@ class grade_item extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.grademax");
+            ->add_field("{$gradeitemsalias}.grademax")
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+                // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
+                return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
+            });
 
         // Grade items grade pass.
         $columns[] = (new column(
@@ -162,7 +172,12 @@ class grade_item extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.gradepass");
+            ->add_field("{$gradeitemsalias}.gradepass")
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+                // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
+                return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
+            });
 
         // Hidden column with formatted display.
         $columns[] = (new column(
@@ -192,7 +207,7 @@ class grade_item extends base {
                     return self::format_locked_value($value);
                 });
 
-        // Add the new 'scalename' column
+        // Add the new 'scalename' column.
         $columns[] = (new column(
             'scalename',
             new lang_string('scale', 'core'),
@@ -202,7 +217,7 @@ class grade_item extends base {
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$scalealias}.name")
-            ->add_callback(static function($value): string { // Optional: Handle NULL cases gracefully if needed
+            ->add_callback(static function($value): string { // Optional: Handle NULL cases gracefully if needed.
                 return $value ?? ''; // If scaleid was NULL/0, name will be NULL. Return empty string.
             });
 
