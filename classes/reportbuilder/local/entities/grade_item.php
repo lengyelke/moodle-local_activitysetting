@@ -32,6 +32,7 @@ use stdClass;
 use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text, select};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
+use core_reportbuilder\local\entities\join;
 use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\helpers\custom_fields;
 
@@ -105,6 +106,9 @@ class grade_item extends base {
         $columns = [];
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
+        $scalealias = $this->get_table_alias('scale');
+
+        $this->add_join("LEFT JOIN {scale} {$scalealias} ON {$scalealias}.id = {$gradeitemsalias}.scaleid");
 
         // Grade items grade type.
         $columns[] = (new column(
@@ -187,6 +191,20 @@ class grade_item extends base {
                 ->add_callback(function($value) {
                     return self::format_locked_value($value);
                 });
+
+        // Add the new 'scalename' column
+        $columns[] = (new column(
+            'scalename',
+            new lang_string('scale', 'core'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$scalealias}.name")
+            ->add_callback(static function($value): string { // Optional: Handle NULL cases gracefully if needed
+                return $value ?? ''; // If scaleid was NULL/0, name will be NULL. Return empty string.
+            });
 
         // Grade items timemodified.
         $columns[] = (new column(
