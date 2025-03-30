@@ -344,6 +344,7 @@ class assignment extends base {
 
         // Grade columns
         // Assignment grade column.
+        // TODO: We can probably remove it as we have the corresponding grade item columns.
         $columns[] = (new column(
             'grade',
             new lang_string('gradeoutofhelp', 'mod_assign'),

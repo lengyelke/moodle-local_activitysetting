@@ -107,7 +107,15 @@ class assignments extends datasource {
      * @return string[]
      */
     public function get_default_columns(): array {
-        return [];
+        return [
+            'course:fullname',
+            'assignment:urlastext',
+            'assignment:assignmentname',
+            'assignment:duedate',
+            'grade_item:gradetype',
+            'assignment:attemptreopenmethod',
+            'course_module:groupmode',
+        ];
     }
 
     /**
@@ -116,7 +124,14 @@ class assignments extends datasource {
      * @return string[]
      */
     public function get_default_filters(): array {
-        return [];
+        return [
+            'course:fullname',
+            'assignment:assignmentname',
+            'assignment:duedate',
+            'grade_item:gradetype',
+            'assignment:attemptreopenmethod',
+            'course_module:groupmode',
+        ];
     }
 
     /**
@@ -125,6 +140,8 @@ class assignments extends datasource {
      * @return string[]
      */
     public function get_default_conditions(): array {
-        return [];
+        return [
+            'course_category:name',
+        ];
     }
 }
