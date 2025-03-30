@@ -110,6 +110,17 @@ class grade_item extends base {
 
         $this->add_join("LEFT JOIN {scale} {$scalealias} ON {$scalealias}.id = {$gradeitemsalias}.scaleid");
 
+        // Grade items itemname.
+        $columns[] = (new column(
+            'itemname',
+            new lang_string('itemname', 'grades'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.itemname");
+
         // Grade items grade type.
         $columns[] = (new column(
             'gradetype',
@@ -295,6 +306,16 @@ class grade_item extends base {
         $filters = [];
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
+
+        // Grade items itemname.
+        $filters[] = (new filter(
+            text::class,
+            'itemname',
+            new lang_string('itemname', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.itemname"
+        ))
+            ->add_joins($this->get_joins());
 
         // Grade items grade type.
         $filters[] = (new filter(
