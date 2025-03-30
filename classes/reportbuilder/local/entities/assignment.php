@@ -342,19 +342,6 @@ class assignment extends base {
             ->add_field("{$assignalias}.sendstudentnotifications")
             ->add_callback([format::class, 'boolean_as_text']);
 
-        // Grade columns
-        // Assignment grade column.
-        // TODO: We can probably remove it as we have the corresponding grade item columns.
-        $columns[] = (new column(
-            'grade',
-            new lang_string('gradeoutofhelp', 'mod_assign'),
-            $this->get_entity_name()
-            ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
-            ->set_is_sortable(true)
-            ->add_field("{$assignalias}.grade");
-
         // Assignment blindmarking column.
         $columns[] = (new column(
             'blindmarking',
@@ -713,16 +700,6 @@ class assignment extends base {
             new lang_string('sendstudentnotifications', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.sendstudentnotifications"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Assignment grade filter.
-        $filters[] = (new filter(
-            number::class,
-            'grade',
-            new lang_string('gradeoutofhelp', 'mod_assign'),
-            $this->get_entity_name(),
-            "{$assignalias}.grade"
         ))
             ->add_joins($this->get_joins());
 
