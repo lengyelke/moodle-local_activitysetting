@@ -251,6 +251,9 @@ class grade_item extends base {
 
     /**
      * Format hidden value for display
+     *
+     * @param string $hidden
+     * @return string
      */
     private static function format_hidden_value(string $hidden): string {
         global $CFG;
@@ -273,6 +276,9 @@ class grade_item extends base {
 
     /**
      * Format locked value for display
+     *
+     * @param string $locked
+     * @return string
      */
     private static function format_locked_value(string $locked): string {
         global $CFG;
