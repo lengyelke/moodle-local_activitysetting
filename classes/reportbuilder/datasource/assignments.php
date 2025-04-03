@@ -109,7 +109,6 @@ class assignments extends datasource {
     public function get_default_columns(): array {
         return [
             'course:fullname',
-            'assignment:urlastext',
             'assignment:assignmentname',
             'assignment:duedate',
             'grade_item:gradetype',
@@ -142,6 +141,17 @@ class assignments extends datasource {
     public function get_default_conditions(): array {
         return [
             'course_category:name',
+        ];
+    }
+
+    /**
+     * Return the default sorting that will be added to the report once it is created
+     *
+     * @return array|int[]
+     */
+    public function get_default_column_sorting(): array {
+        return [
+            'assignment:assignmentname' => SORT_ASC,
         ];
     }
 }
