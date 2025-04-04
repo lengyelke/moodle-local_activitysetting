@@ -58,9 +58,33 @@ final class assignments_test extends core_reportbuilder_testcase {
         // Default columns are fullname, urlastext, assignmentname, duedate, gradetype, attemptreopenmethod, groupmode.
         // Sorted by name ascending.
         $this->assertEquals([
-            [$course->fullname, $assignment1->name, '', 'Point', 'Automatically until pass', 'No groups'],
-            [$course->fullname, $assignment2->name, '', 'Point', 'Automatically until pass', 'No groups'],
-            [$course->fullname, $assignment3->name, '', 'Point', 'Automatically until pass', 'No groups'],
+            [$course->fullname, $assignment1->name, '', get_string('modgradetypepoint', 'grades'),
+                get_string('attemptreopenmethod_untilpass', 'mod_assign'), get_string('groupsnone', 'core')],
+            [$course->fullname, $assignment2->name, '', get_string('modgradetypepoint', 'grades'),
+            get_string('attemptreopenmethod_untilpass', 'mod_assign'), get_string('groupsnone', 'core')],
+            [$course->fullname, $assignment3->name, '', get_string('modgradetypepoint', 'grades'),
+            get_string('attemptreopenmethod_untilpass', 'mod_assign'), get_string('groupsnone', 'core')],
         ], array_map('array_values', $content));
+    }
+
+    /**
+     * Stress test datasource
+     *
+     * In order to execute this test PHPUNIT_LONGTEST should be defined as true in phpunit.xml or directly in config.php
+     */
+    public function test_stress_datasource(): void {
+        if (!PHPUNIT_LONGTEST) {
+            $this->markTestSkipped('PHPUNIT_LONGTEST is not defined');
+        }
+
+        $this->resetAfterTest();
+
+        $category = $this->getDataGenerator()->create_category(['name' => 'Zoo', 'idnumber' => 'Z01']);
+        $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
+        $assignment = $this->getDataGenerator()->create_module('assign', ['course' => $course->id]);
+
+        $this->datasource_stress_test_columns(assignments::class);
+        $this->datasource_stress_test_columns_aggregation(assignments::class);
+        $this->datasource_stress_test_conditions(assignments::class, 'assignment:assignmentname');
     }
 }
