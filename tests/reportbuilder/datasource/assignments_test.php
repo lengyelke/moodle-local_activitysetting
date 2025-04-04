@@ -36,6 +36,9 @@ final class assignments_test extends core_reportbuilder_testcase {
 
     /**
      * Test default datasource
+     *
+     * @return void
+     * @covers local_activitysetting\reportbuilder\datasource\assignments
      */
     public function test_datasource_default(): void {
         global $CFG;
@@ -71,6 +74,9 @@ final class assignments_test extends core_reportbuilder_testcase {
      * Stress test datasource
      *
      * In order to execute this test PHPUNIT_LONGTEST should be defined as true in phpunit.xml or directly in config.php
+     *
+     * @return void
+     * @covers local_activitysetting\reportbuilder\datasource\assignments
      */
     public function test_stress_datasource(): void {
         if (!PHPUNIT_LONGTEST) {
