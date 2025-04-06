@@ -31,6 +31,7 @@ use core_reportbuilder\tests\core_reportbuilder_testcase;
  * @category   test
  * @copyright  2025 Ferenc 'Frank' Lengyel - lengyelke@gmail.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers \local_activitysetting\reportbuilder\datasource\assignments
  */
 final class assignments_test extends core_reportbuilder_testcase {
 
@@ -38,7 +39,7 @@ final class assignments_test extends core_reportbuilder_testcase {
      * Test default datasource
      *
      * @return void
-     * @covers local_activitysetting\reportbuilder\datasource\assignments
+     * @covers ::datasource_default
      */
     public function test_datasource_default(): void {
         global $CFG;
@@ -76,7 +77,7 @@ final class assignments_test extends core_reportbuilder_testcase {
      * In order to execute this test PHPUNIT_LONGTEST should be defined as true in phpunit.xml or directly in config.php
      *
      * @return void
-     * @covers local_activitysetting\reportbuilder\datasource\assignments
+     * @covers ::stress_datasource
      */
     public function test_stress_datasource(): void {
         if (!PHPUNIT_LONGTEST) {
