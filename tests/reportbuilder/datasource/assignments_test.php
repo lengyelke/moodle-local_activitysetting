@@ -71,6 +71,63 @@ final class assignments_test extends core_reportbuilder_testcase {
         ], array_map('array_values', $content));
     }
 
+     /**
+      * Test datasource columns that aren't added by default
+      *
+      * @return void
+      * @covers ::datasource_non_default_columns
+      */
+    public function test_datasource_non_default_columns(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $category = $this->getDataGenerator()->create_category(['name' => 'Zoo', 'idnumber' => 'Z01']);
+        $course = $this->getDataGenerator()->create_course(['category' => $category->id, 'enablecompletion' => 1]);
+        $assignment1 = $this->getDataGenerator()->create_module('assign', [
+            'course' => $course->id,
+            'name' => 'Assignment 1',
+            'maxattempts' => 1,
+            'completion' => COMPLETION_TRACKING_AUTOMATIC,
+            'completionview' => 1,
+        ]);
+        $assignment2 = $this->getDataGenerator()->create_module('assign', [
+            'course' => $course->id,
+            'name' => 'Assignment 2',
+            'maxattempts' => 2,
+            'completion' => COMPLETION_TRACKING_MANUAL,
+        ]);
+        $assignment3 = $this->getDataGenerator()->create_module('assign', [
+            'course' => $course->id,
+            'name' => 'Assignment 3',
+            'maxattempts' => 3,
+            'completion' => COMPLETION_TRACKING_NONE,
+        ]);
+
+        /** @var core_reportbuilder_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
+        $report = $generator->create_report(['name' => 'My report', 'source' => assignments::class, 'default' => 0]);
+
+        $generator->create_column(['reportid' => $report->get('id'), 'uniqueidentifier' => 'assignment:assignmentname']);
+        $generator->create_column(['reportid' => $report->get('id'), 'uniqueidentifier' => 'assignment:maxattempts']);
+        $generator->create_column(['reportid' => $report->get('id'), 'uniqueidentifier' => 'course_module:completion']);
+        $generator->create_column(['reportid' => $report->get('id'), 'uniqueidentifier' => 'course_module:completionview']);
+
+        $content = $this->get_custom_report_content($report->get('id'));
+
+        $this->assertCount(3, $content);
+
+        // The columns are: assignmentname, maxattempts, completion, completionview.
+        // Sorted by name ascending.
+        $this->assertEquals([
+            [$assignment1->name, 1, get_string('completion_automatic', 'completion'), get_string('yes')],
+            [$assignment2->name, 2, get_string('completion_manual', 'completion'), get_string('no')],
+            [$assignment3->name, 3, get_string('completion_none', 'completion'), get_string('no')],
+        ], array_map('array_values', $content));
+
+    }
+
+
     /**
      * Stress test datasource
      *
