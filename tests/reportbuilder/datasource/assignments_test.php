@@ -19,7 +19,6 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\datasource;
 
 use core_reportbuilder_generator;
-use core_course_category;
 use local_activitysetting\reportbuilder\datasource\assignments;
 use core_reportbuilder\local\filters\{category, select, text};
 use core_reportbuilder\tests\core_reportbuilder_testcase;

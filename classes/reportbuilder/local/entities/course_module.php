@@ -18,22 +18,11 @@ declare(strict_types=1);
 
 namespace local_activitysetting\reportbuilder\local\entities;
 
-use context_course;
-use context_helper;
-use context_system;
-use context_user;
-use core\context;
-use core_component;
-use core_date;
-use html_writer;
 use lang_string;
-use moodle_url;
-use stdClass;
-use core_reportbuilder\local\filters\{boolean_select, date, duration, number, text, select};
+use core_reportbuilder\local\filters\{boolean_select, date, number, select};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
-use core_reportbuilder\local\helpers\custom_fields;
 
 /**
  * Class course_module
