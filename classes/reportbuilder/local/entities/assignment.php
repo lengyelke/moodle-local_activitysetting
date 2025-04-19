@@ -46,6 +46,7 @@ class assignment extends base {
     protected function get_default_tables(): array {
         return [
             'assign',
+            'groupings',
         ];
     }
 
@@ -99,6 +100,11 @@ class assignment extends base {
         $columns = [];
 
         $assignalias = $this->get_table_alias('assign');
+        $groupingalias = $this->get_table_alias('groupings');
+
+        $this->add_join("LEFT JOIN {groupings} {$groupingalias}
+                        ON {$groupingalias}.id = {$assignalias}.teamsubmissiongroupingid
+                        AND {$groupingalias}.courseid = {$assignalias}.course");
 
         // General columns
         // Assignment name column.
@@ -296,6 +302,20 @@ class assignment extends base {
             ->add_field("{$assignalias}.requireallteammemberssubmit")
             ->add_callback([format::class, 'boolean_as_text']);
 
+        // Assignment teamsubmissiongrouping name column.
+        $columns[] = (new column(
+            'teamsubmissiongroupingname',
+            new lang_string('teamsubmissiongroupingid', 'mod_assign'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$groupingalias}.name")
+            ->add_callback(static function($value): string {
+                return $value ?: get_string('none');
+            });
+
         // Notification settings columns
         // Assignment sendnotifications column.
         $columns[] = (new column(
@@ -475,6 +495,11 @@ class assignment extends base {
         $filters = [];
 
         $assignalias = $this->get_table_alias('assign');
+        $groupingalias = $this->get_table_alias('groupings');
+
+        $this->add_join("LEFT JOIN {groupings} {$groupingalias}
+                        ON {$groupingalias}.id = {$assignalias}.teamsubmissiongroupingid
+                        AND {$groupingalias}.courseid = {$assignalias}.course");
 
         // Assignment name filter.
         $filters[] = (new filter(
@@ -661,6 +686,16 @@ class assignment extends base {
             new lang_string('requireallteammemberssubmit', 'mod_assign'),
             $this->get_entity_name(),
             "{$assignalias}.requireallteammemberssubmit"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Assignment teamsubmissiongrouping name filter.
+        $filters[] = (new filter(
+            text::class,
+            'teamsubmissiongroupingname',
+            new lang_string('teamsubmissiongroupingid', 'mod_assign'),
+            $this->get_entity_name(),
+            "{$groupingalias}.name"
         ))
             ->add_joins($this->get_joins());
 

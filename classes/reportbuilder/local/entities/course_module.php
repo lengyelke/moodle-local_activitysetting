@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
-use core_reportbuilder\local\filters\{boolean_select, date, number, select};
+use core_reportbuilder\local\filters\{boolean_select, date, number, select, text};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -45,6 +45,7 @@ class course_module extends base {
             'course_modules',
             'modules',
             'course',
+            'groupings',
         ];
     }
 
@@ -152,6 +153,11 @@ class course_module extends base {
         $columns = [];
 
         $modulealias = $this->get_table_alias('course_modules');
+        $groupingalias = $this->get_table_alias('groupings');
+
+        $this->add_join("LEFT JOIN {groupings} {$groupingalias}
+                        ON {$groupingalias}.id = {$modulealias}.groupingid
+                        AND {$groupingalias}.courseid = {$modulealias}.course");
 
         // General columns
         // Course module visible.
@@ -219,6 +225,20 @@ class course_module extends base {
                 ];
 
                 return (string) ($modes[$groupmode] ?? $groupmode);
+            });
+
+        // Course module grouping name.
+        $columns[] = (new column(
+            'groupingname',
+            new lang_string('groupingname', 'group'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$groupingalias}.name")
+            ->add_callback(static function($value): string {
+                return $value ?: get_string('none');
             });
 
         // Course module completion.
@@ -354,6 +374,11 @@ class course_module extends base {
         $filters = [];
 
         $modulealias = $this->get_table_alias('course_modules');
+        $groupingalias = $this->get_table_alias('groupings');
+
+        $this->add_join("LEFT JOIN {groupings} {$groupingalias}
+                        ON {$groupingalias}.id = {$modulealias}.groupingid
+                        AND {$groupingalias}.courseid = {$modulealias}.course");
 
         // General filters
         // Course module visible.
@@ -410,6 +435,16 @@ class course_module extends base {
                 SEPARATEGROUPS => new lang_string('groupsseparate', 'core'),
                 VISIBLEGROUPS => new lang_string('groupsvisible', 'core'),
             ]);
+
+        // Course module grouping name.
+        $filters[] = (new filter(
+            text::class,
+            'groupingname',
+            new lang_string('groupingname', 'group'),
+            $this->get_entity_name(),
+            "{$groupingalias}.name"
+        ))
+            ->add_joins($this->get_joins());
 
         // Course module completion.
         $filters[] = (new filter(
