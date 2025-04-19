@@ -40,7 +40,8 @@ You need to know the corresponding database tables and the meaning of their colu
 Entities included
 -------------------
 -   Assignment (mod_assign)
--   Course Modules (course_modules)
+-   Course Module (course_modules)
+-   Grade Item (grade_items)
 
 Datasources included
 --------------------
