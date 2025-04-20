@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
+use core\output\html_writer;
 use core_reportbuilder\local\filters\{boolean_select, date, number, select, text};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
@@ -148,11 +149,16 @@ class course_module extends base {
      */
     protected function get_all_columns(): array {
 
-        global $DB;
+        global $CFG;
 
         $columns = [];
 
         $modulealias = $this->get_table_alias('course_modules');
+
+        $modalias = $this->get_table_alias('modules');
+        $this->add_join("JOIN {modules} {$modalias}
+                        ON {$modalias}.id = {$modulealias}.module");
+
         $groupingalias = $this->get_table_alias('groupings');
 
         $this->add_join("LEFT JOIN {groupings} {$groupingalias}
@@ -357,6 +363,35 @@ class course_module extends base {
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.lang");
+
+        // Course module URL.
+        $columns[] = (new column(
+            'cmURL',
+            new lang_string('urlastext', 'local_activitysetting'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$modalias}.name", "modname") // Add the module name field.
+            ->add_field("{$modulealias}.id", "cmid") // Add the course module ID field.
+            ->add_callback(function($value, $row) use ($CFG) {
+                // Extract the fields.
+                $modulename = $row->modname;
+                $cmid = $row->cmid;
+
+                // Construct the URL.
+                if ($modulename && $cmid) {
+                    return html_writer::link(
+                        $CFG->wwwroot . '/mod/' . $modulename . '/view.php?id=' . $cmid,
+                        $CFG->wwwroot . '/mod/' . $modulename . '/view.php?id=' . $cmid,
+                        ['target' => '_blank']
+                    );
+                }
+
+                // Return a default value if fields are missing.
+                return get_string('none');
+            });
 
         return $columns;
     }
