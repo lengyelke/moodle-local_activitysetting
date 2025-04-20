@@ -463,23 +463,6 @@ class assignment extends base {
             ->add_field("{$assignalias}.timemodified")
             ->add_callback([format::class, 'userdate']);
 
-        // Assignment URL as text column.
-        $columns[] = (new column(
-            'urlastext',
-            new lang_string('urlastext', 'local_activitysetting'),
-            $this->get_entity_name()
-        ))
-            ->set_type(column::TYPE_TEXT)
-            ->add_field("{$assignalias}.id")
-            ->add_callback(function($value, $row) use ($CFG) {
-                $cm = get_coursemodule_from_instance('assign', $value, 0, false, MUST_EXIST);
-                return html_writer::link(
-                    $CFG->wwwroot . '/mod/assign/view.php?id=' . $cm->id,
-                    $CFG->wwwroot . '/mod/assign/view.php?id=' . $cm->id,
-                    ['target' => '_blank']
-                );
-            });
-
         return $columns;
     }
     /**
