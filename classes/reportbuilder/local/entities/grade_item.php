@@ -85,11 +85,12 @@ class grade_item extends base {
      *
      * These are all the columns available to use in any report that uses this entity.
      *
-     * @return columns[]
+     * @return column[]
      */
     protected function get_all_columns(): array {
 
-        global $DB;
+        global $DB, $CFG;
+        require_once($CFG->libdir.'/gradelib.php');
 
         $columns = [];
 
@@ -119,15 +120,20 @@ class grade_item extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradetype")
-            ->add_callback(static function(int $gradetype): string {
+            ->add_callback(static function(?int $gradetype): string {
                 $types = [
                     GRADE_TYPE_NONE => new lang_string('modgradetypenone', 'grades'),
                     GRADE_TYPE_VALUE => new lang_string('modgradetypepoint', 'grades'),
                     GRADE_TYPE_SCALE => new lang_string('modgradetypescale', 'grades'),
                     GRADE_TYPE_TEXT => new lang_string('typetext', 'grades'),
                 ];
-
-                return (string) ($types[$gradetype] ?? $gradetype);
+                return (string) (
+                    $types[$gradetype]
+                    ?? ($gradetype === null
+                        ? get_string('notset', 'local_activitysetting')
+                        : get_string('unknown', 'local_activitysetting')
+                    )
+                );
             });
 
         // Grade items grade min.
@@ -195,18 +201,18 @@ class grade_item extends base {
 
         // Locked column with formatted display.
         $columns[] = (new column(
-                'locked',
-                new lang_string('locked', 'grades'),
-                $this->get_entity_name()
+            'locked',
+            new lang_string('locked', 'grades'),
+            $this->get_entity_name()
             ))
-                ->add_joins($this->get_joins())
-                ->set_type(column::TYPE_TEXT)
-                ->set_is_sortable(true)
-                ->add_field("{$gradeitemsalias}.locked")
-                ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-                ->add_callback(function($value, $row) use ($gradeitemsalias) {
-                    return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_locked_value($value);
-                });
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.locked")
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+                return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_locked_value($value);
+            });
 
         // Add the new 'scalename' column.
         $columns[] = (new column(
@@ -321,9 +327,9 @@ class grade_item extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_options([
-                GRADE_TYPE_NONE => new lang_string('typenone', 'grades'),
-                GRADE_TYPE_VALUE => new lang_string('typevalue', 'grades'),
-                GRADE_TYPE_SCALE => new lang_string('typescale', 'grades'),
+                GRADE_TYPE_NONE => new lang_string('modgradetypenone', 'grades'),
+                GRADE_TYPE_VALUE => new lang_string('modgradetypepoint', 'grades'),
+                GRADE_TYPE_SCALE => new lang_string('modgradetypescale', 'grades'),
                 GRADE_TYPE_TEXT => new lang_string('typetext', 'grades'),
             ]);
 

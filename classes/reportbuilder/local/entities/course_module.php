@@ -47,6 +47,7 @@ class course_module extends base {
             'modules',
             'course',
             'groupings',
+            'grade_items',
         ];
     }
 
@@ -145,7 +146,7 @@ class course_module extends base {
      *
      * These are all the columns available to use in any report that uses this entity.
      *
-     * @return columns[]
+     * @return column[]
      */
     protected function get_all_columns(): array {
 
@@ -160,7 +161,6 @@ class course_module extends base {
                         ON {$modalias}.id = {$modulealias}.module");
 
         $groupingalias = $this->get_table_alias('groupings');
-
         $this->add_join("LEFT JOIN {groupings} {$groupingalias}
                         ON {$groupingalias}.id = {$modulealias}.groupingid
                         AND {$groupingalias}.courseid = {$modulealias}.course");
@@ -266,6 +266,21 @@ class course_module extends base {
 
                 return (string) ($modes[$completion] ?? $completion);
             });
+
+        // Recieve a grade.
+        $columns[] = (new column(
+            'recievegrade',
+            new lang_string('completionusegrade_desc', 'completion'),
+            $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$modulealias}.completiongradeitemnumber")
+            ->add_callback(static function($value): bool {
+                return $value !== null; // True if grade condition is enabled.
+            })
+            ->add_callback([format::class, 'boolean_as_text']);
 
         // Course module completionview.
         $columns[] = (new column(
@@ -495,6 +510,16 @@ class course_module extends base {
                 COMPLETION_TRACKING_MANUAL => new lang_string('completion_manual', 'completion'),
                 COMPLETION_TRACKING_AUTOMATIC => new lang_string('completion_automatic', 'completion'),
             ]);
+
+        // Recieve a grade.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'recievegrade',
+            new lang_string('completionusegrade_desc', 'completion'),
+            $this->get_entity_name(),
+            "{$modulealias}.completiongradeitemnumber"
+        ))
+            ->add_joins($this->get_joins());
 
         // Course module completionview.
         $filters[] = (new filter(
