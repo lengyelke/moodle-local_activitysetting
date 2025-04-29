@@ -33,6 +33,7 @@ $string['gradeitemsetting'] = 'Grade Item Settings';
 $string['notset'] = 'Not set';
 $string['pluginname'] = 'Activity Setting Report';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin simply reports on existing activity settings and does not store any personal data itself.';
+$string['quizsetting'] = 'Quiz Settings';
 $string['ratingend'] = 'Rating until';
 $string['ratingstart'] = 'Rating from';
 $string['timemodified'] = 'Last modified';
