@@ -23,6 +23,8 @@ use core_reportbuilder\local\filters\{boolean_select, date, text, select, number
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
+use mod_quiz\question\display_options;
+
 
 /**
  * Class quiz
@@ -235,6 +237,292 @@ class quiz extends base {
             ->add_field("{$quizalias}.preferredbehaviour")
             ->add_callback(function($value) {
                 return get_string('pluginname', 'qbehaviour_' . $value);
+            });
+
+        // Allow redo.
+        $columns[] = (new column(
+            'canredoquestions',
+            new lang_string('canredoquestions', 'mod_quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.canredoquestions")
+            ->add_callback(function($value) {
+                return $value ? get_string('yes') : get_string('no');
+            });
+
+        // Attempt on last attempt.
+        $columns[] = (new column(
+            'attemptonlast',
+            new lang_string('eachattemptbuildsonthelast', 'mod_quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.attemptonlast")
+            ->add_callback(function($value) {
+                return $value ? get_string('yes') : get_string('no');
+            });
+
+        // Review attemp.
+        $columns[] = (new column(
+            'reviewattempt',
+            new lang_string('reviewattempt', 'mod_quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewattempt")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review correctness.
+        $columns[] = (new column(
+            'reviewcorrectness',
+            new lang_string('whethercorrect', 'question'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewcorrectness")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review maxmarks.
+        $columns[] = (new column(
+            'reviewmaxmarks',
+            new lang_string('maxmarks', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewmaxmarks")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review marks.
+        $columns[] = (new column(
+            'reviewmarks',
+            new lang_string('marks', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewmarks")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review specific feedback.
+        $columns[] = (new column(
+            'reviewspecificfeedback',
+            new lang_string('specificfeedback', 'question'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewspecificfeedback")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review general feedback.
+        $columns[] = (new column(
+            'reviewgeneralfeedback',
+            new lang_string('generalfeedback', 'question'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewgeneralfeedback")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review right answer.
+        $columns[] = (new column(
+            'reviewrightanswer',
+            new lang_string('rightanswer', 'question'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewrightanswer")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Review overall feedback.
+        $columns[] = (new column(
+            'reviewoverallfeedback',
+            new lang_string('reviewoverallfeedback', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.reviewoverallfeedback")
+            ->add_callback(function($value) {
+                $options = [];
+
+                if ($value & display_options::DURING) {
+                    $options[] = get_string('reviewduring', 'quiz');
+                }
+                if ($value & display_options::IMMEDIATELY_AFTER) {
+                    $options[] = get_string('reviewimmediately', 'quiz');
+                }
+                if ($value & display_options::LATER_WHILE_OPEN) {
+                    $options[] = get_string('reviewopen', 'quiz');
+                }
+                if ($value & display_options::AFTER_CLOSE) {
+                    $options[] = get_string('reviewclosed', 'quiz');
+                }
+
+                return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Show user picture.
+        $columns[] = (new column(
+            'showuserpicture',
+            new lang_string('showuserpicture', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.showuserpicture")
+            ->add_callback(function($value) {
+                return $value ? get_string('yes') : get_string('no');
+            });
+
+        // Decimal points.
+        $columns[] = (new column(
+            'decimalpoints',
+            new lang_string('decimalplaces', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.decimalpoints");
+
+        // Question decimal points.
+        $columns[] = (new column(
+            'questiondecimalpoints',
+            new lang_string('decimalplacesquestion', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_field("{$quizalias}.questiondecimalpoints")
+            ->add_callback(function($value) {
+                return $value == -1 ? get_string('sameasoverall', 'quiz') : $value;
             });
 
         return $columns;
