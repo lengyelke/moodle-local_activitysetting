@@ -554,7 +554,7 @@ class quiz extends base {
                 return $value == -1 ? get_string('sameasoverall', 'quiz') : $value;
             });
 
-        // Safe Exam Browser.
+        // Require Safe Exam Browser.
         $columns[] = (new column(
             'safeexambrowser',
             new lang_string('seb_requiresafeexambrowser', 'quizaccess_seb'),
@@ -579,6 +579,85 @@ class quiz extends base {
                         : get_string('unknown', 'local_activitysetting')
                     )
                 );
+            });
+
+        // Require Safe Exam Browser config.
+        $columns[] = (new column(
+            'safeexambrowserconfig',
+            new lang_string('sebconfig', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.showsebdownloadlink", "showsebdownloadlink")
+            ->add_field("{$quizaccessalias}.userconfirmquit", "userconfirmquit")
+            ->add_field("{$quizaccessalias}.allowuserquitseb", "allowuserquitseb")
+            ->add_field("{$quizaccessalias}.allowreloadinexam", "allowreloadinexam")
+            ->add_field("{$quizaccessalias}.showsebtaskbar", "showsebtaskbar")
+            ->add_field("{$quizaccessalias}.showreloadbutton", "showreloadbutton")
+            ->add_field("{$quizaccessalias}.showtime", "showtime")
+            ->add_field("{$quizaccessalias}.showkeyboardlayout", "showkeyboardlayout")
+            ->add_field("{$quizaccessalias}.showwificontrol", "showwificontrol")
+            ->add_field("{$quizaccessalias}.enableaudiocontrol", "enableaudiocontrol")
+            ->add_field("{$quizaccessalias}.allowspellchecking", "allowspellchecking")
+            ->add_field("{$quizaccessalias}.activateurlfiltering", "activateurlfiltering")
+            ->add_field("{$quizaccessalias}.muteonstartup", "muteonstartup")
+            ->add_field("{$quizaccessalias}.allowcapturecamera", "allowcapturecamera")
+            ->add_field("{$quizaccessalias}.allowcapturemicrophone", "allowcapturemicrophone")
+            ->add_field("{$quizaccessalias}.filterembeddedcontent", "filterembeddedcontent")
+
+            ->add_callback(function($value, $row) use ($quizaccessalias): string {
+                $options = [];
+                if ($row->showsebdownloadlink) {
+                    $options[] = get_string('seb_showsebdownloadlink', 'quizaccess_seb');
+                }
+                if ($row->userconfirmquit) {
+                    $options[] = get_string('seb_userconfirmquit', 'quizaccess_seb');
+                }
+                if ($row->allowuserquitseb) {
+                    $options[] = get_string('seb_allowuserquitseb', 'quizaccess_seb');
+                }
+                if ($row->allowreloadinexam) {
+                    $options[] = get_string('seb_allowreloadinexam', 'quizaccess_seb');
+                }
+                if ($row->showsebtaskbar) {
+                    $options[] = get_string('seb_showsebtaskbar', 'quizaccess_seb');
+                }
+                if ($row->showsebtaskbar && $row->showreloadbutton) {
+                    $options[] = get_string('seb_showreloadbutton', 'quizaccess_seb');
+                }
+                if ($row->showsebtaskbar && $row->showtime) {
+                    $options[] = get_string('seb_showtime', 'quizaccess_seb');
+                }
+                if ($row->showsebtaskbar && $row->showkeyboardlayout) {
+                    $options[] = get_string('seb_showkeyboardlayout', 'quizaccess_seb');
+                }
+                if ($row->showsebtaskbar && $row->showwificontrol) {
+                    $options[] = get_string('seb_showwificontrol', 'quizaccess_seb');
+                }
+                if ($row->enableaudiocontrol) {
+                    $options[] = get_string('seb_enableaudiocontrol', 'quizaccess_seb');
+                }
+                if ($row->enableaudiocontrol && $row->muteonstartup) {
+                    $options[] = get_string('seb_muteonstartup', 'quizaccess_seb');
+                }
+                if ($row->allowcapturecamera) {
+                    $options[] = get_string('seb_allowcapturecamera', 'quizaccess_seb');
+                }
+                if ($row->allowcapturemicrophone) {
+                    $options[] = get_string('seb_allowcapturemicrophone', 'quizaccess_seb');
+                }
+                if ($row->allowspellchecking) {
+                    $options[] = get_string('seb_allowspellchecking', 'quizaccess_seb');
+                }
+                if ($row->activateurlfiltering) {
+                    $options[] = get_string('seb_activateurlfiltering', 'quizaccess_seb');
+                }
+                if ($row->activateurlfiltering && $row->filterembeddedcontent) {
+                    $options[] = get_string('seb_filterembeddedcontent', 'quizaccess_seb');
+                }
+                return $options ? implode('; ', $options) : get_string('none');
             });
 
         // Require password.
