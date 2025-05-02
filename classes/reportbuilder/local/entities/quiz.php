@@ -24,7 +24,7 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 use mod_quiz\question\display_options;
-
+use tool_brickfield\local\areas\mod_choice\option;
 
 /**
  * Class quiz
@@ -42,7 +42,10 @@ class quiz extends base {
      * @return string[]
      */
     protected function get_default_tables(): array {
-        return ['quiz'];
+        return [
+            'quiz',
+            'quizaccess_seb_quizsettings',
+        ];
     }
 
     /**
@@ -91,6 +94,10 @@ class quiz extends base {
         require_once($CFG->dirroot.'/mod/quiz/lib.php');
 
         $quizalias = $this->get_table_alias('quiz');
+        $quizaccessalias = $this->get_table_alias('quizaccess_seb_quizsettings');
+
+        $this->add_join("LEFT JOIN {quizaccess_seb_quizsettings} $quizaccessalias ON $quizaccessalias.quizid = $quizalias.id");
+
         $columns = [];
 
         // Quiz name.
@@ -101,6 +108,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.name");
 
         // Open quiz.
@@ -111,6 +119,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.timeopen")
             ->add_callback([format::class, 'userdate']);
 
@@ -122,6 +131,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.timeclose")
             ->add_callback([format::class, 'userdate']);
 
@@ -133,6 +143,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.timelimit")
             ->add_callback(function($value, $row) {
                 if ($value == 0) {
@@ -150,6 +161,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.overduehandling")
             ->add_callback(function($value) {
                 $strings = [
@@ -168,6 +180,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.graceperiod")
             ->add_callback(function($value, $row) {
                 if ($value == 0) {
@@ -185,6 +198,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.questionsperpage")
             ->add_callback(function($value) {
                 $pageoptions = [];
@@ -204,6 +218,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.navmethod")
             ->add_callback(function($value) {
                 $navoptions = [
@@ -221,6 +236,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.shuffleanswers")
             ->add_callback(function($value) {
                 return $value ? get_string('yes') : get_string('no');
@@ -234,6 +250,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.preferredbehaviour")
             ->add_callback(function($value) {
                 return get_string('pluginname', 'qbehaviour_' . $value);
@@ -247,6 +264,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.canredoquestions")
             ->add_callback(function($value) {
                 return $value ? get_string('yes') : get_string('no');
@@ -260,6 +278,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.attemptonlast")
             ->add_callback(function($value) {
                 return $value ? get_string('yes') : get_string('no');
@@ -273,6 +292,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewattempt")
             ->add_callback(function($value) {
                 $options = [];
@@ -301,6 +321,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewcorrectness")
             ->add_callback(function($value) {
                 $options = [];
@@ -329,6 +350,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewmaxmarks")
             ->add_callback(function($value) {
                 $options = [];
@@ -357,6 +379,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewmarks")
             ->add_callback(function($value) {
                 $options = [];
@@ -385,6 +408,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewspecificfeedback")
             ->add_callback(function($value) {
                 $options = [];
@@ -413,6 +437,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewgeneralfeedback")
             ->add_callback(function($value) {
                 $options = [];
@@ -441,6 +466,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewrightanswer")
             ->add_callback(function($value) {
                 $options = [];
@@ -469,6 +495,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewoverallfeedback")
             ->add_callback(function($value) {
                 $options = [];
@@ -497,6 +524,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.showuserpicture")
             ->add_callback(function($value) {
                 return $value ? get_string('yes') : get_string('no');
@@ -510,6 +538,7 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.decimalpoints");
 
         // Question decimal points.
@@ -520,9 +549,133 @@ class quiz extends base {
         ))
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.questiondecimalpoints")
             ->add_callback(function($value) {
                 return $value == -1 ? get_string('sameasoverall', 'quiz') : $value;
+            });
+
+        // Safe Exam Browser.
+        $columns[] = (new column(
+            'safeexambrowser',
+            new lang_string('seb_requiresafeexambrowser', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.requiresafeexambrowser")
+            ->add_callback(static function(?int $requiresafeexambrowser): string {
+                $types = [
+                    0 => new lang_string('no'),
+                    1 => new lang_string('seb_use_manually', 'quizaccess_seb'),
+                    2 => new lang_string('seb_use_template', 'quizaccess_seb'),
+                    3 => new lang_string('seb_use_upload', 'quizaccess_seb'),
+                    4 => new lang_string('seb_use_client', 'quizaccess_seb'),
+                ];
+                return (string) (
+                    $types[$requiresafeexambrowser]
+                    ?? ($requiresafeexambrowser === null
+                        ? get_string('notset', 'local_activitysetting')
+                        : get_string('unknown', 'local_activitysetting')
+                    )
+                );
+            });
+
+        // Require password.
+        $columns[] = (new column(
+            'password',
+            new lang_string('requirepassword', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.password")
+            ->add_callback(function($value) {
+                return $value ?? get_string('no');
+            });
+
+        // Require network address.
+        $columns[] = (new column(
+            'subnet',
+            new lang_string('requiresubnet', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.subnet")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // Enforced delay between 1st and 2nd attempts.
+        $columns[] = (new column(
+            'delay1st2nd',
+            new lang_string('delay1st2nd', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.delay1")
+            ->add_callback(function($value, $row) {
+                if ($value == 0) {
+                    return get_string('notset', 'local_activitysetting');
+                } else {
+                    return format::format_time($value, $row);
+                }
+            });
+
+        // Enforced delay between later attempts.
+        $columns[] = (new column(
+            'delaylaterattempts',
+            new lang_string('delaylater', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.delay2")
+            ->add_callback(function($value, $row) {
+                if ($value == 0) {
+                    return get_string('notset', 'local_activitysetting');
+                } else {
+                    return format::format_time($value, $row);
+                }
+            });
+
+        // Browser security.
+        $columns[] = (new column(
+            'browsersecurity',
+            new lang_string('browsersecurity', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.browsersecurity")
+            ->add_callback(function($value) {
+                $options = [
+                    '-' => get_string('none', 'quiz'),
+                    'securewindow' => get_string('popupwithjavascriptsupport', 'quizaccess_securewindow'),
+                ];
+                return $options[$value] ?? $value;
+            });
+
+        // Completion min attempts.
+        $columns[] = (new column(
+            'completionminattempts',
+            new lang_string('completionminattempts', 'quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.completionminattempts")
+            ->add_callback(function($value) {
+                return $value == 0 ? get_string('notset', 'local_activitysetting') : $value;
             });
 
         return $columns;
