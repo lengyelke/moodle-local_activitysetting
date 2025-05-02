@@ -24,7 +24,6 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 use mod_quiz\question\display_options;
-use tool_brickfield\local\areas\mod_choice\option;
 
 /**
  * Class quiz
