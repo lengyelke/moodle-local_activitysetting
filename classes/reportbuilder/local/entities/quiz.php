@@ -581,10 +581,10 @@ class quiz extends base {
                 );
             });
 
-        // Require Safe Exam Browser config.
+        // Safe Exam Browser Yes/No fields.
         $columns[] = (new column(
-            'safeexambrowserconfig',
-            new lang_string('sebconfig', 'local_activitysetting'),
+            'safeexambrowserconfigyesno',
+            new lang_string('sebconfigyesno', 'local_activitysetting'),
             $this->get_entity_name()
         ))
             ->set_type(column::TYPE_TEXT)
@@ -658,6 +658,105 @@ class quiz extends base {
                     $options[] = get_string('seb_filterembeddedcontent', 'quizaccess_seb');
                 }
                 return $options ? implode('; ', $options) : get_string('none');
+            });
+
+        // Safe Exam Browser Text fields.
+        // Quit password.
+        $columns[] = (new column(
+            'quitpassword',
+            new lang_string('seb_quitpassword', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.quitpassword")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // Link quit SEB.
+        $columns[] = (new column(
+            'linkquitseb',
+            new lang_string('exitsebbutton', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.linkquitseb")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // SEB expressions allowed.
+        $columns[] = (new column(
+            'sebexpressiosnallowed',
+            new lang_string('seb_expressionsallowed', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.expressionsallowed")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // SEB regex allowed.
+        $columns[] = (new column(
+            'sebregexallowed',
+            new lang_string('seb_regexallowed', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.regexallowed")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // SEB expressions blocked.
+        $columns[] = (new column(
+            'sebexpressionsblocked',
+            new lang_string('seb_expressionsblocked', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.expressionsblocked")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // SEB regex blocked.
+        $columns[] = (new column(
+            'sebregexblocked',
+            new lang_string('seb_regexblocked', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.regexblocked")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
+            });
+
+        // SEB allowed browser exam keys.
+        $columns[] = (new column(
+            'seballowedbrowserexamkeys',
+            new lang_string('seb_allowedbrowserexamkeys', 'quizaccess_seb'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizaccessalias}.allowedbrowserexamkeys")
+            ->add_callback(function($value) {
+                return $value == "" ? get_string('no') : $value;
             });
 
         // Require password.
