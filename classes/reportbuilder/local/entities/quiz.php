@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
-use core_reportbuilder\local\filters\{boolean_select, date, text, select, number};
+use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select, number};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -864,6 +864,10 @@ class quiz extends base {
      */
     protected function get_all_filters(): array {
         $quizalias = $this->get_table_alias('quiz');
+        $quizaccessalias = $this->get_table_alias('quizaccess_seb_quizsettings');
+
+        $this->add_join("LEFT JOIN {quizaccess_seb_quizsettings} $quizaccessalias ON $quizaccessalias.quizid = $quizalias.id");
+
         $filters = [];
 
         // Quiz name filter.
@@ -873,7 +877,263 @@ class quiz extends base {
             new lang_string('name', 'mod_quiz'),
             $this->get_entity_name(),
             "{$quizalias}.name"
-        ));
+        ))
+            ->add_joins($this->get_joins());
+
+        // Open quiz filter.
+        $filters[] = (new filter(
+            date::class,
+            'quizopen',
+            new lang_string('quizopen', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.timeopen"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Close quiz filter.
+        $filters[] = (new filter(
+            date::class,
+            'quizclose',
+            new lang_string('quizclose', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.timeclose"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Time limit filter.
+        $filters[] = (new filter(
+            duration::class,
+            'timelimit',
+            new lang_string('timelimit', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.timelimit"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Handling overdue attempts filter.
+        $filters[] = (new filter(
+            select::class,
+            'overduehandling',
+            new lang_string('overduehandling', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.overduehandling"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                'autosubmit'  => get_string('overduehandlingautosubmit', 'quiz'),
+                'graceperiod' => get_string('overduehandlinggraceperiod', 'quiz'),
+                'autoabandon' => get_string('overduehandlingautoabandon', 'quiz'),
+            ]);
+
+        // Grace period filter.
+        $filters[] = (new filter(
+            duration::class,
+            'graceperiod',
+            new lang_string('graceperiod', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.graceperiod"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Layout filter.
+        $filters[] = (new filter(
+            select::class,
+            'questionsperpage',
+            new lang_string('newpage', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.questionsperpage"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                0 => get_string('neverallononepage', 'quiz'),
+                1 => get_string('everyquestion', 'quiz'),
+                2 => get_string('everynquestions', 'quiz', 2),
+                3 => get_string('everynquestions', 'quiz', 3),
+                4 => get_string('everynquestions', 'quiz', 4),
+                5 => get_string('everynquestions', 'quiz', 5),
+                6 => get_string('everynquestions', 'quiz', 6),
+                7 => get_string('everynquestions', 'quiz', 7),
+                8 => get_string('everynquestions', 'quiz', 8),
+                9 => get_string('everynquestions', 'quiz', 9),
+                10 => get_string('everynquestions', 'quiz', 10),
+            ]);
+
+        // Navigation method filter.
+        $filters[] = (new filter(
+            select::class,
+            'navmethod',
+            new lang_string('navmethod', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.navmethod"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                QUIZ_NAVMETHOD_FREE => get_string('navmethod_free', 'quiz'),
+                QUIZ_NAVMETHOD_SEQ  => get_string('navmethod_seq', 'quiz'),
+            ]);
+
+        // Shuffle within questions filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'shufflequestions',
+            new lang_string('shufflewithin', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.shuffleanswers"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Preferred behaviour filter.
+        $filters[] = (new filter(
+            select::class,
+            'preferredbehaviour',
+            new lang_string('howquestionsbehave', 'question'),
+            $this->get_entity_name(),
+            "{$quizalias}.preferredbehaviour"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                'adaptive'         => get_string('pluginname', 'qbehaviour_adaptive'),
+                'adaptivenopenalty'    => get_string('pluginname', 'qbehaviour_adaptivenopenalty'),
+                'deferredcbm' => get_string('pluginname', 'qbehaviour_deferredcbm'),
+                'deferredfeedback'  => get_string('pluginname', 'qbehaviour_deferredfeedback'),
+                'immediatecbm' => get_string('pluginname', 'qbehaviour_immediatecbm'),
+                'immediatefeedback' => get_string('pluginname', 'qbehaviour_immediatefeedback'),
+                'interactive'      => get_string('pluginname', 'qbehaviour_interactive'),
+                'manualgraded'     => get_string('pluginname', 'qbehaviour_manualgraded'),
+            ]);
+
+        // Allow redo filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'canredoquestions',
+            new lang_string('canredoquestions', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.canredoquestions"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Attempt on last attempt filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'attemptonlast',
+            new lang_string('eachattemptbuildsonthelast', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.attemptonlast"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Review attempt filter.
+
+        // Show user picture filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'showuserpicture',
+            new lang_string('showuserpicture', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.showuserpicture"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Decimal points filter.
+        $filters[] = (new filter(
+            number::class,
+            'decimalpoints',
+            new lang_string('decimalplaces', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.decimalpoints"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Question decimal points filter.
+        $filters[] = (new filter(
+            number::class,
+            'questiondecimalpoints',
+            new lang_string('decimalplacesquestion', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.questiondecimalpoints"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Require Safe Exam Browser filter.
+        $filters[] = (new filter(
+            select::class,
+            'safeexambrowser',
+            new lang_string('seb_requiresafeexambrowser', 'quizaccess_seb'),
+            $this->get_entity_name(),
+            "{$quizaccessalias}.requiresafeexambrowser"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                0 => get_string('no'),
+                1 => get_string('seb_use_manually', 'quizaccess_seb'),
+                2 => get_string('seb_use_template', 'quizaccess_seb'),
+                3 => get_string('seb_use_upload', 'quizaccess_seb'),
+                4 => get_string('seb_use_client', 'quizaccess_seb'),
+            ]);
+
+        // Require password filter.
+        $filters[] = (new filter(
+            text::class,
+            'password',
+            new lang_string('requirepassword', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.password"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Require network address filter.
+        $filters[] = (new filter(
+            text::class,
+            'subnet',
+            new lang_string('requiresubnet', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.subnet"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Enforced delay between 1st and 2nd attempts filter.
+        $filters[] = (new filter(
+            duration::class,
+            'delay1st2nd',
+            new lang_string('delay1st2nd', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.delay1"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Enforced delay between later attempts filter.
+        $filters[] = (new filter(
+            duration::class,
+            'delaylaterattempts',
+            new lang_string('delaylater', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.delay2"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Browser security filter.
+        $filters[] = (new filter(
+            select::class,
+            'browsersecurity',
+            new lang_string('browsersecurity', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.browsersecurity"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                '-' => get_string('none', 'quiz'),
+                'securewindow' => get_string('popupwithjavascriptsupport', 'quizaccess_securewindow'),
+            ]);
+
+        // Completion min attempts filter.
+        $filters[] = (new filter(
+            number::class,
+            'completionminattempts',
+            new lang_string('completionminattempts', 'quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.completionminattempts"
+        ))
+            ->add_joins($this->get_joins());
 
         return $filters;
     }
