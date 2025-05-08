@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
+use question_engine;
 use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select, number};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
@@ -991,16 +992,7 @@ class quiz extends base {
             "{$quizalias}.preferredbehaviour"
         ))
             ->add_joins($this->get_joins())
-            ->set_options([
-                'adaptive'         => get_string('pluginname', 'qbehaviour_adaptive'),
-                'adaptivenopenalty'    => get_string('pluginname', 'qbehaviour_adaptivenopenalty'),
-                'deferredcbm' => get_string('pluginname', 'qbehaviour_deferredcbm'),
-                'deferredfeedback'  => get_string('pluginname', 'qbehaviour_deferredfeedback'),
-                'immediatecbm' => get_string('pluginname', 'qbehaviour_immediatecbm'),
-                'immediatefeedback' => get_string('pluginname', 'qbehaviour_immediatefeedback'),
-                'interactive'      => get_string('pluginname', 'qbehaviour_interactive'),
-                'manualgraded'     => get_string('pluginname', 'qbehaviour_manualgraded'),
-            ]);
+            ->set_options(question_engine::get_behaviour_options(''));
 
         // Allow redo filter.
         $filters[] = (new filter(
