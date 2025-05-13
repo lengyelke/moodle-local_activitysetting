@@ -36,6 +36,7 @@ $string['privacy:metadata'] = 'The Activity Setting Report plugin simply reports
 $string['quizsetting'] = 'Quiz Settings';
 $string['ratingend'] = 'Rating until';
 $string['ratingstart'] = 'Rating from';
+$string['scormsetting'] = 'SCORM Settings';
 $string['sebconfigyesno'] = 'Safe Exam Browser Config Yes/No fields';
 $string['timemodified'] = 'Last modified';
 $string['unknown'] = 'Unknown';
