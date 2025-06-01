@@ -252,7 +252,7 @@ class assignment extends base {
             $this->get_entity_name()
             ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
+            ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$assignalias}.attemptreopenmethod")
             ->add_callback(static function(string $attemptreopenmethod): string {
