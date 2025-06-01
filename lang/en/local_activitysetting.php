@@ -37,6 +37,7 @@ $string['quizsetting'] = 'Quiz Settings';
 $string['ratingend'] = 'Rating until';
 $string['ratingstart'] = 'Rating from';
 $string['scormsetting'] = 'SCORM Settings';
+$string['scormversion'] = 'SCORM Version';
 $string['sebconfigyesno'] = 'Safe Exam Browser Config Yes/No fields';
 $string['timemodified'] = 'Last modified';
 $string['unknown'] = 'Unknown';
