@@ -190,6 +190,40 @@ class quiz extends base {
                 }
             });
 
+        // Attempts allowed.
+        $columns[] = (new column(
+            'attemptsallowed',
+            new lang_string('attemptsallowed', 'mod_quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.attempts")
+            ->add_callback(function($value) {
+                return $value == 0 ? get_string('unlimited') : $value;
+            });
+
+        // Grading method.
+        $columns[] = (new column(
+            'grademethod',
+            new lang_string('grademethod', 'mod_quiz'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.grademethod")
+            ->add_callback(function($value) {
+                $strings = [
+                    QUIZ_GRADEHIGHEST => get_string('gradehighest', 'quiz'),
+                    QUIZ_GRADEAVERAGE => get_string('gradeaverage', 'quiz'),
+                    QUIZ_ATTEMPTFIRST => get_string('attemptfirst', 'quiz'),
+                    QUIZ_ATTEMPTLAST  => get_string('attemptlast', 'quiz'),
+                ];
+                return $strings[$value] ?? $value;
+            });
+
         // Layout.
         $columns[] = (new column(
             'questionsperpage',
@@ -935,6 +969,45 @@ class quiz extends base {
             "{$quizalias}.graceperiod"
         ))
             ->add_joins($this->get_joins());
+
+        // Attempts allowed filter.
+        $filters[] = (new filter(
+            select::class,
+            'attemptsallowed',
+            new lang_string('attemptsallowed', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.attempts"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                0 => get_string('unlimited'),
+                1 => 1,
+                2 => 2,
+                3 => 3,
+                4 => 4,
+                5 => 5,
+                6 => 6,
+                7 => 7,
+                8 => 8,
+                9 => 9,
+                10 => 10,
+            ]);
+
+        // Grading method filter.
+        $filters[] = (new filter(
+            select::class,
+            'grademethod',
+            new lang_string('grademethod', 'mod_quiz'),
+            $this->get_entity_name(),
+            "{$quizalias}.grademethod"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                QUIZ_GRADEHIGHEST => get_string('gradehighest', 'quiz'),
+                QUIZ_GRADEAVERAGE => get_string('gradeaverage', 'quiz'),
+                QUIZ_ATTEMPTFIRST => get_string('attemptfirst', 'quiz'),
+                QUIZ_ATTEMPTLAST  => get_string('attemptlast', 'quiz'),
+            ]);
 
         // Layout filter.
         $filters[] = (new filter(
