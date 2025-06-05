@@ -44,7 +44,6 @@ final class forums_test extends core_reportbuilder_testcase {
     public function test_datasource_default(): void {
         global $CFG, $USER;
         $this->resetAfterTest();
-        $this->setAdminUser();
 
         $category = $this->getDataGenerator()->create_category(['name' => 'Zoo', 'idnumber' => 'Z01']);
         $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
@@ -79,7 +78,6 @@ final class forums_test extends core_reportbuilder_testcase {
         global $DB;
 
         $this->resetAfterTest();
-        //$this->setAdminUser();
 
         $category = $this->getDataGenerator()->create_category(['name' => 'Zoo', 'idnumber' => 'Z01']);
         $course = $this->getDataGenerator()->create_course(['category' => $category->id, 'enablecompletion' => 1]);
@@ -131,8 +129,10 @@ final class forums_test extends core_reportbuilder_testcase {
         // The columns are: forumname, type, completion, completionview.
         // Sorted by name ascending.
         $this->assertEquals([
-            [$forum1->name, get_string('namenews', 'mod_forum'), get_string('completion_automatic', 'completion'), get_string('yes')],
-        ], array_map('array_values', $content1));
+            [$forum1->name, get_string('namenews', 'mod_forum'), get_string('completion_automatic', 'completion'),
+                get_string('yes')],
+            ],
+            array_map('array_values', $content1));
 
         // Load report instance, set condition.
         $instance2 = manager::get_report_from_persistent($report);
@@ -148,8 +148,10 @@ final class forums_test extends core_reportbuilder_testcase {
         // The columns are: forumname, type, completion, completionview.
         // Sorted by name ascending.
         $this->assertEquals([
-            [$forum2->name, get_string('generalforum', 'mod_forum'), get_string('completion_manual', 'completion'), get_string('no')],
-        ], array_map('array_values', $content2));
+            [$forum2->name, get_string('generalforum', 'mod_forum'), get_string('completion_manual', 'completion'),
+            get_string('no')],
+        ],
+        array_map('array_values', $content2));
 
         // Load report instance, set condition.
         $instance3 = manager::get_report_from_persistent($report);
