@@ -26,7 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['assignmentsetting'] = 'Assignment Settings';
+$string['component'] = 'Component';
 $string['coursemodulesetting'] = 'Course Module Settings';
+$string['coursesectionsetting'] = 'Course Section Settings';
 $string['deletioninprogress'] = 'Deletion in progress';
 $string['forumsetting'] = 'Forum Settings';
 $string['gradeitemsetting'] = 'Grade Item Settings';
@@ -36,6 +38,8 @@ $string['privacy:metadata'] = 'The Activity Setting Report plugin simply reports
 $string['quizsetting'] = 'Quiz Settings';
 $string['ratingend'] = 'Rating until';
 $string['ratingstart'] = 'Rating from';
+$string['sectionname'] = 'Section Name';
+$string['sectionnumber'] = 'Section Number';
 $string['scormsetting'] = 'SCORM Settings';
 $string['scormversion'] = 'SCORM Version';
 $string['sebconfigyesno'] = 'Safe Exam Browser Config Yes/No fields';
