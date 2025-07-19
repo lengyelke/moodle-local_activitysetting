@@ -3,6 +3,8 @@ moodle-local-activitysetting
 
 A collection of report sources for Custom Reports (ReportBuilder) to see activity settings.
 
+[![Moodle Plugin CI](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/main-moodle.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/main-moodle.yml)
+
 Requirements
 ------------
 
@@ -54,7 +56,7 @@ Datasources included
 --------------------
 -   Assignments ( = mod_assign +  course + course_modules + course_categories + grade_items)
 -   Forums ( = mod_forum +  course + course_modules + course_categories + grade_items)
--   Quizzes ( = mod_quz +  course + course_modules + course_categories + grade_items)
+-   Quizzes ( = mod_quiz +  course + course_modules + course_categories + grade_items)
 -   SCORMs ( = mod_scorm +  course + course_modules + course_categories + grade_items)
 
 Changelog
