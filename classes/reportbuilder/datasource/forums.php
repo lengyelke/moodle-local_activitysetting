@@ -24,6 +24,8 @@ use core_course\reportbuilder\local\entities\course_category;
 use local_activitysetting\reportbuilder\local\entities\forum;
 use local_activitysetting\reportbuilder\local\entities\course_module;
 use local_activitysetting\reportbuilder\local\entities\grade_item;
+use local_activitysetting\reportbuilder\local\entities\course_section;
+
 
 /**
  * Forum settings datasource
@@ -89,6 +91,15 @@ class forums extends datasource {
         $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $forumalias.id = $coursemodulealias.instance
                             and $coursemodulealias.module = (SELECT id FROM {modules} WHERE name = 'forum')";
         $this->add_entity($coursemoduleentity->add_join($coursemodulejoin));
+
+        // Add the course section entity.
+        $coursesectionentity = new course_section();
+        $coursesectionalias = $coursesectionentity->get_table_alias('course_sections');
+        $coursesectionentity->add_joins($courseentity->get_joins());
+        $coursesectionentity->add_joins($coursemoduleentity->get_joins());
+        $coursesectionjoin = "JOIN {course_sections} $coursesectionalias ON $coursesectionalias.id = $coursemodulealias.section
+                            AND $coursesectionalias.course = $coursealias.id";
+        $this->add_entity($coursesectionentity->add_join($coursesectionjoin));
 
         // Add the grade item entity.
         $gradeitementity = new grade_item();

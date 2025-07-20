@@ -207,7 +207,7 @@ class course_section extends base {
                 return self::format_section_availability($value);
             });
 
-        // Course section component column.
+        // Course section component column, name of the delegated plugin.
         $columns[] = (new column(
             'component',
             new lang_string('component', 'local_activitysetting'),
@@ -216,7 +216,10 @@ class course_section extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$sectionalias}.component");
+            ->add_field("{$sectionalias}.component")
+            ->add_callback(function($value) {
+                return ($value == null) ? $value : get_string('pluginname', $value);
+            });
 
         // Course section time modified column.
         $columns[] = (new column(
