@@ -21,7 +21,7 @@ namespace local_activitysetting\reportbuilder\local\entities;
 
 use html_writer;
 use lang_string;
-use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select};
+use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select, number};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -246,6 +246,45 @@ class course_section extends base {
      */
     protected function get_all_filters(): array {
         $filters = [];
+
+        $sectionalias = $this->get_table_alias('course_sections');
+
+        // Course section section number filter.
+        $filters[] = (new filter(
+            number::class,
+            'sectionnumber',
+            new lang_string('sectionnumber', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$sectionalias}.section"
+        ));
+
+        // Course section visible filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'visible',
+            new lang_string('sectionvisibility', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$sectionalias}.visible"
+        ));
+
+        // Course section component filter.
+        $filters[] = (new filter(
+            select::class,
+            'component',
+            new lang_string('component', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$sectionalias}.component"
+        ))->set_options_callback(function() {
+            global $CFG, $DB;
+            $plugins = [];
+            $components = $DB->get_fieldset_select('course_sections', 'DISTINCT component', '', [], 'component');
+            foreach ($components as $component) {
+                if (!empty($component)) {
+                    $plugins[$component] = get_string('pluginname', $component);
+                }
+            }
+            return $plugins;
+        });
 
         return $filters;
     }
