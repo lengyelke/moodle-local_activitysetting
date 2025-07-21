@@ -97,6 +97,7 @@ class forum extends base {
             new lang_string('forumname', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.name");
@@ -107,6 +108,7 @@ class forum extends base {
             new lang_string('forumtype', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.type")
@@ -128,6 +130,7 @@ class forum extends base {
             new lang_string('duedate', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.duedate")
@@ -139,6 +142,7 @@ class forum extends base {
             new lang_string('cutoffdate', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.cutoffdate")
@@ -150,6 +154,7 @@ class forum extends base {
             new lang_string('maxattachments', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.maxattachments");
@@ -160,6 +165,7 @@ class forum extends base {
             new lang_string('maxattachmentsize', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.maxbytes", "maxbytes")
@@ -183,6 +189,7 @@ class forum extends base {
             new lang_string('displaywordcount', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.displaywordcount")
@@ -194,6 +201,7 @@ class forum extends base {
             new lang_string('subscriptionmode', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.forcesubscribe")
@@ -213,6 +221,7 @@ class forum extends base {
             new lang_string('trackingtype', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.trackingtype")
@@ -231,6 +240,7 @@ class forum extends base {
             new lang_string('rsstype', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.rsstype")
@@ -249,6 +259,7 @@ class forum extends base {
             new lang_string('rssarticles', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.rssarticles");
@@ -259,6 +270,7 @@ class forum extends base {
             new lang_string('lockdiscussionafter', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.lockdiscussionafter")
@@ -272,6 +284,7 @@ class forum extends base {
             new lang_string('blockperiod', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.blockperiod")
@@ -285,6 +298,7 @@ class forum extends base {
             new lang_string('blockafter', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.blockafter");
@@ -295,6 +309,7 @@ class forum extends base {
             new lang_string('warnafter', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.warnafter");
@@ -305,6 +320,7 @@ class forum extends base {
             new lang_string('sendstudentnotificationsdefault', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.grade_forum_notify")
@@ -316,6 +332,7 @@ class forum extends base {
             new lang_string('aggregatetype', 'rating'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.assessed")
@@ -337,6 +354,7 @@ class forum extends base {
             new lang_string('ratingstart', 'local_activitysetting'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.assesstimestart")
@@ -348,6 +366,7 @@ class forum extends base {
             new lang_string('ratingend', 'local_activitysetting'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.assesstimefinish")
@@ -359,6 +378,7 @@ class forum extends base {
             new lang_string('completionposts', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.completionposts");
@@ -369,6 +389,7 @@ class forum extends base {
             new lang_string('completiondiscussions', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.completiondiscussions");
@@ -379,6 +400,7 @@ class forum extends base {
             new lang_string('completionreplies', 'mod_forum'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.completionreplies");
@@ -389,6 +411,7 @@ class forum extends base {
             new lang_string('timemodified', 'core_reportbuilder'),
             $this->get_entity_name()
         ))
+            ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.timemodified")
@@ -421,14 +444,16 @@ class forum extends base {
             new lang_string('forumtype', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.type"
-        ))->set_options([
-            'single' => get_string('singleforum', 'mod_forum'),
-            'eachuser' => get_string('eachuserforum', 'mod_forum'),
-            'qanda' => get_string('qandaforum', 'mod_forum'),
-            'blog' => get_string('blogforum', 'mod_forum'),
-            'general' => get_string('generalforum', 'mod_forum'),
-            'news' => get_string('namenews', 'mod_forum'),
-        ]);
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                'single' => get_string('singleforum', 'mod_forum'),
+                'eachuser' => get_string('eachuserforum', 'mod_forum'),
+                'qanda' => get_string('qandaforum', 'mod_forum'),
+                'blog' => get_string('blogforum', 'mod_forum'),
+                'general' => get_string('generalforum', 'mod_forum'),
+                'news' => get_string('namenews', 'mod_forum'),
+            ]);
 
         // Due date filter.
         $filters[] = (new filter(
@@ -437,7 +462,8 @@ class forum extends base {
             new lang_string('duedate', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.duedate"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Cut-off date filter.
         $filters[] = (new filter(
@@ -446,7 +472,8 @@ class forum extends base {
             new lang_string('cutoffdate', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.cutoffdate"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Max attachments filter.
         $filters[] = (new filter(
@@ -455,7 +482,8 @@ class forum extends base {
             new lang_string('maxattachments', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.maxattachments"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Display word count filter.
         $filters[] = (new filter(
@@ -464,7 +492,8 @@ class forum extends base {
             new lang_string('displaywordcount', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.displaywordcount"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Force subscribe filter.
         $filters[] = (new filter(
@@ -473,12 +502,14 @@ class forum extends base {
             new lang_string('subscriptionmode', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.forcesubscribe"
-        ))->set_options([
-            FORUM_CHOOSESUBSCRIBE => get_string('subscriptionoptional', 'mod_forum'),
-            FORUM_FORCESUBSCRIBE => get_string('subscriptionforced', 'mod_forum'),
-            FORUM_INITIALSUBSCRIBE => get_string('subscriptionauto', 'mod_forum'),
-            FORUM_DISALLOWSUBSCRIBE => get_string('subscriptiondisabled', 'mod_forum'),
-        ]);
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                FORUM_CHOOSESUBSCRIBE => get_string('subscriptionoptional', 'mod_forum'),
+                FORUM_FORCESUBSCRIBE => get_string('subscriptionforced', 'mod_forum'),
+                FORUM_INITIALSUBSCRIBE => get_string('subscriptionauto', 'mod_forum'),
+                FORUM_DISALLOWSUBSCRIBE => get_string('subscriptiondisabled', 'mod_forum'),
+            ]);
 
         // Read tracking filter.
         $filters[] = (new filter(
@@ -487,11 +518,13 @@ class forum extends base {
             new lang_string('trackingtype', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.trackingtype"
-        ))->set_options([
-            FORUM_TRACKING_OFF => get_string('trackingoff', 'mod_forum'),
-            FORUM_TRACKING_OPTIONAL => get_string('trackingoptional', 'mod_forum'),
-            FORUM_TRACKING_FORCED => get_string('trackingon', 'mod_forum'),
-        ]);
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                FORUM_TRACKING_OFF => get_string('trackingoff', 'mod_forum'),
+                FORUM_TRACKING_OPTIONAL => get_string('trackingoptional', 'mod_forum'),
+                FORUM_TRACKING_FORCED => get_string('trackingon', 'mod_forum'),
+            ]);
 
         // RSS feed type filter.
         $filters[] = (new filter(
@@ -500,11 +533,13 @@ class forum extends base {
             new lang_string('rsstype', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.rsstype"
-        ))->set_options([
-            0 => get_string('none'),
-            1 => get_string('discussions', 'forum'),
-            2 => get_string('posts', 'forum'),
-        ]);
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                0 => get_string('none'),
+                1 => get_string('discussions', 'forum'),
+                2 => get_string('posts', 'forum'),
+            ]);
 
         // RSS max items filter.
         $filters[] = (new filter(
@@ -513,7 +548,8 @@ class forum extends base {
             new lang_string('rssarticles', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.rssarticles"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Discussion locking filter.
         $filters[] = (new filter(
@@ -522,7 +558,8 @@ class forum extends base {
             new lang_string('lockdiscussionafter', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.lockdiscussionafter"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Block period filter.
         $filters[] = (new filter(
@@ -531,7 +568,8 @@ class forum extends base {
             new lang_string('blockperiod', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.blockperiod"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Block after filter.
         $filters[] = (new filter(
@@ -540,7 +578,8 @@ class forum extends base {
             new lang_string('blockafter', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.blockafter"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Warn after filter.
         $filters[] = (new filter(
@@ -549,7 +588,8 @@ class forum extends base {
             new lang_string('warnafter', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.warnafter"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Notify students filter.
         $filters[] = (new filter(
@@ -558,7 +598,8 @@ class forum extends base {
             new lang_string('sendstudentnotificationsdefault', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.grade_forum_notify"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Aggregate type filter.
         $filters[] = (new filter(
@@ -567,14 +608,16 @@ class forum extends base {
             new lang_string('aggregatetype', 'rating'),
             $this->get_entity_name(),
             "{$forumalias}.assessed"
-        ))->set_options([
-            RATING_AGGREGATE_NONE => get_string('aggregatenone', 'rating'),
-            RATING_AGGREGATE_AVERAGE => get_string('aggregateavg', 'rating'),
-            RATING_AGGREGATE_COUNT => get_string('aggregatecount', 'rating'),
-            RATING_AGGREGATE_MAXIMUM => get_string('aggregatemax', 'rating'),
-            RATING_AGGREGATE_MINIMUM => get_string('aggregatemin', 'rating'),
-            RATING_AGGREGATE_SUM => get_string('aggregatesum', 'rating'),
-        ]);
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                RATING_AGGREGATE_NONE => get_string('aggregatenone', 'rating'),
+                RATING_AGGREGATE_AVERAGE => get_string('aggregateavg', 'rating'),
+                RATING_AGGREGATE_COUNT => get_string('aggregatecount', 'rating'),
+                RATING_AGGREGATE_MAXIMUM => get_string('aggregatemax', 'rating'),
+                RATING_AGGREGATE_MINIMUM => get_string('aggregatemin', 'rating'),
+                RATING_AGGREGATE_SUM => get_string('aggregatesum', 'rating'),
+            ]);
 
         // Rating start filter.
         $filters[] = (new filter(
@@ -583,7 +626,8 @@ class forum extends base {
             new lang_string('ratingstart', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$forumalias}.assesstimestart"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Rating end filter.
         $filters[] = (new filter(
@@ -592,7 +636,8 @@ class forum extends base {
             new lang_string('ratingend', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$forumalias}.assesstimefinish"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Completion posts filter.
         $filters[] = (new filter(
@@ -601,7 +646,8 @@ class forum extends base {
             new lang_string('completionposts', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.completionposts"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Completion discussions filter.
         $filters[] = (new filter(
@@ -610,7 +656,8 @@ class forum extends base {
             new lang_string('completiondiscussions', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.completiondiscussions"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Completion replies filter.
         $filters[] = (new filter(
@@ -619,7 +666,8 @@ class forum extends base {
             new lang_string('completionreplies', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.completionreplies"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Timemodified filter.
         $filters[] = (new filter(
@@ -628,7 +676,8 @@ class forum extends base {
             new lang_string('timemodified', 'core_reportbuilder'),
             $this->get_entity_name(),
             "{$forumalias}.timemodified"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         return $filters;
     }
