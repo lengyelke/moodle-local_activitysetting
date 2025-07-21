@@ -256,7 +256,8 @@ class course_section extends base {
             new lang_string('sectionnumber', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$sectionalias}.section"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Course section visible filter.
         $filters[] = (new filter(
@@ -265,7 +266,8 @@ class course_section extends base {
             new lang_string('sectionvisibility', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$sectionalias}.visible"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Course section component filter.
         $filters[] = (new filter(
@@ -274,17 +276,19 @@ class course_section extends base {
             new lang_string('component', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$sectionalias}.component"
-        ))->set_options_callback(function() {
-            global $CFG, $DB;
-            $plugins = [];
-            $components = $DB->get_fieldset_select('course_sections', 'DISTINCT component', '', [], 'component');
-            foreach ($components as $component) {
-                if (!empty($component)) {
-                    $plugins[$component] = get_string('pluginname', $component);
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options_callback(function() {
+                global $CFG, $DB;
+                $plugins = [];
+                $components = $DB->get_fieldset_select('course_sections', 'DISTINCT component', '', [], 'component');
+                foreach ($components as $component) {
+                    if (!empty($component)) {
+                        $plugins[$component] = get_string('pluginname', $component);
+                    }
                 }
-            }
-            return $plugins;
-        });
+                return $plugins;
+            });
 
         return $filters;
     }
