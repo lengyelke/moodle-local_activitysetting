@@ -36,28 +36,34 @@ See http://docs.moodle.org/en/Installing_plugins for details on installing Moodl
 Usage & Settings
 ----------------
 
-Go to Site Administration > Reports > Custom Reports <br>
-New report <br>
-Select one of the sources from the dropdown under the Activity Setting report section. If any of the included datasources
+- Go to Site Administration > Reports > Custom Reports <br>
+- New report <br>
+- Select one of the sources from the dropdown under the Activity Setting report section. If any of the included datasources
 is not installed on your system, it will not appear in the dropdown.
 
 You need to know the corresponding database tables and the meaning of their columns, but most of them are self-explanatory.
 
 Entities included
 -------------------
--   Assignment (mod_assign)
--   Course Module (course_modules)
--   Forum (mod_forum)
--   Grade Item (grade_items)
--   Quiz (mod_quiz)
--   Scorm (mod_scorm)
+- Shared or common entities
+  - Course Section (course_sections)
+  - Course Module (course_modules)
+  - Grade Item (grade_items)
+- Activity related entities
+  -   Assignment (mod_assign)
+  -   Forum (mod_forum)
+  -   Quiz (mod_quiz)
+  -   Scorm (mod_scorm)
 
 Datasources included
 --------------------
--   Assignments ( = mod_assign +  course + course_modules + course_categories + grade_items)
--   Forums ( = mod_forum +  course + course_modules + course_categories + grade_items)
--   Quizzes ( = mod_quiz +  course + course_modules + course_categories + grade_items)
--   SCORMs ( = mod_scorm +  course + course_modules + course_categories + grade_items)
+Every activity specific data source comes with information about the course (core Moodle), course category (core Moodle),
+course section, course modules and grade items.
+
+-   Assignments ( = mod_assign + course + course_categories + all shared entities)
+-   Forums ( = mod_forum + course + course_categories + all shared entities)
+-   Quizzes ( = mod_quiz + course + course_categories + all shared entities)
+-   SCORMs ( = mod_scorm + course + course_categories + all shared entities)
 
 Changelog
 ---------
