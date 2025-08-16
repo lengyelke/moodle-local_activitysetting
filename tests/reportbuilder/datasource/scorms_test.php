@@ -34,7 +34,6 @@ use core_reportbuilder\tests\core_reportbuilder_testcase;
  * @covers \local_activitysetting\reportbuilder\datasource\scorms
  */
 final class scorms_test extends core_reportbuilder_testcase {
-
     /**
      * Test default datasource
      *
@@ -167,7 +166,6 @@ final class scorms_test extends core_reportbuilder_testcase {
         $this->assertEquals([
             [$scorm3->name, get_string('attemptsx', 'scorm', 3), get_string('completion_none', 'completion'), get_string('no')],
         ], array_map('array_values', $content3));
-
     }
 
 

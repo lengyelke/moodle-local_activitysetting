@@ -34,7 +34,6 @@ use core_reportbuilder\local\helpers\format;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class forum extends base {
-
     /**
      * Database tables that this entity uses
      * @return string[]
@@ -72,7 +71,6 @@ class forum extends base {
         }
 
         return $this;
-
     }
 
     /**
@@ -85,8 +83,8 @@ class forum extends base {
     protected function get_all_columns(): array {
 
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/rating/lib.php');
-        require_once($CFG->dirroot.'/mod/forum/lib.php');
+        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once($CFG->dirroot . '/mod/forum/lib.php');
 
         $forumalias = $this->get_table_alias('forum');
         $columns = [];
@@ -112,7 +110,7 @@ class forum extends base {
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.type")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     'single' => get_string('singleforum', 'mod_forum'),
                     'eachuser' => get_string('eachuserforum', 'mod_forum'),
@@ -170,7 +168,7 @@ class forum extends base {
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.maxbytes", "maxbytes")
             ->add_field("{$forumalias}.course", "cid")
-            ->add_callback(function($value, $row) use ($DB, $CFG) {
+            ->add_callback(function ($value, $row) use ($DB, $CFG) {
                 // If the value is 1, it means not allowed.
                 if ($value == 1) {
                     return get_string('uploadnotallowed', 'core');
@@ -205,7 +203,7 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.forcesubscribe")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     FORUM_CHOOSESUBSCRIBE => get_string('subscriptionoptional', 'mod_forum'),
                     FORUM_FORCESUBSCRIBE => get_string('subscriptionforced', 'mod_forum'),
@@ -225,7 +223,7 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.trackingtype")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     FORUM_TRACKING_OFF => get_string('trackingoff', 'mod_forum'),
                     FORUM_TRACKING_OPTIONAL => get_string('trackingoptional', 'mod_forum'),
@@ -244,7 +242,7 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.rsstype")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     0 => get_string('none'),
                     1 => get_string('discussions', 'forum'),
@@ -274,7 +272,7 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.lockdiscussionafter")
-            ->add_callback(static function($value, $row) {
+            ->add_callback(static function ($value, $row) {
                 return ($value == 0) ? get_string('discussionlockingdisabled', 'forum') : format::format_time($value, $row);
             });
 
@@ -288,7 +286,7 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.blockperiod")
-            ->add_callback(static function($value, $row) {
+            ->add_callback(static function ($value, $row) {
                 return ($value == 0) ? get_string('blockperioddisabled', 'forum') : format::format_time($value, $row);
             });
 
@@ -336,7 +334,7 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.assessed")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     RATING_AGGREGATE_NONE => get_string('aggregatenone', 'rating'),
                     RATING_AGGREGATE_AVERAGE => get_string('aggregateavg', 'rating'),

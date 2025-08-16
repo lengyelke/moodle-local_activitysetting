@@ -37,7 +37,6 @@ use core_reportbuilder\local\helpers\format;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assignment extends base {
-
     /**
      * Database tables that this entity uses
      *
@@ -81,7 +80,6 @@ class assignment extends base {
         }
 
         return $this;
-
     }
 
     /**
@@ -112,7 +110,7 @@ class assignment extends base {
             'assignmentname',
             new lang_string('assignmentname', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
@@ -123,7 +121,7 @@ class assignment extends base {
             'submissionattachments',
             new lang_string('submissionattachments', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -136,7 +134,7 @@ class assignment extends base {
             'allowsubmissionsfromdate',
             new lang_string('allowsubmissionsfromdate', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -148,7 +146,7 @@ class assignment extends base {
             'duedate',
             new lang_string('duedate', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -160,7 +158,7 @@ class assignment extends base {
             'cutoffdate',
             new lang_string('cutoffdate', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -172,7 +170,7 @@ class assignment extends base {
             'gradingduedate',
             new lang_string('gradingduedate', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -184,7 +182,7 @@ class assignment extends base {
             'timelimit',
             new lang_string('timelimit', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
@@ -196,7 +194,7 @@ class assignment extends base {
             'submissionattachments',
             new lang_string('alwaysshowdescription', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -209,7 +207,7 @@ class assignment extends base {
             'submissiondrafts',
             new lang_string('submissiondrafts', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -221,7 +219,7 @@ class assignment extends base {
             'requiresubmissionstatement',
             new lang_string('requiresubmissionstatement', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -233,12 +231,12 @@ class assignment extends base {
             'maxattempts',
             new lang_string('maxattempts', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$assignalias}.maxattempts")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 if ((int)$value === -1) {
                     return get_string('unlimitedattempts', 'mod_assign');
                 }
@@ -250,12 +248,12 @@ class assignment extends base {
             'attemptreopenmethod',
             new lang_string('attemptreopenmethod', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$assignalias}.attemptreopenmethod")
-            ->add_callback(static function(string $attemptreopenmethod): string {
+            ->add_callback(static function (string $attemptreopenmethod): string {
                 $modes = [
                     ASSIGN_ATTEMPT_REOPEN_METHOD_MANUAL => new lang_string('attemptreopenmethod_manual', 'mod_assign'),
                     ASSIGN_ATTEMPT_REOPEN_METHOD_AUTOMATIC => new lang_string('attemptreopenmethod_automatic', 'mod_assign'),
@@ -271,7 +269,7 @@ class assignment extends base {
             'teamsubmission',
             new lang_string('teamsubmission', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -283,7 +281,7 @@ class assignment extends base {
             'preventsubmissionnotingroup',
             new lang_string('preventsubmissionnotingroup', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -295,7 +293,7 @@ class assignment extends base {
             'requireallteammemberssubmit',
             new lang_string('requireallteammemberssubmit', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -307,12 +305,12 @@ class assignment extends base {
             'teamsubmissiongroupingname',
             new lang_string('teamsubmissiongroupingid', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$groupingalias}.name")
-            ->add_callback(static function($value): string {
+            ->add_callback(static function ($value): string {
                 return $value ?: get_string('none');
             });
 
@@ -322,7 +320,7 @@ class assignment extends base {
             'sendnotifications',
             new lang_string('sendnotifications', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -334,7 +332,7 @@ class assignment extends base {
             'sendlatenotifications',
             new lang_string('sendlatenotifications', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -346,7 +344,7 @@ class assignment extends base {
             'sendstudentnotifications',
             new lang_string('sendstudentnotifications', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -358,7 +356,7 @@ class assignment extends base {
             'blindmarking',
             new lang_string('blindmarking', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -370,7 +368,7 @@ class assignment extends base {
             'hidegrader',
             new lang_string('hidegrader', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -382,7 +380,7 @@ class assignment extends base {
             'markingworkflow',
             new lang_string('markingworkflow', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -394,7 +392,7 @@ class assignment extends base {
             'markingallocation',
             new lang_string('markingallocation', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -406,7 +404,7 @@ class assignment extends base {
             'markinganonymous',
             new lang_string('markinganonymous', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -419,7 +417,7 @@ class assignment extends base {
             'revealidentities',
             new lang_string('revealidentities', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -431,7 +429,7 @@ class assignment extends base {
             'nosubmissions',
             new lang_string('assignmentplugins', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -443,7 +441,7 @@ class assignment extends base {
             'completionsubmit',
             new lang_string('completionsubmit', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -456,7 +454,7 @@ class assignment extends base {
             'timemodified',
             new lang_string('timemodified', 'mod_assign'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -815,7 +813,5 @@ class assignment extends base {
         $conditions = [];
 
         return $conditions;
-
     }
-
 }

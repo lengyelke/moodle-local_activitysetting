@@ -35,7 +35,6 @@ use core_reportbuilder\local\helpers\format;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_module extends base {
-
     /**
      * Database tables that this entity uses
      *
@@ -82,7 +81,6 @@ class course_module extends base {
         }
 
         return $this;
-
     }
 
     /**
@@ -135,7 +133,6 @@ class course_module extends base {
                     return $nonhtml;
                 }
             }
-
         } catch (Exception $e) {
             return get_string('error');
         }
@@ -171,7 +168,7 @@ class course_module extends base {
             'visible',
             new lang_string('visible', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -183,7 +180,7 @@ class course_module extends base {
             'visibleoncoursepage',
             new lang_string('hideoncoursepage', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -195,7 +192,7 @@ class course_module extends base {
             'visibleold',
             new lang_string('visibleold', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -207,7 +204,7 @@ class course_module extends base {
             'idnumber',
             new lang_string('idnumber', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
@@ -218,12 +215,12 @@ class course_module extends base {
             'groupmode',
             new lang_string('groupmode', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.groupmode")
-            ->add_callback(static function(int $groupmode): string {
+            ->add_callback(static function (int $groupmode): string {
                 $modes = [
                     NOGROUPS => new lang_string('groupsnone', 'core'),
                     SEPARATEGROUPS => new lang_string('groupsseparate', 'core'),
@@ -238,12 +235,12 @@ class course_module extends base {
             'groupingname',
             new lang_string('groupingname', 'group'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$groupingalias}.name")
-            ->add_callback(static function($value): string {
+            ->add_callback(static function ($value): string {
                 return $value ?: get_string('none');
             });
 
@@ -252,12 +249,12 @@ class course_module extends base {
             'completion',
             new lang_string('completion', 'completion'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.completion")
-            ->add_callback(static function(int $completion): string {
+            ->add_callback(static function (int $completion): string {
                 $modes = [
                     COMPLETION_TRACKING_NONE => new lang_string('completion_none', 'completion'),
                     COMPLETION_TRACKING_MANUAL => new lang_string('completion_manual', 'completion'),
@@ -272,12 +269,12 @@ class course_module extends base {
             'recievegrade',
             new lang_string('completionusegrade_desc', 'completion'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.completiongradeitemnumber")
-            ->add_callback(static function($value): bool {
+            ->add_callback(static function ($value): bool {
                 return $value !== null; // True if grade condition is enabled.
             })
             ->add_callback([format::class, 'boolean_as_text']);
@@ -287,7 +284,7 @@ class course_module extends base {
             'completionview',
             new lang_string('completionview_desc', 'completion'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -299,7 +296,7 @@ class course_module extends base {
             'completionexpected',
             new lang_string('completionexpected', 'completion'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -311,7 +308,7 @@ class course_module extends base {
             'completionpassgrade',
             new lang_string('completionpassgrade', 'completion'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -323,7 +320,7 @@ class course_module extends base {
             'showdescription',
             new lang_string('showdescription', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -335,12 +332,12 @@ class course_module extends base {
             'availability',
             new lang_string('accessrestrictions', 'availability'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.instance")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return self::format_availability($value);
             });
 
@@ -349,7 +346,7 @@ class course_module extends base {
             'deletioninprogress',
             new lang_string('deletioninprogress', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -361,7 +358,7 @@ class course_module extends base {
             'downloadcontent',
             new lang_string('downloadcontent', 'course'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -373,7 +370,7 @@ class course_module extends base {
             'lang',
             new lang_string('forcelanguage', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
@@ -384,13 +381,13 @@ class course_module extends base {
             'cmURL',
             new lang_string('urlastext', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$modalias}.name", "modname") // Add the module name field.
             ->add_field("{$modulealias}.id", "cmid") // Add the course module ID field.
-            ->add_callback(function($value, $row) use ($CFG) {
+            ->add_callback(function ($value, $row) use ($CFG) {
                 // Extract the fields.
                 $modulename = $row->modname;
                 $cmid = $row->cmid;
@@ -595,7 +592,6 @@ class course_module extends base {
             ]);
 
         return $filters;
-
     }
 
     /**
@@ -609,7 +605,5 @@ class course_module extends base {
         $conditions = [];
 
         return $conditions;
-
     }
-
 }

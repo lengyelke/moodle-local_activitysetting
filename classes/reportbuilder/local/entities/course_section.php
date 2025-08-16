@@ -38,7 +38,6 @@ use function DI\value;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_section extends base {
-
     /**
      * Database tables that this entity uses
      *
@@ -81,7 +80,6 @@ class course_section extends base {
         }
 
         return $this;
-
     }
 
     /**
@@ -159,7 +157,7 @@ class course_section extends base {
             'sectionname',
             new lang_string('sectionname', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
@@ -175,7 +173,7 @@ class course_section extends base {
             'sectionnumber',
             new lang_string('sectionnumber', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
@@ -186,7 +184,7 @@ class course_section extends base {
             'visible',
             new lang_string('visible', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
             ->set_is_sortable(true)
@@ -198,12 +196,12 @@ class course_section extends base {
             'availability',
             new lang_string('accessrestrictions', 'availability'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$sectionalias}.id")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return self::format_section_availability($value);
             });
 
@@ -212,12 +210,12 @@ class course_section extends base {
             'component',
             new lang_string('component', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$sectionalias}.component")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return ($value == null) ? $value : get_string('pluginname', $value);
             });
 
@@ -226,7 +224,7 @@ class course_section extends base {
             'timemodified',
             new lang_string('timemodified', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -234,7 +232,6 @@ class course_section extends base {
             ->add_callback([format::class, 'userdate']);
 
         return $columns;
-
     }
 
     /**
@@ -278,7 +275,7 @@ class course_section extends base {
             "{$sectionalias}.component"
         ))
             ->add_joins($this->get_joins())
-            ->set_options_callback(function() {
+            ->set_options_callback(function () {
                 global $CFG, $DB;
                 $plugins = [];
                 $components = $DB->get_fieldset_select('course_sections', 'DISTINCT component', '', [], 'component');
@@ -305,5 +302,4 @@ class course_section extends base {
 
         return $conditions;
     }
-
 }

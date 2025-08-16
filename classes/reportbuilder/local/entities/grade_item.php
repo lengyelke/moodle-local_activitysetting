@@ -34,7 +34,6 @@ use core_reportbuilder\local\helpers\format;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class grade_item extends base {
-
     /**
      * Database tables that this entity uses
      *
@@ -78,7 +77,6 @@ class grade_item extends base {
         }
 
         return $this;
-
     }
     /**
      * Returns list of all available columns
@@ -90,7 +88,7 @@ class grade_item extends base {
     protected function get_all_columns(): array {
 
         global $DB, $CFG;
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once($CFG->libdir . '/gradelib.php');
 
         $columns = [];
 
@@ -104,7 +102,7 @@ class grade_item extends base {
             'itemname',
             new lang_string('itemname', 'grades'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
@@ -115,12 +113,12 @@ class grade_item extends base {
             'gradetype',
             new lang_string('gradetype', 'grades'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradetype")
-            ->add_callback(static function(?int $gradetype): string {
+            ->add_callback(static function (?int $gradetype): string {
                 $types = [
                     GRADE_TYPE_NONE => new lang_string('modgradetypenone', 'grades'),
                     GRADE_TYPE_VALUE => new lang_string('modgradetypepoint', 'grades'),
@@ -141,13 +139,13 @@ class grade_item extends base {
             'grademin',
             new lang_string('grademin', 'grades'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.grademin")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
                 // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
             });
@@ -157,13 +155,13 @@ class grade_item extends base {
             'grademax',
             new lang_string('grademax', 'grades'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.grademax")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
                 // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
             });
@@ -173,13 +171,13 @@ class grade_item extends base {
             'gradepass',
             new lang_string('gradepass', 'grades'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradepass")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
                 // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
             });
@@ -189,13 +187,13 @@ class grade_item extends base {
             'hidden',
             new lang_string('hidden', 'grades'),
             $this->get_entity_name()
-           ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.hidden")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_hidden_value($value);
             });
 
@@ -204,13 +202,13 @@ class grade_item extends base {
             'locked',
             new lang_string('locked', 'grades'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.locked")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_locked_value($value);
             });
 
@@ -219,12 +217,13 @@ class grade_item extends base {
             'scalename',
             new lang_string('scale', 'core'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$scalealias}.name")
-            ->add_callback(static function($value): string { // Optional: Handle NULL cases gracefully if needed.
+            ->add_callback(static function ($value): string {
+                // Optional: Handle NULL cases gracefully if needed.
                 return $value ?? ''; // If scaleid was NULL/0, name will be NULL. Return empty string.
             });
 
@@ -233,7 +232,7 @@ class grade_item extends base {
             'timemodified',
             new lang_string('timemodified', 'local_activitysetting'),
             $this->get_entity_name()
-            ))
+        ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
@@ -378,5 +377,4 @@ class grade_item extends base {
 
         return $conditions;
     }
-
 }

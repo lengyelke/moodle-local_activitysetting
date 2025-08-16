@@ -36,7 +36,6 @@ use mod_quiz\question\display_options;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quiz extends base {
-
     /**
      * Database tables that this entity uses
      * @return string[]
@@ -77,7 +76,6 @@ class quiz extends base {
         }
 
         return $this;
-
     }
 
     /**
@@ -90,8 +88,8 @@ class quiz extends base {
     protected function get_all_columns(): array {
 
         global $DB, $CFG;
-        require_once($CFG->dirroot.'/rating/lib.php');
-        require_once($CFG->dirroot.'/mod/quiz/lib.php');
+        require_once($CFG->dirroot . '/rating/lib.php');
+        require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
         $quizalias = $this->get_table_alias('quiz');
         $quizaccessalias = $this->get_table_alias('quizaccess_seb_quizsettings');
@@ -145,7 +143,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.timelimit")
-            ->add_callback(function($value, $row) {
+            ->add_callback(function ($value, $row) {
                 if ($value == 0) {
                     return get_string('notset', 'local_activitysetting');
                 } else {
@@ -163,7 +161,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.overduehandling")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     'autosubmit'  => get_string('overduehandlingautosubmit', 'quiz'),
                     'graceperiod' => get_string('overduehandlinggraceperiod', 'quiz'),
@@ -182,7 +180,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.graceperiod")
-            ->add_callback(function($value, $row) {
+            ->add_callback(function ($value, $row) {
                 if ($value == 0) {
                     return get_string('notset', 'local_activitysetting');
                 } else {
@@ -200,7 +198,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.attempts")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == 0 ? get_string('unlimited') : $value;
             });
 
@@ -214,7 +212,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.grademethod")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $strings = [
                     QUIZ_GRADEHIGHEST => get_string('gradehighest', 'quiz'),
                     QUIZ_GRADEAVERAGE => get_string('gradeaverage', 'quiz'),
@@ -234,7 +232,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.questionsperpage")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $pageoptions = [];
                 $pageoptions[0] = get_string('neverallononepage', 'quiz');
                 $pageoptions[1] = get_string('everyquestion', 'quiz');
@@ -254,7 +252,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.navmethod")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $navoptions = [
                     QUIZ_NAVMETHOD_FREE => get_string('navmethod_free', 'quiz'),
                     QUIZ_NAVMETHOD_SEQ  => get_string('navmethod_seq', 'quiz'),
@@ -272,7 +270,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.shuffleanswers")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value ? get_string('yes') : get_string('no');
             });
 
@@ -286,7 +284,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.preferredbehaviour")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return get_string('pluginname', 'qbehaviour_' . $value);
             });
 
@@ -300,7 +298,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.canredoquestions")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value ? get_string('yes') : get_string('no');
             });
 
@@ -314,7 +312,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.attemptonlast")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value ? get_string('yes') : get_string('no');
             });
 
@@ -328,7 +326,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewattempt")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -357,7 +355,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewcorrectness")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -386,7 +384,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewmaxmarks")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -415,7 +413,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewmarks")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -444,7 +442,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewspecificfeedback")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -473,7 +471,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewgeneralfeedback")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -502,7 +500,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewrightanswer")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -531,7 +529,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.reviewoverallfeedback")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [];
 
                 if ($value & display_options::DURING) {
@@ -560,7 +558,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.showuserpicture")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value ? get_string('yes') : get_string('no');
             });
 
@@ -585,7 +583,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.questiondecimalpoints")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == -1 ? get_string('sameasoverall', 'quiz') : $value;
             });
 
@@ -599,7 +597,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.requiresafeexambrowser")
-            ->add_callback(static function(?int $requiresafeexambrowser): string {
+            ->add_callback(static function (?int $requiresafeexambrowser): string {
                 $types = [
                     0 => new lang_string('no'),
                     1 => new lang_string('seb_use_manually', 'quizaccess_seb'),
@@ -642,7 +640,7 @@ class quiz extends base {
             ->add_field("{$quizaccessalias}.allowcapturemicrophone", "allowcapturemicrophone")
             ->add_field("{$quizaccessalias}.filterembeddedcontent", "filterembeddedcontent")
 
-            ->add_callback(function($value, $row) use ($quizaccessalias): string {
+            ->add_callback(function ($value, $row) use ($quizaccessalias): string {
                 $options = [];
                 if ($row->showsebdownloadlink) {
                     $options[] = get_string('seb_showsebdownloadlink', 'quizaccess_seb');
@@ -706,7 +704,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.quitpassword")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -720,7 +718,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.linkquitseb")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -734,7 +732,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.expressionsallowed")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -748,7 +746,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.regexallowed")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -762,7 +760,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.expressionsblocked")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -776,7 +774,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.regexblocked")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -790,7 +788,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.allowedbrowserexamkeys")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -804,7 +802,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.password")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value ?? get_string('no');
             });
 
@@ -818,7 +816,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.subnet")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == "" ? get_string('no') : $value;
             });
 
@@ -832,7 +830,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.delay1")
-            ->add_callback(function($value, $row) {
+            ->add_callback(function ($value, $row) {
                 if ($value == 0) {
                     return get_string('notset', 'local_activitysetting');
                 } else {
@@ -850,7 +848,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.delay2")
-            ->add_callback(function($value, $row) {
+            ->add_callback(function ($value, $row) {
                 if ($value == 0) {
                     return get_string('notset', 'local_activitysetting');
                 } else {
@@ -868,7 +866,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.browsersecurity")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = [
                     '-' => get_string('none', 'quiz'),
                     'securewindow' => get_string('popupwithjavascriptsupport', 'quizaccess_securewindow'),
@@ -886,7 +884,7 @@ class quiz extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.completionminattempts")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value == 0 ? get_string('notset', 'local_activitysetting') : $value;
             });
 

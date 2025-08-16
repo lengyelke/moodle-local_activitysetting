@@ -37,7 +37,6 @@ use tool_brickfield\local\areas\mod_choice\option;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class scorm extends base {
-
     /**
      * Database tables that this entity uses
      * @return string[]
@@ -77,7 +76,6 @@ class scorm extends base {
         }
 
         return $this;
-
     }
 
     /**
@@ -154,7 +152,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.updatefreq")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_updatefreq_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -170,7 +168,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.popup")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_popup_display_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -218,7 +216,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.skipview")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_skip_view_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -245,7 +243,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.hidetoc")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_hidetoc_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -261,7 +259,7 @@ class scorm extends base {
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.nav", "nav")
             ->add_field("{$scormalias}.hidetoc", "hidetoc")
-            ->add_callback(function($value, $row) {
+            ->add_callback(function ($value, $row) {
                 $options = scorm_get_navigation_display_array();
                 if ($row->hidetoc == SCORM_TOC_SIDE) {
                     return $options[$value] ?? get_string('notset', 'local_activitysetting');
@@ -291,7 +289,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.displayattemptstatus")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_attemptstatus_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -332,7 +330,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.maxattempt")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_attempts_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -347,7 +345,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.whatgrade")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_what_grade_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -362,7 +360,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.forcenewattempt")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 $options = scorm_get_forceattempt_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
@@ -438,7 +436,7 @@ class scorm extends base {
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.completionscorerequired")
-            ->add_callback(function($value) {
+            ->add_callback(function ($value) {
                 return $value ?? get_string('notset', 'local_activitysetting');
             });
 
@@ -615,7 +613,7 @@ class scorm extends base {
             END"
         ))
             ->add_joins($this->get_joins())
-            ->set_options_callback(static function(): array {
+            ->set_options_callback(static function (): array {
                 $options = scorm_get_navigation_display_array();
                 $options[999] = get_string('notset', 'local_activitysetting');
                 return $options;
