@@ -175,6 +175,39 @@ class scorm extends base {
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
 
+        // Scorm Display package in new window - Width.
+        $columns[] = (new column(
+            'scormdisplaypackagewidth',
+            new lang_string('width', 'scorm'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$scormalias}.width");
+
+        // Scorm Display package in new window - Height.
+        $columns[] = (new column(
+            'scormdisplaypackageheight',
+            new lang_string('height', 'scorm'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$scormalias}.height");
+
+        // Scorm Display package in new window - Options.
+        $columns[] = (new column(
+            'scormdisplaypackageoptions',
+            new lang_string('options', 'scorm'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(false)
+            ->add_joins($this->get_joins())
+            ->add_field("{$scormalias}.options");
+
         // Student skip content structure page.
         $columns[] = (new column(
             'scormskipcontentstructure',
@@ -189,6 +222,7 @@ class scorm extends base {
                 $options = scorm_get_skip_view_array();
                 return $options[$value] ?? get_string('notset', 'local_activitysetting');
             });
+
         // Scorm Disable preview mode.
         $columns[] = (new column(
             'scormdisablepreview',
@@ -505,6 +539,36 @@ class scorm extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_options(scorm_get_popup_display_array());
+
+        // Scorm Display package in new window - width filter.
+        $filters[] = (new filter(
+            number::class,
+            'scormdisplaypackagewidth',
+            new lang_string('width', 'scorm'),
+            $this->get_entity_name(),
+            "{$scormalias}.width"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Scorm Display package in new window - height filter.
+        $filters[] = (new filter(
+            number::class,
+            'scormdisplaypackageheight',
+            new lang_string('height', 'scorm'),
+            $this->get_entity_name(),
+            "{$scormalias}.height"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Scorm Display package in new window - options filter.
+        $filters[] = (new filter(
+            text::class,
+            'scormdisplaypackageoptions',
+            new lang_string('options', 'scorm'),
+            $this->get_entity_name(),
+            "{$scormalias}.options"
+        ))
+            ->add_joins($this->get_joins());
 
         // Student skip content structure page filter.
         $filters[] = (new filter(
