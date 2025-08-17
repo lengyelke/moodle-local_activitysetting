@@ -888,6 +888,18 @@ class quiz extends base {
                 return $value == 0 ? get_string('notset', 'local_activitysetting') : $value;
             });
 
+        // Timemodified (last updated).
+        $columns[] = (new column(
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$quizalias}.timemodified")
+            ->add_callback([format::class, 'userdate']);
+
         return $columns;
     }
 
@@ -1195,6 +1207,16 @@ class quiz extends base {
             new lang_string('completionminattempts', 'quiz'),
             $this->get_entity_name(),
             "{$quizalias}.completionminattempts"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Timemodified (last updated) filter.
+        $filters[] = (new filter(
+            date::class,
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$quizalias}.timemodified"
         ))
             ->add_joins($this->get_joins());
 

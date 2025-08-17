@@ -406,7 +406,7 @@ class forum extends base {
         // Timemodified (last updated).
         $columns[] = (new column(
             'timemodified',
-            new lang_string('timemodified', 'core_reportbuilder'),
+            new lang_string('timemodified', 'local_activitysetting'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -667,11 +667,11 @@ class forum extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Timemodified filter.
+        // Timemodified (last updated) filter.
         $filters[] = (new filter(
             date::class,
             'timemodified',
-            new lang_string('timemodified', 'core_reportbuilder'),
+            new lang_string('timemodified', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$forumalias}.timemodified"
         ))

@@ -219,7 +219,7 @@ class course_section extends base {
                 return ($value == null) ? $value : get_string('pluginname', $value);
             });
 
-        // Course section time modified column.
+        // Course section timemodified (last updated) column.
         $columns[] = (new column(
             'timemodified',
             new lang_string('timemodified', 'local_activitysetting'),
@@ -286,6 +286,16 @@ class course_section extends base {
                 }
                 return $plugins;
             });
+
+        // Course section timemodified (last updated) filter.
+        $filters[] = (new filter(
+            date::class,
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$sectionalias}.timemodified"
+        ))
+            ->add_joins($this->get_joins());
 
         return $filters;
     }

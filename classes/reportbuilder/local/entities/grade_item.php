@@ -19,7 +19,7 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
-use core_reportbuilder\local\filters\{number, text, select};
+use core_reportbuilder\local\filters\{number, text, select, date};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -227,7 +227,7 @@ class grade_item extends base {
                 return $value ?? ''; // If scaleid was NULL/0, name will be NULL. Return empty string.
             });
 
-        // Grade items timemodified.
+        // Grade items timemodified (last updated).
         $columns[] = (new column(
             'timemodified',
             new lang_string('timemodified', 'local_activitysetting'),
@@ -359,6 +359,16 @@ class grade_item extends base {
             new lang_string('gradepass', 'grades'),
             $this->get_entity_name(),
             "{$gradeitemsalias}.gradepass"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Grade items timemodified (last updated) filter.
+        $filters[] = (new filter(
+            date::class,
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.timemodified"
         ))
             ->add_joins($this->get_joins());
 

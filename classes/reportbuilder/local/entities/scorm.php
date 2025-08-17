@@ -464,6 +464,18 @@ class scorm extends base {
             ->add_field("{$scormalias}.completionstatusallscos")
             ->add_callback([format::class, 'boolean_as_text']);
 
+        // Timemodified (last updated).
+        $columns[] = (new column(
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_is_sortable(true)
+            ->add_joins($this->get_joins())
+            ->add_field("{$scormalias}.timemodified")
+            ->add_callback([format::class, 'userdate']);
+
         return $columns;
     }
 
@@ -770,6 +782,16 @@ class scorm extends base {
             new lang_string('completionstatusallscos', 'scorm'),
             $this->get_entity_name(),
             "{$scormalias}.completionstatusallscos"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Timemodified (last updated) filter.
+        $filters[] = (new filter(
+            date::class,
+            'timemodified',
+            new lang_string('timemodified', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$scormalias}.timemodified"
         ))
             ->add_joins($this->get_joins());
 

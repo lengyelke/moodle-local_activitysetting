@@ -449,10 +449,10 @@ class assignment extends base {
             ->add_callback([format::class, 'boolean_as_text']);
 
         // Non UI columns
-        // Assignment timemodified column.
+        // Assignment timemodified (last updated) column.
         $columns[] = (new column(
             'timemodified',
-            new lang_string('timemodified', 'mod_assign'),
+            new lang_string('timemodified', 'local_activitysetting'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -790,11 +790,11 @@ class assignment extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Assignment timemodified filter.
+        // Assignment timemodified (last updated) filter.
         $filters[] = (new filter(
             date::class,
             'timemodified',
-            new lang_string('timemodified', 'mod_assign'),
+            new lang_string('timemodified', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$assignalias}.timemodified"
         ))
