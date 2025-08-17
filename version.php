@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'local_activitysetting';
-$plugin->release      = '1.1.0';
-$plugin->version      = 2025081600;
+$plugin->release      = '1.1.1';
+$plugin->version      = 2025081601;
 $plugin->requires     = 2024100700;
 $plugin->supported    = [405, 500];
 $plugin->maturity     = MATURITY_STABLE;
