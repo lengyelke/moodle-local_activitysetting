@@ -817,7 +817,7 @@ class quiz extends base {
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.subnet")
             ->add_callback(function ($value) {
-                return empty($value) ? get_string('no') : $value;
+                return $value == "" ? get_string('no') : $value;
             });
 
         // Enforced delay between 1st and 2nd attempts.

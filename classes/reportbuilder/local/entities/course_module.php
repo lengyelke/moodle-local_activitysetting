@@ -394,17 +394,9 @@ class course_module extends base {
 
                 // Construct the URL.
                 if ($modulename && $cmid) {
-                    $url = $CFG->wwwroot . '/mod/' . $modulename . '/view.php?id=' . $cmid;
-                    
-                    // Check if we're in download mode to return plain text URL.
-                    $download = optional_param('download', '', PARAM_ALPHA);
-                    if (!empty($download) && $download !== 'html' && $download !== 'pdf') {
-                        return $url;
-                    }
-                    
                     return html_writer::link(
-                        $url,
-                        $url,
+                        $CFG->wwwroot . '/mod/' . $modulename . '/view.php?id=' . $cmid,
+                        $CFG->wwwroot . '/mod/' . $modulename . '/view.php?id=' . $cmid,
                         ['target' => '_blank']
                     );
                 }

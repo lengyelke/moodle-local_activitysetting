@@ -216,14 +216,7 @@ class course_section extends base {
             ->set_is_sortable(true)
             ->add_field("{$sectionalias}.component")
             ->add_callback(function ($value) {
-                if (empty($value)) {
-                    return '';
-                }
-                try {
-                    return get_string('pluginname', $value);
-                } catch (Exception $e) {
-                    return $value; // Fallback to raw value if plugin name not found.
-                }
+                return ($value == null) ? $value : get_string('pluginname', $value);
             });
 
         // Course section timemodified (last updated) column.
