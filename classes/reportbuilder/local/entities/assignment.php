@@ -27,6 +27,13 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 
+defined('MOODLE_INTERNAL') || die();
+
+// Define constant if not already defined.
+if (!defined('ASSIGN_UNLIMITED_ATTEMPTS')) {
+    define('ASSIGN_UNLIMITED_ATTEMPTS', -1);
+}
+
 /**
  * Class assignment
  *

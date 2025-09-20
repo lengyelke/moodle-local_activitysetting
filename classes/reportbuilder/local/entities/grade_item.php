@@ -245,50 +245,50 @@ class grade_item extends base {
     /**
      * Format hidden value for display
      *
-     * @param string $hidden
+     * @param int|string $hidden
      * @return string
      */
-    private static function format_hidden_value(string $hidden): string {
+    private static function format_hidden_value($hidden): string {
         global $CFG;
 
-        if ($hidden == 0) {
+        $hidden = (int)$hidden;
+        
+        if ($hidden === 0) {
             // Visible.
             return get_string('visible', 'core');
+        } else if ($hidden === 1) {
+            // Hidden indefinitely.
+            return get_string('hidden', 'grades');
         } else {
-            if ($hidden == 1) {
-                // Hidden indefinitely.
-                return get_string('hidden', 'grades');
-            } else {
-                // Hidden until date.
-                require_once($CFG->libdir . '/gradelib.php');
-                $date = userdate($hidden, get_string('strftimedatetimeshort', 'core_langconfig'));
-                return get_string('hiddenuntildate', 'grades', $date);
-            }
+            // Hidden until date.
+            require_once($CFG->libdir . '/gradelib.php');
+            $date = userdate($hidden, get_string('strftimedatetimeshort', 'core_langconfig'));
+            return get_string('hiddenuntildate', 'grades', $date);
         }
     }
 
     /**
      * Format locked value for display
      *
-     * @param string $locked
+     * @param int|string $locked
      * @return string
      */
-    private static function format_locked_value(string $locked): string {
+    private static function format_locked_value($locked): string {
         global $CFG;
 
-        if ($locked == 0) {
+        $locked = (int)$locked;
+        
+        if ($locked === 0) {
             // Not locked.
             return get_string('unlocked', 'local_activitysetting');
+        } else if ($locked === 1) {
+            // Locked indefinitely.
+            return get_string('locked', 'grades');
         } else {
-            if ($locked == 1) {
-                // Locked indefinitely.
-                return get_string('locked', 'grades');
-            } else {
-                // Locked after date.
-                require_once($CFG->libdir . '/gradelib.php');
-                $date = userdate($locked, get_string('strftimedatetimeshort', 'core_langconfig'));
-                return get_string('locktimedate', 'grades', $date);
-            }
+            // Locked after date.
+            require_once($CFG->libdir . '/gradelib.php');
+            $date = userdate($locked, get_string('strftimedatetimeshort', 'core_langconfig'));
+            return get_string('locktimedate', 'grades', $date);
         }
     }
 

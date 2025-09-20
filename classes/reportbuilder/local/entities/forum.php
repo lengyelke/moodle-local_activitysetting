@@ -273,7 +273,7 @@ class forum extends base {
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.lockdiscussionafter")
             ->add_callback(static function ($value, $row) {
-                return ($value == 0) ? get_string('discussionlockingdisabled', 'forum') : format::format_time($value, $row);
+                return ((int)$value === 0) ? get_string('discussionlockingdisabled', 'forum') : format::format_time($value, $row);
             });
 
         // Block period.
@@ -287,7 +287,7 @@ class forum extends base {
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.blockperiod")
             ->add_callback(static function ($value, $row) {
-                return ($value == 0) ? get_string('blockperioddisabled', 'forum') : format::format_time($value, $row);
+                return ((int)$value === 0) ? get_string('blockperioddisabled', 'forum') : format::format_time($value, $row);
             });
 
         // Block after.

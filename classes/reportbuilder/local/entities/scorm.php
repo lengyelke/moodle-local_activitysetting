@@ -437,7 +437,7 @@ class scorm extends base {
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.completionscorerequired")
             ->add_callback(function ($value) {
-                return $value ?? get_string('notset', 'local_activitysetting');
+                return $value !== null ? $value : get_string('notset', 'local_activitysetting');
             });
 
         // Scorm completion status required.
