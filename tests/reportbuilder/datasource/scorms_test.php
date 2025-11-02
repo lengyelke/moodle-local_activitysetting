@@ -183,6 +183,8 @@ final class scorms_test extends core_reportbuilder_testcase {
         }
 
         $this->resetAfterTest();
+        // Ensure a current user exists for scorm generator.
+        $this->setAdminUser();
 
         $category = $this->getDataGenerator()->create_category(['name' => 'Zoo', 'idnumber' => 'Z01']);
         $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
