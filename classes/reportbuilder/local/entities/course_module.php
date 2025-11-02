@@ -91,11 +91,11 @@ class course_module extends base {
      * @param int $id
      * @return string
      */
-    private static function format_availability($id) {
+    private static function format_availability($cmid) {
         global $OUTPUT;
 
         // First get the basic course module record.
-        $cm = get_coursemodule_from_instance('assign', $id, 0, false, MUST_EXIST);
+        $cm = get_coursemodule_from_id('', $cmid, 0, false, MUST_EXIST);
         $json = $cm->availability;
 
         if (empty($json)) {
@@ -336,7 +336,7 @@ class course_module extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$modulealias}.instance")
+            ->add_field("{$modulealias}.id")
             ->add_callback(function ($value) {
                 return self::format_availability($value);
             });
