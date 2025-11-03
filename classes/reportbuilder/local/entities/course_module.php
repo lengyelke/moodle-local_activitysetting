@@ -88,7 +88,7 @@ class course_module extends base {
      * This function is used in the format_availability column callback.
      * The result is either HTML or plain text based on the download parameter.
      *
-     * @param int $id
+     * @param int $cmid
      * @return string
      */
     private static function format_availability($cmid) {
