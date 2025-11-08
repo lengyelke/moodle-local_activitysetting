@@ -262,7 +262,7 @@ class grade_item extends base {
                 // Hidden until date.
                 require_once($CFG->libdir . '/gradelib.php');
                 $date = userdate($hidden, get_string('strftimedatetimeshort', 'core_langconfig'));
-                return get_string('hiddenuntildate', 'grades', $date);
+                return get_string('hiddenuntildate', 'local_activitysetting', $date);
             }
         }
     }
@@ -287,7 +287,7 @@ class grade_item extends base {
                 // Locked after date.
                 require_once($CFG->libdir . '/gradelib.php');
                 $date = userdate($locked, get_string('strftimedatetimeshort', 'core_langconfig'));
-                return get_string('locktimedate', 'grades', $date);
+                return get_string('locktimedate', 'local_activitysetting', $date);
             }
         }
     }
