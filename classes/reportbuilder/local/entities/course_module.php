@@ -222,14 +222,17 @@ class course_module extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.groupmode")
-            ->add_callback(static function (int $groupmode): string {
+            // Aggregations (like avg) may pass a float, so accept int|float here and cast when indexing.
+            ->add_callback(static function (int|float $groupmode): string {
                 $modes = [
                     NOGROUPS => new lang_string('groupsnone', 'core'),
                     SEPARATEGROUPS => new lang_string('groupsseparate', 'core'),
                     VISIBLEGROUPS => new lang_string('groupsvisible', 'core'),
                 ];
 
-                return (string) ($modes[$groupmode] ?? $groupmode);
+                // Use (int) cast when looking up mode labels; ensure the fallback is string.
+                $key = (int) $groupmode;
+                return (string) ($modes[$key] ?? (string) $groupmode);
             });
 
         // Course module grouping name.
@@ -256,14 +259,16 @@ class course_module extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.completion")
-            ->add_callback(static function (int $completion): string {
+            // Aggregations (like avg) may pass a float, so accept int|float and cast when indexing.
+            ->add_callback(static function (int|float $completion): string {
                 $modes = [
                     COMPLETION_TRACKING_NONE => new lang_string('completion_none', 'completion'),
                     COMPLETION_TRACKING_MANUAL => new lang_string('completion_manual', 'completion'),
                     COMPLETION_TRACKING_AUTOMATIC => new lang_string('completion_automatic', 'completion'),
                 ];
 
-                return (string) ($modes[$completion] ?? $completion);
+                $key = (int) $completion;
+                return (string) ($modes[$key] ?? (string) $completion);
             });
 
         // Recieve a grade.

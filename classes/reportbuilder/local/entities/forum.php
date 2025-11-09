@@ -132,7 +132,11 @@ class forum extends base {
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.duedate")
-            ->add_callback([format::class, 'userdate']);
+            ->add_callback(static function ($value, $row = null) {
+                // Aggregations may pass floats (e.g. avg). Cast to int when appropriate.
+                $val = $value === null ? null : (int) $value;
+                return format::userdate($val, $row);
+            });
 
         // Cut-off date.
         $columns[] = (new column(
@@ -144,7 +148,10 @@ class forum extends base {
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.cutoffdate")
-            ->add_callback([format::class, 'userdate']);
+            ->add_callback(static function ($value, $row = null) {
+                $val = $value === null ? null : (int) $value;
+                return format::userdate($val, $row);
+            });
 
         // Max attachments.
         $columns[] = (new column(
@@ -356,7 +363,10 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.assesstimestart")
-            ->add_callback([format::class, 'userdate']);
+            ->add_callback(static function ($value, $row = null) {
+                $val = $value === null ? null : (int) $value;
+                return format::userdate($val, $row);
+            });
 
         // Rating end.
         $columns[] = (new column(
@@ -368,7 +378,10 @@ class forum extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.assesstimefinish")
-            ->add_callback([format::class, 'userdate']);
+            ->add_callback(static function ($value, $row = null) {
+                $val = $value === null ? null : (int) $value;
+                return format::userdate($val, $row);
+            });
 
         // Completion posts.
         $columns[] = (new column(

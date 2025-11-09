@@ -118,15 +118,16 @@ class grade_item extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradetype")
-            ->add_callback(static function (?int $gradetype): string {
+            ->add_callback(static function (int|float|null $gradetype): string {
                 $types = [
                     GRADE_TYPE_NONE => new lang_string('modgradetypenone', 'grades'),
                     GRADE_TYPE_VALUE => new lang_string('modgradetypepoint', 'grades'),
                     GRADE_TYPE_SCALE => new lang_string('modgradetypescale', 'grades'),
                     GRADE_TYPE_TEXT => new lang_string('typetext', 'grades'),
                 ];
+                $key = (int) $gradetype;
                 return (string) (
-                    $types[$gradetype]
+                    $types[$key]
                     ?? ($gradetype === null
                         ? get_string('notset', 'local_activitysetting')
                         : get_string('unknown', 'local_activitysetting')
