@@ -149,6 +149,8 @@ class course_module extends base {
 
         global $CFG;
 
+        require_once($CFG->libdir . '/completionlib.php');
+
         $columns = [];
 
         $modulealias = $this->get_table_alias('course_modules');
@@ -405,6 +407,17 @@ class course_module extends base {
                 return get_string('none');
             });
 
+        // Course module plugin type.
+        $columns[] = (new column(
+            'modulename',
+            new lang_string('modulename', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$modalias}.name");
+
         return $columns;
     }
 
@@ -421,6 +434,9 @@ class course_module extends base {
         $filters = [];
 
         $modulealias = $this->get_table_alias('course_modules');
+        $modalias = $this->get_table_alias('modules');
+        $this->add_join("JOIN {modules} {$modalias}
+                        ON {$modalias}.id = {$modulealias}.module");
         $groupingalias = $this->get_table_alias('groupings');
 
         $this->add_join("LEFT JOIN {groupings} {$groupingalias}
@@ -590,6 +606,16 @@ class course_module extends base {
             ->set_options([
                 get_string_manager()->get_list_of_translations(),
             ]);
+
+        // Course module plugin type.
+        $filters[] = (new filter(
+            text::class,
+            'modulename',
+            new lang_string('modulename', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$modalias}.name"
+        ))
+            ->add_joins($this->get_joins());
 
         return $filters;
     }

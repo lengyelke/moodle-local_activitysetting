@@ -34,6 +34,7 @@ $string['forumsetting'] = 'Forum Settings';
 $string['gradeitemsetting'] = 'Grade Item Settings';
 $string['hiddenuntildate'] = 'Hidden until: {$a}';
 $string['locktimedate'] = 'Locked after: {$a}';
+$string['modulename'] = 'Activity Plugin Type';
 $string['notset'] = 'Not set';
 $string['pluginname'] = 'Activity Setting Report';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin simply reports on existing activity settings and does not store any personal data itself.';
