@@ -108,14 +108,14 @@ class course_module extends base {
 
         try {
             $info = new \core_availability\info_module($cminfo);
-            $tree = new \core_availability\tree(json_decode($json));
-            $converted = $tree->get_full_information($info);
+            $converted = $info->get_full_information();
             if (!is_string($converted)) {
                 $renderable = new \core_availability\output\availability_info($converted);
-                $html = $OUTPUT->render($renderable);
+                $notfullhtml = $OUTPUT->render($renderable);
             } else {
-                $html = $converted;
+                $notfullhtml = $converted;
             }
+            $html = \core_availability\info::format_info($notfullhtml, $cm->course);
 
             // Remove HTML tags and decode HTML entities.
             $nonhtml = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');

@@ -106,17 +106,15 @@ class course_section extends base {
         $sectioninfo = $modinfo->get_section_info_by_id($sectionid);
 
         try {
-            // Build info_section for this section.
             $info = new \core_availability\info_section($sectioninfo);
-            // Parse the JSON availability tree.
-            $tree = new \core_availability\tree(json_decode($json));
-            $converted = $tree->get_full_information($info);
+            $converted = $info->get_full_information();
             if (!is_string($converted)) {
                 $renderable = new \core_availability\output\availability_info($converted);
-                $html = $OUTPUT->render($renderable);
+                $notfullhtml = $OUTPUT->render($renderable);
             } else {
-                $html = $converted;
+                $notfullhtml = $converted;
             }
+            $html = \core_availability\info::format_info($notfullhtml, $section->course);
 
             // Remove HTML tags and decode HTML entities.
             $nonhtml = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
