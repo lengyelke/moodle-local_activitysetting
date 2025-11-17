@@ -421,7 +421,10 @@ class course_module extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$modalias}.name");
+            ->add_field("{$modalias}.name")
+            ->add_callback(static function ($value): string {
+                return get_string('pluginname', $value) ?: $value;
+            });
 
         return $columns;
     }
