@@ -33,6 +33,12 @@
 - The 'Access restrictions' column only worked for simple restrictions and not for all types (i.e. Activity completion)
 - PHPUnit stress test came back with Avg related errors
 
+### Known issues
+
+- The 'Access restriction' column can break the report if it contains 'Grade' restriction
+  - Refreshing the page can help
+  - Download won't work
+
 ## v1.1.1 (2025-08-17)
 
 Fixing all the PHP coding errors and making the 'Last modified' column & filter available for all entities (where it is applicable).

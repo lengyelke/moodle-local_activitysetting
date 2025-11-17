@@ -64,6 +64,8 @@ course section, course modules and grade items.
 -   Forums ( = mod_forum + course + course_categories + all shared entities)
 -   Quizzes ( = mod_quiz + course + course_categories + all shared entities)
 -   SCORMs ( = mod_scorm + course + course_categories + all shared entities)
+-   Course Modules ( = course_modules + course + course_categories + grade_items)
+-   Course Sections ( = course_sections + course + course_categories)
 
 Changelog
 ---------
