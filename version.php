@@ -28,5 +28,5 @@ $plugin->component    = 'local_activitysetting';
 $plugin->release      = '1.2.0';
 $plugin->version      = 2025111800;
 $plugin->requires     = 2024100700;
-$plugin->supported    = [405, 500, 501];
+$plugin->supported    = [405, 501];
 $plugin->maturity     = MATURITY_STABLE;
