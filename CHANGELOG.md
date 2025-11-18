@@ -5,10 +5,11 @@
 ### Added
 
 - The Course Module entity now has a new column called 'Activity Plugin Type'
+  - = modules.name
 
 - New Course Modules Datasource without a specific activity (showing all)
   - Course Module Settings
-    - New 'Activity Plugin Type' column
+    - New 'Activity Plugin Type' column, can be used as filter
   - Course
   - Course Category
   - Course Section Settings
