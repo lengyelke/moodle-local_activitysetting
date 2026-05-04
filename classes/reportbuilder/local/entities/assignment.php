@@ -22,7 +22,7 @@ namespace local_activitysetting\reportbuilder\local\entities;
 use html_writer;
 use lang_string;
 use mod_assign\assign;
-use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select};
+use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select, number};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -399,6 +399,62 @@ class assignment extends base {
             ->add_field("{$assignalias}.markingallocation")
             ->add_callback([format::class, 'boolean_as_text']);
 
+        // Markercount column, Since 5.2.
+        if ($CFG->version >= 2026042000) {
+            $columns[] = (new column(
+                'markercount',
+                new lang_string('markercount', 'mod_assign'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_INTEGER)
+                ->set_is_sortable(false)
+                ->add_field("{$assignalias}.markercount");
+        }
+
+        // Multimarkmethod column, Since 5.2.
+        if ($CFG->version >= 2026042000) {
+            $columns[] = (new column(
+                'multimarkmethod',
+                new lang_string('multimarkmethod', 'mod_assign'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_TEXT)
+                ->set_is_sortable(false)
+                ->add_field("{$assignalias}.multimarkmethod")
+                ->add_callback(static function (string|null $multimarkmethod): string {
+                    $methods = [
+                        ASSIGN_MULTIMARKING_METHOD_MANUAL => new lang_string('markgrademanual', 'mod_assign'),
+                        ASSIGN_MULTIMARKING_METHOD_MAX => new lang_string('markgrademaximum', 'mod_assign'),
+                        ASSIGN_MULTIMARKING_METHOD_AVERAGE => new lang_string('markgradeaverage', 'mod_assign'),
+                    ];
+                    return (string) ($methods[$multimarkmethod] ?? '');
+                });
+        }
+
+        // Multimarkrounding column, Since 5.2.
+        if ($CFG->version >= 2026042000) {
+            $columns[] = (new column(
+                'multimarkrounding',
+                new lang_string('multimarkrounding', 'mod_assign'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_TEXT)
+                ->set_is_sortable(false)
+                ->add_field("{$assignalias}.multimarkrounding")
+                ->add_callback(static function (string|null $multimarkrounding): string {
+                    $methods = [
+                        ASSIGN_MULTIMARKING_AVERAGE_ROUND_NONE => new lang_string('multimarkrounding:none', 'mod_assign'),
+                        ASSIGN_MULTIMARKING_AVERAGE_ROUND_NATURAL => new lang_string('multimarkrounding:natural', 'mod_assign'),
+                        ASSIGN_MULTIMARKING_AVERAGE_ROUND_DOWN => new lang_string('multimarkrounding:down', 'mod_assign'),
+                        ASSIGN_MULTIMARKING_AVERAGE_ROUND_UP => new lang_string('multimarkrounding:up', 'mod_assign'),
+                    ];
+                    return (string) ($methods[$multimarkrounding] ?? '');
+                });
+        }
+
         // Assignment markinganonymous column.
         $columns[] = (new column(
             'markinganonymous',
@@ -471,7 +527,7 @@ class assignment extends base {
      */
     protected function get_all_filters(): array {
 
-        global $DB;
+        global $DB, $CFG;
 
         $filters = [];
 
@@ -749,6 +805,53 @@ class assignment extends base {
             "{$assignalias}.markingallocation"
         ))
             ->add_joins($this->get_joins());
+
+        // Markercount filter, Since 5.2.
+        if ($CFG->version >= 2026042000) {
+            $filters[] = (new filter(
+                number::class,
+                'markercount',
+                new lang_string('markercount', 'mod_assign'),
+                $this->get_entity_name(),
+                "{$assignalias}.markercount"
+            ))
+                ->add_joins($this->get_joins());
+        }
+
+        // Multimarkmethod filter, Since 5.2.
+        if ($CFG->version >= 2026042000) {
+            $filters[] = (new filter(
+                select::class,
+                'multimarkmethod',
+                new lang_string('multimarkmethod', 'mod_assign'),
+                $this->get_entity_name(),
+                "{$assignalias}.multimarkmethod"
+            ))
+                ->add_joins($this->get_joins())
+                ->set_options([
+                    ASSIGN_MULTIMARKING_METHOD_MANUAL => new lang_string('markgrademanual', 'mod_assign'),
+                    ASSIGN_MULTIMARKING_METHOD_MAX => new lang_string('markgrademaximum', 'mod_assign'),
+                    ASSIGN_MULTIMARKING_METHOD_AVERAGE => new lang_string('markgradeaverage', 'mod_assign'),
+                ]);
+        }
+
+        // Multimarkrounding filter, Since 5.2.
+        if ($CFG->version >= 2026042000) {
+            $filters[] = (new filter(
+                select::class,
+                'multimarkrounding',
+                new lang_string('multimarkrounding', 'mod_assign'),
+                $this->get_entity_name(),
+                "{$assignalias}.multimarkrounding"
+            ))
+                ->add_joins($this->get_joins())
+                ->set_options([
+                    ASSIGN_MULTIMARKING_AVERAGE_ROUND_NONE => new lang_string('multimarkrounding:none', 'mod_assign'),
+                    ASSIGN_MULTIMARKING_AVERAGE_ROUND_NATURAL => new lang_string('multimarkrounding:natural', 'mod_assign'),
+                    ASSIGN_MULTIMARKING_AVERAGE_ROUND_DOWN => new lang_string('multimarkrounding:down', 'mod_assign'),
+                    ASSIGN_MULTIMARKING_AVERAGE_ROUND_UP => new lang_string('multimarkrounding:up', 'mod_assign'),
+                ]);
+        }
 
         // Assignment markinganonymous filter.
         $filters[] = (new filter(
