@@ -409,7 +409,11 @@ class assignment extends base {
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_INTEGER)
                 ->set_is_sortable(false)
-                ->add_field("{$assignalias}.markercount");
+                ->add_field("{$assignalias}.markercount", 'markercount')
+                ->add_field("{$assignalias}.markingallocation", 'markingallocation')
+                ->add_callback(static function ($value, $row): string {
+                    return empty($row->markingallocation) ? '' : (string)$value;
+                });
         }
 
         // Multimarkmethod column, Since 5.2.
@@ -422,13 +426,17 @@ class assignment extends base {
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_TEXT)
                 ->set_is_sortable(false)
-                ->add_field("{$assignalias}.multimarkmethod")
-                ->add_callback(static function (string|null $multimarkmethod): string {
+                ->add_field("{$assignalias}.multimarkmethod", 'multimarkmethod')
+                ->add_field("{$assignalias}.markingallocation", 'markingallocation')
+                ->add_callback(static function (string|null $multimarkmethod, $row): string {
                     $methods = [
                         ASSIGN_MULTIMARKING_METHOD_MANUAL => new lang_string('markgrademanual', 'mod_assign'),
                         ASSIGN_MULTIMARKING_METHOD_MAX => new lang_string('markgrademaximum', 'mod_assign'),
                         ASSIGN_MULTIMARKING_METHOD_AVERAGE => new lang_string('markgradeaverage', 'mod_assign'),
                     ];
+                    if (empty($row->markingallocation)) {
+                        return '';
+                    }
                     return (string) ($methods[$multimarkmethod] ?? '');
                 });
         }
@@ -443,14 +451,18 @@ class assignment extends base {
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_TEXT)
                 ->set_is_sortable(false)
-                ->add_field("{$assignalias}.multimarkrounding")
-                ->add_callback(static function (string|null $multimarkrounding): string {
+                ->add_field("{$assignalias}.multimarkrounding", 'multimarkrounding')
+                ->add_field("{$assignalias}.markingallocation", 'markingallocation')
+                ->add_callback(static function (string|null $multimarkrounding, $row): string {
                     $methods = [
                         ASSIGN_MULTIMARKING_AVERAGE_ROUND_NONE => new lang_string('multimarkrounding:none', 'mod_assign'),
                         ASSIGN_MULTIMARKING_AVERAGE_ROUND_NATURAL => new lang_string('multimarkrounding:natural', 'mod_assign'),
                         ASSIGN_MULTIMARKING_AVERAGE_ROUND_DOWN => new lang_string('multimarkrounding:down', 'mod_assign'),
                         ASSIGN_MULTIMARKING_AVERAGE_ROUND_UP => new lang_string('multimarkrounding:up', 'mod_assign'),
                     ];
+                    if (empty($row->markingallocation)) {
+                        return '';
+                    }
                     return (string) ($methods[$multimarkrounding] ?? '');
                 });
         }
@@ -813,7 +825,7 @@ class assignment extends base {
                 'markercount',
                 new lang_string('markercount', 'mod_assign'),
                 $this->get_entity_name(),
-                "{$assignalias}.markercount"
+                "CASE WHEN {$assignalias}.markingallocation = 1 THEN {$assignalias}.markercount ELSE NULL END"
             ))
                 ->add_joins($this->get_joins());
         }
@@ -825,7 +837,7 @@ class assignment extends base {
                 'multimarkmethod',
                 new lang_string('multimarkmethod', 'mod_assign'),
                 $this->get_entity_name(),
-                "{$assignalias}.multimarkmethod"
+                "CASE WHEN {$assignalias}.markingallocation = 1 THEN {$assignalias}.multimarkmethod ELSE NULL END"
             ))
                 ->add_joins($this->get_joins())
                 ->set_options([
@@ -842,7 +854,7 @@ class assignment extends base {
                 'multimarkrounding',
                 new lang_string('multimarkrounding', 'mod_assign'),
                 $this->get_entity_name(),
-                "{$assignalias}.multimarkrounding"
+                "CASE WHEN {$assignalias}.markingallocation = 1 THEN {$assignalias}.multimarkrounding ELSE NULL END"
             ))
                 ->add_joins($this->get_joins())
                 ->set_options([
