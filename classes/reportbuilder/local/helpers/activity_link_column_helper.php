@@ -16,8 +16,6 @@
 
 namespace local_activitysetting\reportbuilder\local\helpers;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_reportbuilder\local\report\column;
 use html_writer;
 use lang_string;
@@ -32,7 +30,20 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity_link_column_helper {
-
+    /**
+     * Creates a column definition for a report builder report that displays an activity name with a link to the activity.
+     * The column expects the SQL to return both the activity name and the course module ID, which it uses to generate the link.
+     * The column will be sortable by the activity name.
+     * @param string $columnname The unique name for the column.
+     * @param lang_string $title The display title for the column.
+     * @param string $entityname The name of the entity this column belongs to.
+     * @param string $namesql The SQL expression to retrieve the activity name.
+     * @param string $cmidsql The SQL expression to retrieve the course module ID.
+     * @param array $joins Optional array of join definitions to include in the report query.
+     * @param array $sortfields Optional array of SQL expressions to use for sorting the column.
+     * @param string $pathname Optional path to the activity view page, used to generate the link.
+     * @return column The configured column definition for the report builder.
+     */
     public static function create_name_with_link_column(
         string $columnname,
         lang_string $title,
@@ -59,6 +70,18 @@ class activity_link_column_helper {
             ]);
     }
 
+    /**
+     * Formats the activity name as a link to the activity view page using the course module ID.
+     * Expects the row to contain both the activity name and the course module ID, as defined by the column's callback arguments.
+     * If the course module ID is missing or invalid, it will return just the formatted activity name without a link.
+     * If an aggregation is being performed (e.g. for totals), it will return just the formatted activity name without a link.
+     *
+     * @param string|null $value The raw value of the activity name from the SQL query (not used in this implementation).
+     * @param stdClass $row The full data row from the SQL query.
+     * @param array $args The callback arguments defined in the column, containing 'namefield', 'cmidfield', and 'pathname'.
+     * @param string|null $aggregation The type of aggregation being performed.
+     * @return string The formatted activity name, optionally wrapped in a link to the activity view page.
+     */
     public static function format_name_with_link(
         ?string $value,
         stdClass $row,
