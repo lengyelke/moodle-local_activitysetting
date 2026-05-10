@@ -500,7 +500,7 @@ class assignment extends base {
                 ->add_field("{$assignalias}.gradepenalty", 'gradepenalty')
                 ->add_field("{$assignalias}.duedate", 'duedate')
                 ->add_field("{$assignalias}.grade", 'grade')
-                ->add_callback(static function($value, $row): string {
+                ->add_callback(static function ($value, $row): string {
                     if ($value === null || $value === '' || empty($row->duedate) || $row->grade < GRADE_TYPE_VALUE) {
                         return '';
                     } else {
@@ -527,7 +527,7 @@ class assignment extends base {
                 ->set_is_sortable(true)
                 ->add_field("{$assignalias}.duedate", 'duedate')
                 ->add_field("{$assignalias}.grade", 'grade')
-                ->add_callback(static function($value, $row): string {
+                ->add_callback(static function ($value, $row): string {
                     if (empty($row->duedate) || $row->grade < GRADE_TYPE_VALUE) {
                         return format::boolean_as_text(false);
                     } else {
