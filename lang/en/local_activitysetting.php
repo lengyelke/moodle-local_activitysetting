@@ -25,11 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['assignmentnamewithlink'] = 'Assignment Name with Link';
 $string['assignmentsetting'] = 'Assignment Settings';
 $string['component'] = 'Component';
 $string['coursemodulesetting'] = 'Course Module Settings';
 $string['coursesectionsetting'] = 'Course Section Settings';
 $string['deletioninprogress'] = 'Deletion in progress';
+$string['forumnamewithlink'] = 'Forum Name with Link';
 $string['forumsetting'] = 'Forum Settings';
 $string['gradeitemsetting'] = 'Grade Item Settings';
 $string['gradepenaltyapplicable'] = 'Grade penalty applicable';
@@ -39,9 +41,11 @@ $string['modulename'] = 'Activity Plugin Type';
 $string['notset'] = 'Not set';
 $string['pluginname'] = 'Activity Setting Report';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin simply reports on existing activity settings and does not store any personal data itself.';
+$string['quiznamewithlink'] = 'Quiz Name with Link';
 $string['quizsetting'] = 'Quiz Settings';
 $string['ratingend'] = 'Rating until';
 $string['ratingstart'] = 'Rating from';
+$string['scormnamewithlink'] = 'SCORM Name with Link';
 $string['scormsetting'] = 'SCORM Settings';
 $string['scormversion'] = 'SCORM Version';
 $string['sebconfigyesno'] = 'Safe Exam Browser Config Yes/No fields';

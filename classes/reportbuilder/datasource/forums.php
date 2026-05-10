@@ -20,11 +20,13 @@ namespace local_activitysetting\reportbuilder\datasource;
 
 use core_reportbuilder\datasource;
 use core_reportbuilder\local\entities\course;
+use lang_string;
 use core_course\reportbuilder\local\entities\course_category;
 use local_activitysetting\reportbuilder\local\entities\forum;
 use local_activitysetting\reportbuilder\local\entities\course_module;
 use local_activitysetting\reportbuilder\local\entities\grade_item;
 use local_activitysetting\reportbuilder\local\entities\course_section;
+use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helper;
 
 
 /**
@@ -109,6 +111,19 @@ class forums extends datasource {
                             AND $gradeitemalias.itemmodule = 'forum'
                             AND $gradeitemalias.courseid = $forumalias.course";
         $this->add_entity($gradeitementity->add_join($gradeitemjoin));
+
+        $this->add_column(
+            activity_link_column_helper::create_name_with_link_column(
+                'forumnamewithlink',
+                new lang_string('forumnamewithlink', 'local_activitysetting'),
+                $forumentity->get_entity_name(),
+                "{$forumalias}.name",
+                "{$coursemodulealias}.id",
+                array_merge($forumentity->get_joins(), $coursemoduleentity->get_joins()),
+                ["{$forumalias}.name"],
+                '/mod/forum/view.php'
+            )
+        );
 
         $this->add_all_from_entities();
     }

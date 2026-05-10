@@ -21,10 +21,12 @@ namespace local_activitysetting\reportbuilder\datasource;
 use core_reportbuilder\datasource;
 use core_reportbuilder\local\entities\course;
 use core_course\reportbuilder\local\entities\course_category;
+use lang_string;
 use local_activitysetting\reportbuilder\local\entities\assignment;
 use local_activitysetting\reportbuilder\local\entities\course_module;
 use local_activitysetting\reportbuilder\local\entities\grade_item;
 use local_activitysetting\reportbuilder\local\entities\course_section;
+use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helper;
 
 /**
  * Assignmnent settings datasource
@@ -106,6 +108,19 @@ class assignments extends datasource {
         $gradeitemjoin = "JOIN {grade_items} $gradeitemalias ON $gradeitemalias.iteminstance = $assignalias.id
                             AND $gradeitemalias.itemmodule = 'assign'";
         $this->add_entity($gradeitementity->add_join($gradeitemjoin));
+
+        $this->add_column(
+            activity_link_column_helper::create_name_with_link_column(
+                'assignmentnamewithlink',
+                new lang_string('assignmentnamewithlink', 'local_activitysetting'),
+                $assignmententity->get_entity_name(),
+                "{$assignalias}.name",
+                "{$coursemodulealias}.id",
+                array_merge($assignmententity->get_joins(), $coursemoduleentity->get_joins()),
+                ["{$assignalias}.name"],
+                '/mod/assign/view.php'
+            )
+        );
 
         $this->add_all_from_entities();
     }

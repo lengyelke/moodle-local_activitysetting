@@ -20,11 +20,13 @@ namespace local_activitysetting\reportbuilder\datasource;
 
 use core_reportbuilder\datasource;
 use core_reportbuilder\local\entities\course;
+use lang_string;
 use core_course\reportbuilder\local\entities\course_category;
 use local_activitysetting\reportbuilder\local\entities\scorm;
 use local_activitysetting\reportbuilder\local\entities\course_module;
 use local_activitysetting\reportbuilder\local\entities\grade_item;
 use local_activitysetting\reportbuilder\local\entities\course_section;
+use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helper;
 
 
 /**
@@ -109,6 +111,19 @@ class scorms extends datasource {
                             AND $gradeitemalias.itemmodule = 'scorm'
                             AND $gradeitemalias.courseid = $scormalias.course";
         $this->add_entity($gradeitementity->add_join($gradeitemjoin));
+
+        $this->add_column(
+            activity_link_column_helper::create_name_with_link_column(
+                'scormnamewithlink',
+                new lang_string('scormnamewithlink', 'local_activitysetting'),
+                $scormentity->get_entity_name(),
+                "{$scormalias}.name",
+                "{$coursemodulealias}.id",
+                array_merge($scormentity->get_joins(), $coursemoduleentity->get_joins()),
+                ["{$scormalias}.name"],
+                '/mod/scorm/view.php'
+            )
+        );
 
         $this->add_all_from_entities();
     }
