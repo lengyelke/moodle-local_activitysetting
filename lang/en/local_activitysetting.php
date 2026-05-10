@@ -32,6 +32,7 @@ $string['coursesectionsetting'] = 'Course Section Settings';
 $string['deletioninprogress'] = 'Deletion in progress';
 $string['forumsetting'] = 'Forum Settings';
 $string['gradeitemsetting'] = 'Grade Item Settings';
+$string['gradepenaltyapplicable'] = 'Grade penalty applicable';
 $string['hiddenuntildate'] = 'Hidden until: {$a}';
 $string['locktimedate'] = 'Locked after: {$a}';
 $string['modulename'] = 'Activity Plugin Type';

@@ -479,6 +479,63 @@ class assignment extends base {
             ->add_field("{$assignalias}.markinganonymous")
             ->add_callback([format::class, 'boolean_as_text']);
 
+        // Grade penalty column - since 5.0.
+        // Only show this column if the grade penalty feature is enabled for the assign module,
+        // otherwise it would be confusing to have a column that is not applicable to any assignment.
+        // The column will show the value of the grade penalty, but only if the assignment
+        // has a due date and a grade greater than zero (not a scale grade).
+        if (
+            $CFG->version >= 2025041400
+                && class_exists(\core_grades\penalty_manager::class)
+                && \core_grades\penalty_manager::is_penalty_enabled_for_module('assign')
+        ) {
+            $columns[] = (new column(
+                'gradepenalty',
+                new lang_string('gradepenalty', 'mod_assign'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_BOOLEAN)
+                ->set_is_sortable(true)
+                ->add_field("{$assignalias}.gradepenalty", 'gradepenalty')
+                ->add_field("{$assignalias}.duedate", 'duedate')
+                ->add_field("{$assignalias}.grade", 'grade')
+                ->add_callback(static function($value, $row): string {
+                    if ($value === null || $value === '' || empty($row->duedate) || $row->grade < GRADE_TYPE_VALUE) {
+                        return '';
+                    } else {
+                        return \core_reportbuilder\local\helpers\format::boolean_as_text($value);
+                    }
+                });
+        }
+
+        // Grade penalty applicable column - since 5.0.
+        // This column indicates whether the grade penalty is applicable for the assignment based on its settings.
+        // It doesn't represent an actual setting, but it is useful to quickly identify which assignments can have grade penalties.
+        if (
+            $CFG->version >= 2025041400
+                && class_exists(\core_grades\penalty_manager::class)
+                && \core_grades\penalty_manager::is_penalty_enabled_for_module('assign')
+        ) {
+            $columns[] = (new column(
+                'gradepenaltyapplicable',
+                new lang_string('gradepenaltyapplicable', 'local_activitysetting'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_BOOLEAN)
+                ->set_is_sortable(true)
+                ->add_field("{$assignalias}.duedate", 'duedate')
+                ->add_field("{$assignalias}.grade", 'grade')
+                ->add_callback(static function($value, $row): string {
+                    if (empty($row->duedate) || $row->grade < GRADE_TYPE_VALUE) {
+                        return format::boolean_as_text(false);
+                    } else {
+                        return format::boolean_as_text(true);
+                    }
+                });
+        }
+
         // Unknown columns
         // Assignment revealidentities column.
         $columns[] = (new column(
@@ -874,6 +931,43 @@ class assignment extends base {
             "{$assignalias}.markinganonymous"
         ))
             ->add_joins($this->get_joins());
+
+        // Grade penalty filter - since 5.0.
+        // Only show this filter if the grade penalty feature is enabled for the assign module.
+        if (
+            $CFG->version >= 2025041400
+                && class_exists(\core_grades\penalty_manager::class)
+                && \core_grades\penalty_manager::is_penalty_enabled_for_module('assign')
+        ) {
+            $filters[] = (new filter(
+                boolean_select::class,
+                'gradepenalty',
+                new lang_string('gradepenalty', 'mod_assign'),
+                $this->get_entity_name(),
+                "{$assignalias}.gradepenalty"
+            ))
+                ->add_joins($this->get_joins());
+        }
+
+        // Grade penalty applicable filter - since 5.0.
+        // This filter indicates whether the grade penalty is applicable based on
+        // the presence of a due date and a grade greater than zero (not a scale grade).
+        if (
+            $CFG->version >= 2025041400
+                && class_exists(\core_grades\penalty_manager::class)
+                && \core_grades\penalty_manager::is_penalty_enabled_for_module('assign')
+        ) {
+            $filters[] = (new filter(
+                boolean_select::class,
+                'gradepenaltyapplicable',
+                new lang_string('gradepenaltyapplicable', 'local_activitysetting'),
+                $this->get_entity_name(),
+                "CASE WHEN {$assignalias}.gradepenalty IS NOT NULL
+                    AND {$assignalias}.duedate IS NOT NULL
+                    AND {$assignalias}.grade >= " . GRADE_TYPE_VALUE . " THEN 1 ELSE 0 END"
+            ))
+                ->add_joins($this->get_joins());
+        }
 
         // Assignment revealidentities filter.
         $filters[] = (new filter(
