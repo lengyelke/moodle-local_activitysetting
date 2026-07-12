@@ -90,11 +90,20 @@ class course_modules extends datasource {
                             AND $coursesectionalias.course = $coursealias.id";
         $this->add_entity($coursesectionentity->add_join($coursesectionjoin));
 
+        // NEW: raw join to {modules} to get the module name.
+        $modulesalias = $coursemodulealias . '_mod';
+        $modulesjoin = "JOIN {modules} {$modulesalias}
+                        ON {$modulesalias}.id = {$coursemodulealias}.module";
+        // Register it as an extra join on the course_module entity.
+        $coursemoduleentity->add_join($modulesjoin);
+
         // Add the grade item entity.
         $gradeitementity = new grade_item();
         $gradeitemalias = $gradeitementity->get_table_alias('grade_items');
         $gradeitementity->add_joins($courseentity->get_joins());
-        $gradeitemjoin = "LEFT JOIN {grade_items} $gradeitemalias ON $gradeitemalias.iteminstance = $coursemodulealias.id
+        $gradeitementity->add_joins($coursemoduleentity->get_joins());
+        $gradeitemjoin = "LEFT JOIN {grade_items} $gradeitemalias ON $gradeitemalias.iteminstance = $coursemodulealias.instance
+                            AND $gradeitemalias.itemmodule = {$modulesalias}.name
                             AND $gradeitemalias.itemtype = 'mod'";
         $this->add_entity($gradeitementity->add_join($gradeitemjoin));
 
