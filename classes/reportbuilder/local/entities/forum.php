@@ -122,6 +122,25 @@ class forum extends base {
                 return $strings[$value] ?? $value;
             });
 
+        // Show replies immediately. Since Moodle 5.1, this is a new field in the forum table.
+        // Only applicable for Q&A forums. If the forum type is not Q&A, this column will be blank.
+        if ($CFG->version >= 2025110500) {
+            $columns[] = (new column(
+                'showimmediately',
+                new lang_string('showimmediately', 'mod_forum'),
+                $this->get_entity_name()
+            ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$forumalias}.showimmediately", 'showimmediately')
+            ->add_field("{$forumalias}.type", 'type')
+            ->add_callback(static function ($value, $row): string {
+                // Only applicable for Q&A forums. If the forum type is not Q&A, this field will be blank.
+                return $row->type !== 'qanda' ? '' : format::boolean_as_text($value);
+            });
+        }
+
         // Due date.
         $columns[] = (new column(
             'duedate',
@@ -436,6 +455,8 @@ class forum extends base {
      * @return filter[]
      */
     protected function get_all_filters(): array {
+
+        global $CFG;
         $forumalias = $this->get_table_alias('forum');
         $filters = [];
 
@@ -465,6 +486,18 @@ class forum extends base {
                 'general' => get_string('generalforum', 'mod_forum'),
                 'news' => get_string('namenews', 'mod_forum'),
             ]);
+
+        // Show replies immediately filter. Since Moodle 5.1.
+        if ($CFG->version >= 2025110500) {
+            $filters[] = (new filter(
+                boolean_select::class,
+                'showimmediately',
+                new lang_string('showimmediately', 'mod_forum'),
+                $this->get_entity_name(),
+                "CASE WHEN {$forumalias}.type = 'qanda' THEN {$forumalias}.showimmediately ELSE 0 END"
+            ))
+                ->add_joins($this->get_joins());
+        }
 
         // Due date filter.
         $filters[] = (new filter(
