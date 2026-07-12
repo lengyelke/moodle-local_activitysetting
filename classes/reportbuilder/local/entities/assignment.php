@@ -944,7 +944,10 @@ class assignment extends base {
                 'gradepenalty',
                 new lang_string('gradepenalty', 'mod_assign'),
                 $this->get_entity_name(),
-                "{$assignalias}.gradepenalty"
+                "CASE WHEN {$assignalias}.gradepenalty IS NOT NULL
+                    AND {$assignalias}.duedate IS NOT NULL
+                    AND {$assignalias}.duedate > 0
+                    AND {$assignalias}.grade >= " . GRADE_TYPE_VALUE . " THEN {$assignalias}.gradepenalty ELSE 0 END"
             ))
                 ->add_joins($this->get_joins());
         }
@@ -964,6 +967,7 @@ class assignment extends base {
                 $this->get_entity_name(),
                 "CASE WHEN {$assignalias}.gradepenalty IS NOT NULL
                     AND {$assignalias}.duedate IS NOT NULL
+                    AND {$assignalias}.duedate > 0
                     AND {$assignalias}.grade >= " . GRADE_TYPE_VALUE . " THEN 1 ELSE 0 END"
             ))
                 ->add_joins($this->get_joins());
