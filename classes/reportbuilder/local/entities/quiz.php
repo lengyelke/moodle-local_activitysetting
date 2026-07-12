@@ -25,6 +25,7 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 use mod_quiz\question\display_options;
+use tool_httpsreplace\form;
 
 /**
  * Class quiz
@@ -187,6 +188,50 @@ class quiz extends base {
                     return format::format_time($value, $row);
                 }
             });
+
+        // Pre-create attempts applicable. Since Moodle 5.0.
+        // Needs to be enbaled on a site level.
+        // The quiz setting is only visible if the 'precreateperiod' is set and the quiz has a start time set.
+        if (
+            $CFG->version >= 2025041500
+            && !empty(get_config('quiz', 'precreateperiod'))
+        ) {
+            $columns[] = (new column(
+                'precreateattemptsapplicable',
+                new lang_string('precreateattemptsapplicable', 'local_activitysetting'),
+                $this->get_entity_name()
+            ))
+                ->set_type(column::TYPE_BOOLEAN)
+                ->set_is_sortable(true)
+                ->add_joins($this->get_joins())
+                ->add_field("{$quizalias}.timeopen", 'timeopen')
+                ->add_callback([format::class, 'boolean_as_text']);
+        }
+
+        // Pre-create attempts. Since Moodle 5.0.
+        // It is Yes-No or blank depending on the quiz settings and site settings.
+        if (
+            $CFG->version >= 2025041500
+            && !empty(get_config('quiz', 'precreateperiod'))
+        ) {
+            $columns[] = (new column(
+                'precreateattempts',
+                new lang_string('precreateattempts', 'quiz'),
+                $this->get_entity_name()
+            ))
+                ->set_type(column::TYPE_BOOLEAN)
+                ->set_is_sortable(true)
+                ->add_joins($this->get_joins())
+                ->add_field("{$quizalias}.timeopen", 'timeopen')
+                ->add_field("{$quizalias}.precreateattempts", 'precreateattempts')
+                ->add_callback(function ($value, $row) {
+                    if (!$row->timeopen) {
+                        return '';
+                    } else {
+                        return ($row->precreateattempts) ? format::boolean_as_text(true) : format::boolean_as_text(false);
+                    }
+                });
+        }
 
         // Attempts allowed.
         $columns[] = (new column(
@@ -888,6 +933,20 @@ class quiz extends base {
                 return $value == 0 ? get_string('notset', 'local_activitysetting') : $value;
             });
 
+        // Allow offline attempts.
+        if ($CFG->enablemobilewebservice) {
+            $columns[] = (new column(
+                'allowofflineattempts',
+                new lang_string('allowofflineattempts', 'quizaccess_offlineattempts'),
+                $this->get_entity_name()
+            ))
+                ->set_type(column::TYPE_BOOLEAN)
+                ->set_is_sortable(true)
+                ->add_joins($this->get_joins())
+                ->add_field("{$quizalias}.allowofflineattempts")
+                ->add_callback([format::class, 'boolean_as_text']);
+        }
+
         // Timemodified (last updated).
         $columns[] = (new column(
             'timemodified',
@@ -908,6 +967,8 @@ class quiz extends base {
      * @return filter[]
      */
     protected function get_all_filters(): array {
+        global $CFG;
+
         $quizalias = $this->get_table_alias('quiz');
         $quizaccessalias = $this->get_table_alias('quizaccess_seb_quizsettings');
 
@@ -979,6 +1040,36 @@ class quiz extends base {
             "{$quizalias}.graceperiod"
         ))
             ->add_joins($this->get_joins());
+
+        // Pre-create attempts applicable filter. Since Moodle 5.0.
+        if (
+            $CFG->version >= 2025041500
+            && !empty(get_config('quiz', 'precreateperiod'))
+        ) {
+            $filters[] = (new filter(
+                boolean_select::class,
+                'precreateattemptsapplicable',
+                new lang_string('precreateattemptsapplicable', 'local_activitysetting'),
+                $this->get_entity_name(),
+                "CASE WHEN {$quizalias}.timeopen > 0 THEN 1 ELSE 0 END"
+            ))
+                ->add_joins($this->get_joins());
+        }
+
+        // Pre-create attempt filter. Since Moodle 5.0.
+        if (
+            $CFG->version >= 2025041500
+            && !empty(get_config('quiz', 'precreateperiod'))
+        ) {
+            $filters[] = (new filter(
+                boolean_select::class,
+                'precreateattempts',
+                new lang_string('precreateattempts', 'mod_quiz'),
+                $this->get_entity_name(),
+                "CASE WHEN {$quizalias}.timeopen > 0 THEN {$quizalias}.precreateattempts ELSE 0 END"
+            ))
+                ->add_joins($this->get_joins());
+        }
 
         // Attempts allowed filter.
         $filters[] = (new filter(
@@ -1209,6 +1300,18 @@ class quiz extends base {
             "{$quizalias}.completionminattempts"
         ))
             ->add_joins($this->get_joins());
+
+        // Allow offline attempts filter.
+        if ($CFG->enablemobilewebservice) {
+            $filters[] = (new filter(
+                boolean_select::class,
+                'allowofflineattempts',
+                new lang_string('allowofflineattempts', 'quizaccess_offlineattempts'),
+                $this->get_entity_name(),
+                "{$quizalias}.allowofflineattempts"
+            ))
+                ->add_joins($this->get_joins());
+        }
 
         // Timemodified (last updated) filter.
         $filters[] = (new filter(

@@ -40,6 +40,7 @@ $string['locktimedate'] = 'Locked after: {$a}';
 $string['modulename'] = 'Activity Plugin Type';
 $string['notset'] = 'Not set';
 $string['pluginname'] = 'Activity Setting Report';
+$string['precreateattemptsapplicable'] = 'Pre-create attempts applicable';
 $string['privacy:metadata'] = 'The Activity Setting Report plugin simply reports on existing activity settings and does not store any personal data itself.';
 $string['quiznamewithlink'] = 'Quiz Name with Link';
 $string['quizsetting'] = 'Quiz Settings';
