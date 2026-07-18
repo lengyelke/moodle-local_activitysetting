@@ -43,6 +43,7 @@ class grade_item extends base {
         return [
             'grade_items',
             'scale',
+            'grade_categories',
         ];
     }
 
@@ -94,8 +95,11 @@ class grade_item extends base {
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
         $scalealias = $this->get_table_alias('scale');
+        $gradecategoriesalias = $this->get_table_alias('grade_categories');
 
         $this->add_join("LEFT JOIN {scale} {$scalealias} ON {$scalealias}.id = {$gradeitemsalias}.scaleid");
+        $this->add_join("LEFT JOIN {grade_categories} {$gradecategoriesalias}
+                            ON {$gradecategoriesalias}.id = {$gradeitemsalias}.categoryid");
 
         // Grade items itemname.
         $columns[] = (new column(
@@ -107,6 +111,24 @@ class grade_item extends base {
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.itemname");
+
+        // Grade category path.
+        $columns[] = (new column(
+            'categorypath',
+            new lang_string('categorypath', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_field("{$gradecategoriesalias}.path", 'categorypath_val')
+            ->add_callback(static function ($value, $row): string {
+                if ((int)$row->gradetype_val === GRADE_TYPE_NONE) {
+                    return '';
+                }
+                return self::format_grade_category_path($row->categorypath_val ?? '');
+            });
 
         // Grade items grade type.
         $columns[] = (new column(
@@ -387,5 +409,60 @@ class grade_item extends base {
         $conditions = [];
 
         return $conditions;
+    }
+    /**
+     * Format grade category path for display.
+     *
+     * Converts a stored path like /1/5/9 into "Category 1 / Category 2 / Category 3".
+     *
+     * @param string|null $path
+     * @return string
+     */
+    private static function format_grade_category_path(?string $path): string {
+        global $DB;
+
+        static $cache = [];
+
+        $cachekey = $path;
+        if (empty($path)) {
+            return '';
+        }
+
+        if (isset($cache[$cachekey])) {
+            return $cache[$cachekey];
+        }
+
+        $ids = array_values(array_filter(explode('/', trim($path, '/')), 'strlen'));
+        if (!$ids) {
+            return $cache[$cachekey] = '';
+        }
+
+        [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
+        $categories = $DB->get_records_select(
+            'grade_categories',
+            "id {$insql}",
+            $params,
+            '',
+            'id, fullname, parent'
+        );
+
+        $parts = [];
+        foreach ($ids as $id) {
+            if (!isset($categories[$id])) {
+                continue;
+            }
+
+            $name = trim((string)$categories[$id]->fullname);
+
+            if (empty($categories[$id]->parent)) {
+                $name = get_string('gradebookroot', 'local_activitysetting');
+            }
+
+            if ($name !== '') {
+                $parts[] = format_string($name);
+            }
+        }
+
+        return $cache[$cachekey] = implode(' / ', $parts);
     }
 }

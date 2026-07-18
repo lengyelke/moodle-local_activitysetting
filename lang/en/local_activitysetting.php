@@ -27,12 +27,14 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['assignmentnamewithlink'] = 'Assignment Name with Link';
 $string['assignmentsetting'] = 'Assignment Settings';
+$string['categorypath'] = 'Gradebook Category Path';
 $string['component'] = 'Component';
 $string['coursemodulesetting'] = 'Course Module Settings';
 $string['coursesectionsetting'] = 'Course Section Settings';
 $string['deletioninprogress'] = 'Deletion in progress';
 $string['forumnamewithlink'] = 'Forum Name with Link';
 $string['forumsetting'] = 'Forum Settings';
+$string['gradebookroot'] = 'Gradebook';
 $string['gradeitemsetting'] = 'Grade Item Settings';
 $string['gradepenaltyapplicable'] = 'Grade penalty applicable';
 $string['hiddenuntildate'] = 'Hidden until: {$a}';
