@@ -617,6 +617,9 @@ class grade_item extends base {
      * For a path like:
      *   /1/2/5/9
      *  Returns 2.
+     *
+     * @param string|null $path
+     * @return int
      */
     private static function get_top_category_id(?string $path): int {
         if (empty($path)) {
