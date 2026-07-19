@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['assignmentnamewithlink'] = 'Assignment Name with Link';
 $string['assignmentsetting'] = 'Assignment Settings';
+$string['categorydepth'] = 'Gradebook Category Depth';
 $string['categorypath'] = 'Gradebook Category Path';
 $string['component'] = 'Component';
 $string['coursemodulesetting'] = 'Course Module Settings';
@@ -56,6 +57,7 @@ $string['sectionname'] = 'Section Name';
 $string['sectionnumber'] = 'Section Number';
 $string['sectionvisibility'] = 'Section Visibility';
 $string['timemodified'] = 'Last modified';
+$string['topcategoryname'] = 'Top Subcategory Name';
 $string['unknown'] = 'Unknown';
 $string['unlocked'] = 'Unlocked';
 $string['uploadsiteorcourse'] = 'Site or Course upload limit';

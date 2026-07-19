@@ -23,6 +23,8 @@ use core_reportbuilder\local\filters\{number, text, select, date};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
+use local_activitysetting\reportbuilder\local\filters\gradecategorypath;
+use local_activitysetting\reportbuilder\local\filters\topcategoryname;
 
 /**
  * Class grade_item
@@ -128,6 +130,46 @@ class grade_item extends base {
                     return '';
                 }
                 return self::format_grade_category_path($row->categorypath_val ?? '');
+            });
+
+        // Grade category depth.
+        $columns[] = (new column(
+            'categorydepth',
+            new lang_string('categorydepth', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_field("{$gradecategoriesalias}.depth", 'categorydepth_val')
+            ->add_callback(static function ($value, $row): string {
+                if ((int)$row->gradetype_val === GRADE_TYPE_NONE) {
+                    return '';
+                }
+                return (string)($row->categorydepth_val ?? '');
+            });
+
+        // Top level category name.
+        $columns[] = (new column(
+            'topcategoryname',
+            new lang_string('topcategoryname', 'local_activitysetting'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
+            ->add_field("{$gradecategoriesalias}.path", 'categorypath_val')
+            ->add_callback(static function ($value, $row): string {
+                // Ungraded items are treated as having no category path.
+                if ((int)$row->gradetype_val === GRADE_TYPE_NONE) {
+                    return '';
+                }
+
+                return self::get_top_category_name(
+                    $row->categorypath_val ?? ''
+                );
             });
 
         // Grade items grade type.
@@ -328,6 +370,9 @@ class grade_item extends base {
         $filters = [];
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
+        $gradecategoriesalias = $this->get_table_alias('grade_categories');
+        $this->add_join("LEFT JOIN {grade_categories} {$gradecategoriesalias}
+                            ON {$gradecategoriesalias}.id = {$gradeitemsalias}.categoryid");
 
         // Grade items itemname.
         $filters[] = (new filter(
@@ -338,6 +383,64 @@ class grade_item extends base {
             "{$gradeitemsalias}.itemname"
         ))
             ->add_joins($this->get_joins());
+
+        // Grade items category path.
+        $filters[] = (new filter(
+            gradecategorypath::class,
+            'categorypath',
+            new lang_string('categorypath', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "CASE
+                WHEN {$gradeitemsalias}.gradetype = " . GRADE_TYPE_NONE . "
+                THEN NULL
+                ELSE {$gradecategoriesalias}.path
+            END"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_limited_operators([
+                gradecategorypath::ANY_VALUE,
+                gradecategorypath::CONTAINS,
+                gradecategorypath::DOES_NOT_CONTAIN,
+                gradecategorypath::IS_EMPTY,
+                gradecategorypath::IS_NOT_EMPTY,
+            ]);
+
+        // Grade category depth filter.
+        $filters[] = (new filter(
+            number::class,
+            'categorydepth',
+            new lang_string('categorydepth', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "CASE
+                WHEN {$gradeitemsalias}.gradetype = " . GRADE_TYPE_NONE . "
+                THEN NULL
+                ELSE {$gradecategoriesalias}.depth
+            END"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Top level category name filter.
+        $filters[] = (new filter(
+            topcategoryname::class,
+            'topcategoryname',
+            new lang_string('topcategoryname', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "CASE
+                WHEN {$gradeitemsalias}.gradetype = " . GRADE_TYPE_NONE . "
+                THEN NULL
+                WHEN {$gradecategoriesalias}.depth = 1
+                THEN null
+                ELSE {$gradecategoriesalias}.path
+            END"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_limited_operators([
+                topcategoryname::ANY_VALUE,
+                topcategoryname::CONTAINS,
+                topcategoryname::DOES_NOT_CONTAIN,
+                topcategoryname::IS_EMPTY,
+                topcategoryname::IS_NOT_EMPTY,
+            ]);
 
         // Grade items grade type.
         $filters[] = (new filter(
@@ -464,5 +567,72 @@ class grade_item extends base {
         }
 
         return $cache[$cachekey] = implode(' / ', $parts);
+    }
+
+    /**
+     * Return the top-level grade category name from a category path.
+     *
+     * For a path like:
+     *   /1/2/5/9
+     *
+     * Returns the name of category ID 2.
+     *
+     * @param string|null $path
+     * @return string
+     */
+    private static function get_top_category_name(?string $path): string {
+        global $DB;
+
+        static $cache = [];
+
+        if (empty($path)) {
+            return '';
+        }
+
+        $topcategoryid = self::get_top_category_id($path);
+
+        if ($topcategoryid <= 0) {
+            return '';
+        }
+
+        if (!array_key_exists($topcategoryid, $cache)) {
+            $record = $DB->get_record(
+                'grade_categories',
+                ['id' => $topcategoryid],
+                'fullname',
+                IGNORE_MISSING
+            );
+
+            $cache[$topcategoryid] = $record
+                ? format_string($record->fullname)
+                : '';
+        }
+
+        return $cache[$topcategoryid];
+    }
+
+    /**
+     * Get the top-level category ID from a category path.
+     *
+     * For a path like:
+     *   /1/2/5/9
+     *  Returns 2.
+     */
+    private static function get_top_category_id(?string $path): int {
+        if (empty($path)) {
+            return 0;
+        }
+
+        $ids = array_values(array_filter(
+            explode('/', trim($path, '/')),
+            'strlen'
+        ));
+
+        // Need at least root category + top-level category.
+        if (!isset($ids[1])) {
+            return 0;
+        }
+
+        return (int)$ids[1];
     }
 }
