@@ -22,7 +22,9 @@ You can check consistency across different departments, and how other schools or
 
 You don't need access to the Moodle database or know how to use SQL. Simply Drag & Drop.
 
-For example: the activity completion is enabled on the activity level, but the completion tracking is disabled on the course level.
+For example:
+- The activity completion is enabled on the activity level, but the completion tracking is disabled on the course level.
+- Find all your Summative Assignments or Quizzes (if they sit under a Gradebook Category called 'Summative').
 
 Installation
 ------------
@@ -36,8 +38,8 @@ See http://docs.moodle.org/en/Installing_plugins for details on installing Moodl
 Usage & Settings
 ----------------
 
-- Go to Site Administration > Reports > Custom Reports <br>
-- New report <br>
+- Go to Site Administration > Reports > Custom Reports
+- New report
 - Select one of the sources from the dropdown under the Activity Setting report section. If any of the included datasources
 is not installed on your system, it will not appear in the dropdown.
 
@@ -48,7 +50,7 @@ Entities included
 - Shared or common entities
   - Course Section (course_sections)
   - Course Module (course_modules)
-  - Grade Item (grade_items)
+  - Grade Item (grade_items) including Gradebook Category Path
 - Activity related entities
   -   Assignment (mod_assign)
   -   Forum (mod_forum)

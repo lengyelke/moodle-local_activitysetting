@@ -1,5 +1,51 @@
 # Changelog
 
+## v1.3.0 (2026-07-20)
+
+### Added
+
+- Allow offline attempt was missing from Quiz
+
+- New settings in relevant activities due to new Moodle release
+  - Since Moodle 5.0
+    - Grade Penalty in Assignment - Column+Filter + dedicated applicable column+filter
+    - Pre-create attempts in Quiz - Column+Filter + dedicated applicable column+filter
+  - Since Moodle 5.1
+    - Show replies immediately in Forum - Column+Filter
+  - Since Moodle 5.2
+    - Multiple markers in Assignment
+      - Markercount Column+Filter
+      - Multimark method Column+Filter
+      - Multimark rounding Column+Filter
+
+- New feature: Activity name with a link
+
+- New features in grade item entity
+```text
+    Gradebook
+        ├─ FORMATIVE
+        │  └─ Quizzes
+        └─ SUMMATIVE
+          └─ Exams
+             └─ Final Exam
+```
+  - Gradebook Category path Column+Filter [Gradebook / Summative / Exams]
+  - Gradebook Category depth Column+Filter [3]
+  - Top Gradebook SubCategory name Column+Filter [Summative]
+
+
+### Fixed
+
+- Course Modules datasource never worked with Grade Items properly due to the missing module type match
+
+## v1.2.1 (2026-05-03)
+
+Same as v1.2.0
+
+- Moodle 5.2 is supported and compatible.
+  - New 5.2 specific settings are not yet available (i.e. Assignment multiple markers)
+
+
 ## v1.2.0 (2025-11-18)
 
 ### Added
