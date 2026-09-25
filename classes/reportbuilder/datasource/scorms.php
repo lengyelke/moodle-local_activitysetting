@@ -119,7 +119,7 @@ class scorms extends datasource {
                 $scormentity->get_entity_name(),
                 "{$scormalias}.name",
                 "{$coursemodulealias}.id",
-                array_merge($scormentity->get_joins(), $coursemoduleentity->get_joins()),
+                $this->get_joins(),
                 ["{$scormalias}.name"],
                 '/mod/scorm/view.php'
             )
