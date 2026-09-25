@@ -371,8 +371,6 @@ class grade_item extends base {
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
         $gradecategoriesalias = $this->get_table_alias('grade_categories');
-        $this->add_join("LEFT JOIN {grade_categories} {$gradecategoriesalias}
-                            ON {$gradecategoriesalias}.id = {$gradeitemsalias}.categoryid");
 
         // Grade items itemname.
         $filters[] = (new filter(

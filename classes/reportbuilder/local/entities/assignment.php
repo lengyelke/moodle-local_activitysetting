@@ -191,7 +191,7 @@ class assignment extends base {
 
         // Assignment alwaysshowdescription column.
         $columns[] = (new column(
-            'submissionattachments',
+            'alwaysshowdescription',
             new lang_string('alwaysshowdescription', 'mod_assign'),
             $this->get_entity_name()
         ))

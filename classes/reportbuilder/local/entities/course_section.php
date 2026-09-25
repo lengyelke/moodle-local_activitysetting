@@ -26,7 +26,6 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 
-use function DI\value;
 
 /**
  * Class course_section
@@ -214,7 +213,7 @@ class course_section extends base {
             ->set_is_sortable(true)
             ->add_field("{$sectionalias}.component")
             ->add_callback(function ($value) {
-                return ($value == null) ? $value : get_string('pluginname', $value);
+                return empty($value) ? $value : get_string('pluginname', $value);
             });
 
         // Course section timemodified (last updated) column.

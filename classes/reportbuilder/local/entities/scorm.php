@@ -19,18 +19,15 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
-use question_engine;
-use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select, number};
+use core_reportbuilder\local\filters\{boolean_select, date, text, select, number};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
-use mod_quiz\question\display_options;
-use tool_brickfield\local\areas\mod_choice\option;
 
 /**
- * Class quiz
+ * Class scorm
  *
- * This entity represents a quiz activity setting in the report.
+ * This entity represents a SCORM activity setting in the report.
  *
  * @package    local_activitysetting
  * @copyright  2025 Ferenc 'Frank' Lengyel

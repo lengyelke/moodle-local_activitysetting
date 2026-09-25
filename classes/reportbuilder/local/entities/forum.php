@@ -467,7 +467,8 @@ class forum extends base {
             new lang_string('forumname', 'mod_forum'),
             $this->get_entity_name(),
             "{$forumalias}.name"
-        ));
+        ))
+            ->add_joins($this->get_joins());
 
         // Forum type filter.
         $filters[] = (new filter(

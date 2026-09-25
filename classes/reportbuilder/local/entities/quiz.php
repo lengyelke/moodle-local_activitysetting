@@ -25,7 +25,6 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 use mod_quiz\question\display_options;
-use tool_httpsreplace\form;
 
 /**
  * Class quiz
@@ -971,8 +970,6 @@ class quiz extends base {
 
         $quizalias = $this->get_table_alias('quiz');
         $quizaccessalias = $this->get_table_alias('quizaccess_seb_quizsettings');
-
-        $this->add_join("LEFT JOIN {quizaccess_seb_quizsettings} $quizaccessalias ON $quizaccessalias.quizid = $quizalias.id");
 
         $filters = [];
 
