@@ -29,7 +29,7 @@ use local_activitysetting\reportbuilder\local\entities\course_section;
 use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helper;
 
 /**
- * Assignmnent settings datasource
+ * Assignment settings datasource
  *
  * @package    local_activitysetting
  * @copyright  2025 Ferenc 'Frank' Lengyel - lengyelke@gmail.com
@@ -116,7 +116,7 @@ class assignments extends datasource {
                 $assignmententity->get_entity_name(),
                 "{$assignalias}.name",
                 "{$coursemodulealias}.id",
-                array_merge($assignmententity->get_joins(), $coursemoduleentity->get_joins()),
+                $this->get_joins(),
                 ["{$assignalias}.name"],
                 '/mod/assign/view.php'
             )
