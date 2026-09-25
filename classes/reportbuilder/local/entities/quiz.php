@@ -642,6 +642,8 @@ class quiz extends base {
             ->add_joins($this->get_joins())
             ->add_field("{$quizaccessalias}.requiresafeexambrowser")
             ->add_callback(static function (?int $requiresafeexambrowser): string {
+                // Treat null as 0 (No).
+                $val = $requiresafeexambrowser ?? 0;
                 $types = [
                     0 => new lang_string('no'),
                     1 => new lang_string('seb_use_manually', 'quizaccess_seb'),
@@ -649,13 +651,7 @@ class quiz extends base {
                     3 => new lang_string('seb_use_upload', 'quizaccess_seb'),
                     4 => new lang_string('seb_use_client', 'quizaccess_seb'),
                 ];
-                return (string) (
-                    $types[$requiresafeexambrowser]
-                    ?? ($requiresafeexambrowser === null
-                        ? get_string('notset', 'local_activitysetting')
-                        : get_string('unknown', 'local_activitysetting')
-                    )
-                );
+                return (string) ($types[$val] ?? get_string('unknown', 'local_activitysetting'));
             });
 
         // Safe Exam Browser Yes/No fields.
@@ -1223,7 +1219,8 @@ class quiz extends base {
             'safeexambrowser',
             new lang_string('seb_requiresafeexambrowser', 'quizaccess_seb'),
             $this->get_entity_name(),
-            "{$quizaccessalias}.requiresafeexambrowser"
+            // Treat null as 0 for the filter, so that quizzes without SEB settings are included in the "No" option.
+            "COALESCE({$quizaccessalias}.requiresafeexambrowser, 0)"
         ))
             ->add_joins($this->get_joins())
             ->set_options([
