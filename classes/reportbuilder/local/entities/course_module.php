@@ -24,6 +24,7 @@ use core_reportbuilder\local\filters\{boolean_select, date, number, select, text
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
+use local_activitysetting\reportbuilder\local\filters\ai_action;
 
 /**
  * Class course_module
@@ -715,6 +716,30 @@ class course_module extends base {
                     new lang_string('enableaitoolsincourseactivity', 'ai'),
                     $this->get_entity_name(),
                     "COALESCE({$modulealias}.enableaitools, 0)"
+                ))
+                    ->add_joins($this->get_joins());
+            }
+        }
+
+        // Enabled AI actions filter.
+        if ($CFG->version >= 2025110500) {
+            $aienabled = false;
+            try {
+                $aimanager = \core\di::get(\core_ai\manager::class);
+                if (!empty($aimanager->get_provider_instances(['enabled' => 1]))) {
+                    $aienabled = true;
+                }
+            } catch (\Exception $e) {
+                $aienabled = false;
+            }
+
+            if ($aienabled) {
+                $filters[] = (new filter(
+                    ai_action::class, // Use the custom filter class here.
+                    'enabledaiactions',
+                    new lang_string('enabledaiactions', 'local_activitysetting'),
+                    $this->get_entity_name(),
+                    "{$modulealias}.enabledaiactions"
                 ))
                     ->add_joins($this->get_joins());
             }
