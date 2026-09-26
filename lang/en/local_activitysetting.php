@@ -33,6 +33,7 @@ $string['component'] = 'Component';
 $string['coursemodulesetting'] = 'Course Module Settings';
 $string['coursesectionsetting'] = 'Course Section Settings';
 $string['deletioninprogress'] = 'Deletion in progress';
+$string['enabledaiactions'] = 'Enabled AI features for this activity';
 $string['forumnamewithlink'] = 'Forum Name with Link';
 $string['forumsetting'] = 'Forum Settings';
 $string['gradebookroot'] = 'Gradebook';

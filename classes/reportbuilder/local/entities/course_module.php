@@ -383,6 +383,90 @@ class course_module extends base {
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.lang");
 
+        // Enable AI tools since Moodle 5.1.
+        if ($CFG->version >= 2025110500) {
+            // We check if the AI system is active site-wide.
+            // We use a try-catch in case the class does not exist.
+            $aienabled = false;
+            try {
+                $aimanager = \core\di::get(\core_ai\manager::class);
+                if (!empty($aimanager->get_provider_instances(['enabled' => 1]))) {
+                    $aienabled = true;
+                }
+            } catch (\Exception $e) {
+                $aienabled = false;
+            }
+
+            if ($aienabled) {
+                    $columns[] = (new column(
+                        'enableaitools',
+                        new lang_string('enableaitoolsincourseactivity', 'ai'),
+                        $this->get_entity_name()
+                    ))
+                    ->add_joins($this->get_joins())
+                    ->set_type(column::TYPE_BOOLEAN)
+                    ->set_is_sortable(true)
+                    ->add_field("{$modulealias}.enableaitools")
+                    ->add_callback(function ($value) {
+                        // Treat NULL as false (No).
+                        return format::boolean_as_text($value ?? false);
+                    });
+            }
+        }
+
+        // Which AI tools are enabled for this course module. Since Moodle 5.1.
+        if ($CFG->version >= 2025110500) {
+            // We check if the AI system is active site-wide.
+            // We use a try-catch in case the class does not exist.
+            $aienabled = false;
+            try {
+                $aimanager = \core\di::get(\core_ai\manager::class);
+                if (!empty($aimanager->get_provider_instances(['enabled' => 1]))) {
+                    $aienabled = true;
+                }
+            } catch (\Exception $e) {
+                $aienabled = false;
+            }
+
+            if ($aienabled) {
+                    $columns[] = (new column(
+                        'enabledaiactions',
+                        new lang_string('enabledaiactions', 'local_activitysetting'),
+                        $this->get_entity_name()
+                    ))
+                    ->add_joins($this->get_joins())
+                    ->set_type(column::TYPE_TEXT)
+                    ->set_is_sortable(true)
+                    ->add_field("{$modulealias}.enabledaiactions")
+                    ->add_callback(function ($value) {
+                        if (empty($value)) {
+                            return get_string('none');
+                        }
+
+                        $actions = json_decode($value, true);
+                        if (!is_array($actions)) {
+                            return $value;
+                        }
+
+                        $formatted = [];
+                        foreach ($actions as $actionkey => $isenabled) {
+                            // Attempt to find a string for the action.
+                            $label = get_string('action_' . $actionkey, 'core_ai');
+
+                            // If translation fails, just clean up the key name.
+                            if ($label === 'action_' . $actionkey) {
+                                $label = str_replace('_', ' ', $actionkey);
+                            }
+
+                            $status = $isenabled ? get_string('yes') : get_string('no');
+                            $formatted[] = "$label: $status";
+                        }
+
+                        return implode('; ', $formatted);
+                    });
+            }
+        }
+
         // Course module URL.
         $columns[] = (new column(
             'cmURL',
@@ -434,7 +518,7 @@ class course_module extends base {
      */
     protected function get_all_filters(): array {
 
-        global $DB;
+        global $DB, $CFG;
 
         $filters = [];
 
@@ -611,6 +695,30 @@ class course_module extends base {
             ->set_options([
                 get_string_manager()->get_list_of_translations(),
             ]);
+
+        // Enable AI tools filter since Moodle 5.1.
+        if ($CFG->version >= 2025110500) {
+            $aienabled = false;
+            try {
+                $aimanager = \core\di::get(\core_ai\manager::class);
+                if (!empty($aimanager->get_provider_instances(['enabled' => 1]))) {
+                    $aienabled = true;
+                }
+            } catch (\Exception $e) {
+                $aienabled = false;
+            }
+
+            if ($aienabled) {
+                $filters[] = (new filter(
+                    boolean_select::class,
+                    'enableaitools',
+                    new lang_string('enableaitoolsincourseactivity', 'ai'),
+                    $this->get_entity_name(),
+                    "COALESCE({$modulealias}.enableaitools, 0)"
+                ))
+                    ->add_joins($this->get_joins());
+            }
+        }
 
         // Course module plugin type.
         $filters[] = (new filter(
