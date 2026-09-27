@@ -683,7 +683,7 @@ class assignment extends base {
             'alwaysshowdescription',
             new lang_string('alwaysshowdescription', 'mod_assign'),
             $this->get_entity_name(),
-            "{$assignalias}.nosubmissions"
+            "{$assignalias}.alwaysshowdescription"
         ))
             ->add_joins($this->get_joins());
 
