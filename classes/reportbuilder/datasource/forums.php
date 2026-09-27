@@ -119,7 +119,7 @@ class forums extends datasource {
                 $forumentity->get_entity_name(),
                 "{$forumalias}.name",
                 "{$coursemodulealias}.id",
-                $this->get_joins(),
+                array_merge($forumentity->get_joins(), $coursemoduleentity->get_joins()),
                 ["{$forumalias}.name"],
                 '/mod/forum/view.php'
             )

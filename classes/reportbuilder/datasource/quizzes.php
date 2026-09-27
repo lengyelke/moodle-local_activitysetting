@@ -119,7 +119,7 @@ class quizzes extends datasource {
                 $quizentity->get_entity_name(),
                 "{$quizalias}.name",
                 "{$coursemodulealias}.id",
-                $this->get_joins(),
+                array_merge($quizentity->get_joins(), $coursemoduleentity->get_joins()),
                 ["{$quizalias}.name"],
                 '/mod/quiz/view.php'
             )

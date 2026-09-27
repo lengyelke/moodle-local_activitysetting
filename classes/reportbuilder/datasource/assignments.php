@@ -116,7 +116,7 @@ class assignments extends datasource {
                 $assignmententity->get_entity_name(),
                 "{$assignalias}.name",
                 "{$coursemodulealias}.id",
-                $this->get_joins(),
+                array_merge($assignmententity->get_joins(), $coursemoduleentity->get_joins()),
                 ["{$assignalias}.name"],
                 '/mod/assign/view.php'
             )
