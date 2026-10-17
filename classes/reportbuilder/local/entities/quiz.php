@@ -121,6 +121,20 @@ class quiz extends base {
             ->add_field("{$quizalias}.timeopen")
             ->add_callback([format::class, 'userdate']);
 
+        // Quiz due date, since Moodle 5.3.
+        if ($CFG->version >= 2026100500) {
+            $columns[] = (new column(
+                'quizduedate',
+                new lang_string('duedate', 'mod_quiz'),
+                $this->get_entity_name()
+            ))
+                ->set_type(column::TYPE_TIMESTAMP)
+                ->set_is_sortable(true)
+                ->add_joins($this->get_joins())
+                ->add_field("{$quizalias}.duedate")
+                ->add_callback([format::class, 'userdate']);
+        }
+
         // Close quiz.
         $columns[] = (new column(
             'quizclose',
@@ -988,6 +1002,18 @@ class quiz extends base {
             "{$quizalias}.timeopen"
         ))
             ->add_joins($this->get_joins());
+
+        // Quiz duedate filter.
+        if ($CFG->version >= 2026100500) {
+            $filters[] = (new filter(
+                date::class,
+                'quizduedate',
+                new lang_string('duedate', 'mod_quiz'),
+                $this->get_entity_name(),
+                "{$quizalias}.duedate"
+            ))
+                ->add_joins($this->get_joins());
+        }
 
         // Close quiz filter.
         $filters[] = (new filter(

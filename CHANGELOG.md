@@ -1,5 +1,66 @@
 # Changelog
 
+## [Unreleased]
+
+To improve performance and support more advanced Gradebook reporting, most of the Grade Category Settings (Gradebook) will be available via a new dedicated entity.
+
+### (will be) Added
+
+- New `Grade Category Settings` entity with the following Coulmns+Filters
+  - Category Path (replacing Gradebook Category Path from Grade Item Settings)
+  - Category Depth (replacing Gradebook Category Depth from Grade Item Settings)
+  - Top subcategory name (replacing Top subcategory name from Grade Item Settings)
+  - Full name
+  - Aggregation
+  - Keep the highest
+  - Drop the lowest
+  - Exclude empty grades
+  - Include outcomes in aggregation
+  - Hidden
+  - Last modified
+  - and many more ...
+
+### (will be) Removed
+- The following three columns and their corresponding filters from the `Grade Item Settings` entity
+  - Gradebook Category Path
+  - Gradebook Category Depth
+  - Top Subcategory Name
+- If you have created Custom Reports using any of the columns listed above, **those reports will need to be updated after the next upgrade**.
+
+
+## v1.3.1 (2026-10-17)
+
+### Added
+
+- New settings in relevant activities due to new Moodle release
+  - Since Moodle 5.3
+    - A new `duedate` field added to Quiz - Column+Filter in the Quiz entity
+  - Since Moodle 5.1
+    - Allow AI tools in this activity - Column+Filter in the Course Module entity
+    - Enabled AI features for this activity - Column+Filter in the Course Module entity
+
+### Fixed
+
+- In the Quiz entity the 'Require the use of Safe Exam Browser' was mistreated. The 'Not set' option has been removed, so the filter should work now.
+- In the assignment entity two different columns had the same key
+  - the `submissionattachments` column was called `submissionattachments`
+  - but unfortunatley the `alwaysshowdescription` column was also called `submissionattachments`
+-  In the assignment entity one filter was using the wrong field
+  - the `alwaysshowdescription` filter was using the `nosubmissions` field's value
+
+### Deprecated
+  - The following columns are currently available through the `Grade Item Setting` entity:
+    - Gradebook Category Path
+    - Gradebook Category Depth
+    - Top Subcategory Name
+  - In the next version, **these columns will be removed from the Grade Item Settings entity** and replaced by equivalent columns in a new, dedicated **Grade Category Settings** entity.
+  - This change will allow reports to work with grade categories directly and provide greater flexibility when reporting on gradebook structures.
+  - How does this affect existing reports?
+    - If you have created custom reports using any of the columns listed above, those reports will need to be updated after the next upgrade.
+    - You will need to remove the old category columns from the report and add the corresponding columns from the new Grade Category entity.
+    - Reports that do not use these columns will not be affected.
+
+
 ## v1.3.0 (2026-07-20)
 
 ### Added

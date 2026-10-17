@@ -3,7 +3,11 @@ moodle-local-activitysetting
 
 A collection of report sources for Custom Reports (ReportBuilder) to see activity settings.
 
-[![Moodle Plugin CI](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/main-moodle.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/main-moodle.yml)
+[![Moodle Plugin CI v5.3](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.3.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.3.yml)
+[![Moodle Plugin CI v5.2](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.2.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.2.yml)
+[![Moodle Plugin CI v5.1](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.1.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.1.yml)
+[![Moodle Plugin CI v5.0](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.0.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v5.0.yml)
+[![Moodle Plugin CI v4.5](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v4.5.yml/badge.svg)](https://github.com/lengyelke/moodle-local_activitysetting/actions/workflows/Moodle%20plugin%20v4.5.yml)
 
 Requirements
 ------------
