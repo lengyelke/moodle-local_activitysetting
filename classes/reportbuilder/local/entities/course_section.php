@@ -73,7 +73,7 @@ class course_section extends base {
             $this->add_filter($filter);
         }
 
-        $conditions = $this->get_all_filters();
+        $conditions = $this->get_all_conditions();
         foreach ($conditions as $condition) {
             $this->add_condition($condition);
         }
@@ -89,19 +89,17 @@ class course_section extends base {
      * @param int $sectionid
      * @return string
      */
-    private static function format_section_availability($sectionid) {
-        global $DB, $OUTPUT;
+    private static function format_section_availability($sectionid, int $courseid, ?string $availability): string {
+        global $OUTPUT;
 
-        // Get the basic course section record.
-        $section = $DB->get_record('course_sections', ['id' => $sectionid], '*', MUST_EXIST);
-        $json = $section->availability;
+        $json = $availability;
 
         if (empty($json)) {
             return get_string('none', 'core');
         }
 
         // Get section_info and course context.
-        $modinfo = get_fast_modinfo($section->course);
+        $modinfo = get_fast_modinfo($courseid);
         $sectioninfo = $modinfo->get_section_info_by_id($sectionid);
 
         try {
@@ -113,7 +111,7 @@ class course_section extends base {
             } else {
                 $notfullhtml = $converted;
             }
-            $html = \core_availability\info::format_info($notfullhtml, $section->course);
+            $html = \core_availability\info::format_info($notfullhtml, $courseid);
 
             // Remove HTML tags and decode HTML entities.
             $nonhtml = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -198,8 +196,14 @@ class course_section extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$sectionalias}.id")
-            ->add_callback(function ($value) {
-                return self::format_section_availability($value);
+            ->add_field("{$sectionalias}.course", 'courseid')
+            ->add_field("{$sectionalias}.availability", 'availability')
+            ->add_callback(function ($value, $row) {
+                return self::format_section_availability(
+                    $value,
+                    (int) $row->courseid,
+                    $row->availability
+                );
             });
 
         // Course section component column, name of the delegated plugin.
@@ -298,15 +302,12 @@ class course_section extends base {
     }
 
     /**
-     * Returns list of all available conditions
-     *
-     * These are all the conditions available to use in any report that uses this entity.
-     *
+     * Returns list of all available filters as conditions.
      * @return filter[]
+     *
      */
     protected function get_all_conditions(): array {
-        $conditions = [];
-
-        return $conditions;
+        // Instead of duplicating the code, just return the filters.
+        return $this->get_all_filters();
     }
 }
