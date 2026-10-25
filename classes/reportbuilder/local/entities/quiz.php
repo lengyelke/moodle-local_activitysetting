@@ -70,7 +70,7 @@ class quiz extends base {
             $this->add_filter($filter);
         }
 
-        $conditions = $this->get_all_filters();
+        $conditions = $this->get_all_conditions();
         foreach ($conditions as $condition) {
             $this->add_condition($condition);
         }
@@ -153,7 +153,7 @@ class quiz extends base {
             new lang_string('timelimit', 'mod_quiz'),
             $this->get_entity_name()
         ))
-            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.timelimit")
@@ -190,7 +190,7 @@ class quiz extends base {
             new lang_string('graceperiod', 'mod_quiz'),
             $this->get_entity_name()
         ))
-            ->set_type(column::TYPE_TIMESTAMP)
+            ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$quizalias}.graceperiod")
@@ -1344,5 +1344,15 @@ class quiz extends base {
             ->add_joins($this->get_joins());
 
         return $filters;
+    }
+
+    /**
+     * Returns list of all available filters as conditions.
+     * @return filter[]
+     *
+     */
+    protected function get_all_conditions(): array {
+        // Instead of duplicating the code, just return the filters.
+        return $this->get_all_filters();
     }
 }
