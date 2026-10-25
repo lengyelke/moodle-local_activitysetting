@@ -19,12 +19,10 @@ declare(strict_types=1);
 namespace local_activitysetting\reportbuilder\local\entities;
 
 use lang_string;
-use core_reportbuilder\local\filters\{number, text, select, date};
+use core_reportbuilder\local\filters\{number, text, select, date, boolean_select};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
-use local_activitysetting\reportbuilder\local\filters\gradecategorypath;
-use local_activitysetting\reportbuilder\local\filters\topcategoryname;
 
 /**
  * Class grade_item
@@ -74,7 +72,7 @@ class grade_item extends base {
             $this->add_filter($filter);
         }
 
-        $conditions = $this->get_all_filters();
+        $conditions = $this->get_all_conditions();
         foreach ($conditions as $condition) {
             $this->add_condition($condition);
         }
@@ -97,11 +95,8 @@ class grade_item extends base {
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
         $scalealias = $this->get_table_alias('scale');
-        $gradecategoriesalias = $this->get_table_alias('grade_categories');
 
         $this->add_join("LEFT JOIN {scale} {$scalealias} ON {$scalealias}.id = {$gradeitemsalias}.scaleid");
-        $this->add_join("LEFT JOIN {grade_categories} {$gradecategoriesalias}
-                            ON {$gradecategoriesalias}.id = {$gradeitemsalias}.categoryid");
 
         // Grade items itemname.
         $columns[] = (new column(
@@ -114,63 +109,27 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.itemname");
 
-        // Grade category path.
+        // Grade items iteminfo.
         $columns[] = (new column(
-            'categorypath',
-            new lang_string('categorypath', 'local_activitysetting'),
+            'iteminfo',
+            new lang_string('iteminfo', 'grades'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_field("{$gradecategoriesalias}.path", 'categorypath_val')
-            ->add_callback(static function ($value, $row): string {
-                if ((int)$row->gradetype_val === GRADE_TYPE_NONE) {
-                    return '';
-                }
-                return self::format_grade_category_path($row->categorypath_val ?? '');
-            });
+            ->add_field("{$gradeitemsalias}.iteminfo");
 
-        // Grade category depth.
+        // Grade items idnumber.
         $columns[] = (new column(
-            'categorydepth',
-            new lang_string('categorydepth', 'local_activitysetting'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
-            ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_field("{$gradecategoriesalias}.depth", 'categorydepth_val')
-            ->add_callback(static function ($value, $row): string {
-                if ((int)$row->gradetype_val === GRADE_TYPE_NONE) {
-                    return '';
-                }
-                return (string)($row->categorydepth_val ?? '');
-            });
-
-        // Top level category name.
-        $columns[] = (new column(
-            'topcategoryname',
-            new lang_string('topcategoryname', 'local_activitysetting'),
+            'idnumber',
+            new lang_string('idnumbermod'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_field("{$gradecategoriesalias}.path", 'categorypath_val')
-            ->add_callback(static function ($value, $row): string {
-                // Ungraded items are treated as having no category path.
-                if ((int)$row->gradetype_val === GRADE_TYPE_NONE) {
-                    return '';
-                }
-
-                return self::get_top_category_name(
-                    $row->categorypath_val ?? ''
-                );
-            });
+            ->add_field("{$gradeitemsalias}.idnumber");
 
         // Grade items grade type.
         $columns[] = (new column(
@@ -210,8 +169,8 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.grademin")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
-                // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
+            ->add_callback(function ($value, $row) {
+                // Check if gradetype is GRADE_TYPE_NONE and set grademin to an empty string.
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
             });
 
@@ -226,8 +185,8 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.grademax")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
-                // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
+            ->add_callback(function ($value, $row) {
+                // Check if gradetype is GRADE_TYPE_NONE and set grademax to an empty string.
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
             });
 
@@ -242,9 +201,113 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.gradepass")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) {
                 // Check if gradetype is GRADE_TYPE_NONE and set gradepass to an empty string.
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : $value;
+            });
+
+        // Multiplicator column.
+        $columns[] = (new column(
+            'multfactor',
+            new lang_string('multfactor', 'grades'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.multfactor");
+
+        // Offset column.
+        $columns[] = (new column(
+            'plusfactor',
+            new lang_string('plusfactor', 'grades'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.plusfactor");
+
+        // Grade display type column.
+        $columns[] = (new column(
+            'display',
+            new lang_string('gradedisplaytype', 'grades'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.display")
+            ->add_field("{$gradeitemsalias}.courseid")
+            ->add_callback(static function (int|null $display, $row): string {
+                global $CFG;
+
+                $options = [
+                    GRADE_DISPLAY_TYPE_DEFAULT => get_string('default', 'grades'),
+                    GRADE_DISPLAY_TYPE_REAL => get_string('real', 'grades'),
+                    GRADE_DISPLAY_TYPE_PERCENTAGE => get_string('percentage', 'grades'),
+                    GRADE_DISPLAY_TYPE_LETTER => get_string('letter', 'grades'),
+                    GRADE_DISPLAY_TYPE_REAL_PERCENTAGE => get_string('realpercentage', 'grades'),
+                    GRADE_DISPLAY_TYPE_REAL_LETTER => get_string('realletter', 'grades'),
+                    GRADE_DISPLAY_TYPE_LETTER_REAL => get_string('letterreal', 'grades'),
+                    GRADE_DISPLAY_TYPE_LETTER_PERCENTAGE => get_string('letterpercentage', 'grades'),
+                    GRADE_DISPLAY_TYPE_PERCENTAGE_LETTER => get_string('percentageletter', 'grades'),
+                    GRADE_DISPLAY_TYPE_PERCENTAGE_REAL => get_string('percentagereal', 'grades'),
+                ];
+
+                if ($display === GRADE_DISPLAY_TYPE_DEFAULT) {
+                    $defaultdisplaytype = grade_get_setting(
+                        $row->courseid,
+                        'displaytype',
+                        $CFG->grade_displaytype
+                    );
+
+                    if (isset($options[$defaultdisplaytype])) {
+                        return get_string('defaultprev', 'grades', $options[$defaultdisplaytype]);
+                    }
+                }
+
+                return $options[$display] ?? '';
+            });
+
+        // Grade display decimal points column.
+        $columns[] = (new column(
+            'decimals',
+            new lang_string('decimalpoints', 'grades'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.decimals")
+            ->add_field("{$gradeitemsalias}.courseid")
+            ->add_callback(static function (int|null $decimals, $row): string {
+                global $CFG;
+
+                if ($decimals === null) {
+                    $defaultgradedecimals = grade_get_setting(
+                        $row->courseid,
+                        'decimalpoints',
+                        $CFG->grade_decimalpoints
+                    );
+                    return get_string('defaultprev', 'grades', $defaultgradedecimals);
+                }
+                return (string) $decimals;
+            });
+
+        // Scale name column.
+        $columns[] = (new column(
+            'scalename',
+            new lang_string('scale', 'core'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->set_is_sortable(true)
+            ->add_field("{$scalealias}.name")
+            ->add_callback(static function ($value): string {
+                // Optional: Handle NULL cases gracefully if needed.
+                return $value ?? ''; // If scaleid was NULL/0, name will be NULL. Return empty string.
             });
 
         // Hidden column with formatted display.
@@ -258,7 +321,7 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.hidden")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) {
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_hidden_value($value);
             });
 
@@ -273,24 +336,54 @@ class grade_item extends base {
             ->set_is_sortable(true)
             ->add_field("{$gradeitemsalias}.locked")
             ->add_field("{$gradeitemsalias}.gradetype", 'gradetype_val')
-            ->add_callback(function ($value, $row) use ($gradeitemsalias) {
+            ->add_callback(function ($value, $row) {
                 return ($row->gradetype_val == GRADE_TYPE_NONE) ? '' : self::format_locked_value($value);
             });
 
-        // Add the new 'scalename' column.
+        // Weight column.
         $columns[] = (new column(
-            'scalename',
-            new lang_string('scale', 'core'),
+            'aggregationcoef2',
+            new lang_string('weight', 'grades'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
+            ->set_type(column::TYPE_FLOAT)
             ->set_is_sortable(true)
-            ->add_field("{$scalealias}.name")
-            ->add_callback(static function ($value): string {
-                // Optional: Handle NULL cases gracefully if needed.
-                return $value ?? ''; // If scaleid was NULL/0, name will be NULL. Return empty string.
-            });
+            ->add_field("{$gradeitemsalias}.aggregationcoef2");
+
+        // Weight adjusted column.
+        $columns[] = (new column(
+            'weightoverride',
+            new lang_string('adjustedweight', 'grades'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_BOOLEAN)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.weightoverride")
+            ->add_callback([format::class, 'boolean_as_text']);
+
+        // Extra credit column.
+        $columns[] = (new column(
+            'aggregationcoef',
+            new lang_string('aggregationcoefextrasum', 'grades'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.aggregationcoef");
+
+        // Sort order column.
+        $columns[] = (new column(
+            'sortorder',
+            new lang_string('sort_sortorder', 'admin'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_INTEGER)
+            ->set_is_sortable(true)
+            ->add_field("{$gradeitemsalias}.sortorder");
 
         // Grade items timemodified (last updated).
         $columns[] = (new column(
@@ -335,10 +428,10 @@ class grade_item extends base {
     /**
      * Format locked value for display
      *
-     * @param string $locked
+     * @param int $locked
      * @return string
      */
-    private static function format_locked_value(string $locked): string {
+    private static function format_locked_value(int $locked): string {
         global $CFG;
 
         if ($locked == 0) {
@@ -370,7 +463,7 @@ class grade_item extends base {
         $filters = [];
 
         $gradeitemsalias = $this->get_table_alias('grade_items');
-        $gradecategoriesalias = $this->get_table_alias('grade_categories');
+        $scalealias = $this->get_table_alias('scale');
 
         // Grade items itemname.
         $filters[] = (new filter(
@@ -382,63 +475,25 @@ class grade_item extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Grade items category path.
+        // Grade items iteminfo filter.
         $filters[] = (new filter(
-            gradecategorypath::class,
-            'categorypath',
-            new lang_string('categorypath', 'local_activitysetting'),
+            text::class,
+            'iteminfo',
+            new lang_string('iteminfo', 'grades'),
             $this->get_entity_name(),
-            "CASE
-                WHEN {$gradeitemsalias}.gradetype = " . GRADE_TYPE_NONE . "
-                THEN NULL
-                ELSE {$gradecategoriesalias}.path
-            END"
-        ))
-            ->add_joins($this->get_joins())
-            ->set_limited_operators([
-                gradecategorypath::ANY_VALUE,
-                gradecategorypath::CONTAINS,
-                gradecategorypath::DOES_NOT_CONTAIN,
-                gradecategorypath::IS_EMPTY,
-                gradecategorypath::IS_NOT_EMPTY,
-            ]);
-
-        // Grade category depth filter.
-        $filters[] = (new filter(
-            number::class,
-            'categorydepth',
-            new lang_string('categorydepth', 'local_activitysetting'),
-            $this->get_entity_name(),
-            "CASE
-                WHEN {$gradeitemsalias}.gradetype = " . GRADE_TYPE_NONE . "
-                THEN NULL
-                ELSE {$gradecategoriesalias}.depth
-            END"
+            "{$gradeitemsalias}.iteminfo"
         ))
             ->add_joins($this->get_joins());
 
-        // Top level category name filter.
+        // Grade items idnumber filter.
         $filters[] = (new filter(
-            topcategoryname::class,
-            'topcategoryname',
-            new lang_string('topcategoryname', 'local_activitysetting'),
+            text::class,
+            'idnumber',
+            new lang_string('idnumbermod'),
             $this->get_entity_name(),
-            "CASE
-                WHEN {$gradeitemsalias}.gradetype = " . GRADE_TYPE_NONE . "
-                THEN NULL
-                WHEN {$gradecategoriesalias}.depth = 1
-                THEN null
-                ELSE {$gradecategoriesalias}.path
-            END"
+            "{$gradeitemsalias}.idnumber"
         ))
-            ->add_joins($this->get_joins())
-            ->set_limited_operators([
-                topcategoryname::ANY_VALUE,
-                topcategoryname::CONTAINS,
-                topcategoryname::DOES_NOT_CONTAIN,
-                topcategoryname::IS_EMPTY,
-                topcategoryname::IS_NOT_EMPTY,
-            ]);
+            ->add_joins($this->get_joins());
 
         // Grade items grade type.
         $filters[] = (new filter(
@@ -486,6 +541,120 @@ class grade_item extends base {
         ))
             ->add_joins($this->get_joins());
 
+        // Multiplicator filter.
+        $filters[] = (new filter(
+            number::class,
+            'multfactor',
+            new lang_string('multfactor', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.multfactor"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Offset filter.
+        $filters[] = (new filter(
+            number::class,
+            'plusfactor',
+            new lang_string('plusfactor', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.plusfactor"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Grade display type filter.
+        $filters[] = (new filter(
+            select::class,
+            'display',
+            new lang_string('gradedisplaytype', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.display"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                GRADE_DISPLAY_TYPE_DEFAULT => get_string('default', 'grades'),
+                GRADE_DISPLAY_TYPE_REAL => get_string('real', 'grades'),
+                GRADE_DISPLAY_TYPE_PERCENTAGE => get_string('percentage', 'grades'),
+                GRADE_DISPLAY_TYPE_LETTER => get_string('letter', 'grades'),
+                GRADE_DISPLAY_TYPE_REAL_PERCENTAGE => get_string('realpercentage', 'grades'),
+                GRADE_DISPLAY_TYPE_REAL_LETTER => get_string('realletter', 'grades'),
+                GRADE_DISPLAY_TYPE_LETTER_REAL => get_string('letterreal', 'grades'),
+                GRADE_DISPLAY_TYPE_LETTER_PERCENTAGE => get_string('letterpercentage', 'grades'),
+                GRADE_DISPLAY_TYPE_PERCENTAGE_LETTER => get_string('percentageletter', 'grades'),
+                GRADE_DISPLAY_TYPE_PERCENTAGE_REAL => get_string('percentagereal', 'grades'),
+            ]);
+
+        // Grade display decimal points filter.
+        $filters[] = (new filter(
+            select::class,
+            'decimals',
+            new lang_string('decimalpoints', 'grades'),
+            $this->get_entity_name(),
+            "CASE
+                WHEN {$gradeitemsalias}.decimals IS  NULL THEN -1
+                ELSE {$gradeitemsalias}.decimals
+            END"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options([
+                -1 => get_string('default', 'grades'),
+                0 => '0',
+                1 => '1',
+                2 => '2',
+                3 => '3',
+                4 => '4',
+                5 => '5',
+            ]);
+
+        // Scale name filter.
+        $filters[] = (new filter(
+            text::class,
+            'scalename',
+            new lang_string('scale', 'core'),
+            $this->get_entity_name(),
+            "{$scalealias}.name"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Weight filter.
+        $filters[] = (new filter(
+            number::class,
+            'aggregationcoef2',
+            new lang_string('weight', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.aggregationcoef2"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Weight adjusted filter.
+        $filters[] = (new filter(
+            boolean_select::class,
+            'weightoverride',
+            new lang_string('adjustedweight', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.weightoverride"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Extra credit filter.
+        $filters[] = (new filter(
+            number::class,
+            'aggregationcoef',
+            new lang_string('aggregationcoefextrasum', 'grades'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.aggregationcoef"
+        ))
+            ->add_joins($this->get_joins());
+
+            // Grade items sort order filter.
+        $filters[] = (new filter(
+            number::class,
+            'sortorder',
+            new lang_string('sort_sortorder', 'admin'),
+            $this->get_entity_name(),
+            "{$gradeitemsalias}.sortorder"
+        ))
+            ->add_joins($this->get_joins());
+
         // Grade items timemodified (last updated) filter.
         $filters[] = (new filter(
             date::class,
@@ -500,140 +669,12 @@ class grade_item extends base {
     }
 
     /**
-     * Return list of all available conditions - not used - same as filters
-     *
-     * @return array
+     * Returns list of all available filters as conditions.
+     * @return filter[]
      *
      */
     protected function get_all_conditions(): array {
-
-        $conditions = [];
-
-        return $conditions;
-    }
-    /**
-     * Format grade category path for display.
-     *
-     * Converts a stored path like /1/5/9 into "Category 1 / Category 2 / Category 3".
-     *
-     * @param string|null $path
-     * @return string
-     */
-    private static function format_grade_category_path(?string $path): string {
-        global $DB;
-
-        static $cache = [];
-
-        $cachekey = $path;
-        if (empty($path)) {
-            return '';
-        }
-
-        if (isset($cache[$cachekey])) {
-            return $cache[$cachekey];
-        }
-
-        $ids = array_values(array_filter(explode('/', trim($path, '/')), 'strlen'));
-        if (!$ids) {
-            return $cache[$cachekey] = '';
-        }
-
-        [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
-        $categories = $DB->get_records_select(
-            'grade_categories',
-            "id {$insql}",
-            $params,
-            '',
-            'id, fullname, parent'
-        );
-
-        $parts = [];
-        foreach ($ids as $id) {
-            if (!isset($categories[$id])) {
-                continue;
-            }
-
-            $name = trim((string)$categories[$id]->fullname);
-
-            if (empty($categories[$id]->parent)) {
-                $name = get_string('gradebookroot', 'local_activitysetting');
-            }
-
-            if ($name !== '') {
-                $parts[] = format_string($name);
-            }
-        }
-
-        return $cache[$cachekey] = implode(' / ', $parts);
-    }
-
-    /**
-     * Return the top-level grade category name from a category path.
-     *
-     * For a path like:
-     *   /1/2/5/9
-     *
-     * Returns the name of category ID 2.
-     *
-     * @param string|null $path
-     * @return string
-     */
-    private static function get_top_category_name(?string $path): string {
-        global $DB;
-
-        static $cache = [];
-
-        if (empty($path)) {
-            return '';
-        }
-
-        $topcategoryid = self::get_top_category_id($path);
-
-        if ($topcategoryid <= 0) {
-            return '';
-        }
-
-        if (!array_key_exists($topcategoryid, $cache)) {
-            $record = $DB->get_record(
-                'grade_categories',
-                ['id' => $topcategoryid],
-                'fullname',
-                IGNORE_MISSING
-            );
-
-            $cache[$topcategoryid] = $record
-                ? format_string($record->fullname)
-                : '';
-        }
-
-        return $cache[$topcategoryid];
-    }
-
-    /**
-     * Get the top-level category ID from a category path.
-     *
-     * For a path like:
-     *   /1/2/5/9
-     *  Returns 2.
-     *
-     * @param string|null $path
-     * @return int
-     */
-    private static function get_top_category_id(?string $path): int {
-        if (empty($path)) {
-            return 0;
-        }
-
-        $ids = array_values(array_filter(
-            explode('/', trim($path, '/')),
-            'strlen'
-        ));
-
-        // Need at least root category + top-level category.
-        if (!isset($ids[1])) {
-            return 0;
-        }
-
-        return (int)$ids[1];
+        // Instead of duplicating the code, just return the filters.
+        return $this->get_all_filters();
     }
 }
