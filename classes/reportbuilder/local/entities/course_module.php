@@ -423,8 +423,8 @@ class course_module extends base {
                     ->set_is_sortable(true)
                     ->add_field("{$modulealias}.enableaitools")
                     ->add_callback(function ($value) {
-                        // Treat NULL as false (No).
-                        return format::boolean_as_text($value ?? false);
+                        // Mirror Moodle core: NULL is treated as YES (1).
+                        return format::boolean_as_text($value ?? true);
                     });
             }
         }
@@ -453,9 +453,17 @@ class course_module extends base {
                     ->set_type(column::TYPE_TEXT)
                     ->set_is_sortable(true)
                     ->add_field("{$modulealias}.enabledaiactions")
-                    ->add_callback(function ($value) {
-                        if (empty($value)) {
+                    ->add_field("{$modulealias}.enableaitools", "enableaitools")
+                    ->add_callback(function ($value, $row) {
+                        // If AI tools are not enabled, we return a message indicating that.
+                        $enableaitools = ($row->enableaitools ?? true); // Mirror Moodle core: NULL is treated as YES (1).
+                        if (!$enableaitools) {
                             return get_string('none');
+                        }
+
+                        // If the value is empty, we return a message indicating that all actions are enabled.
+                        if (empty($value)) {
+                            return get_string('allaiactionsenabled', 'local_activitysetting');
                         }
 
                         $actions = json_decode($value, true);
@@ -723,7 +731,7 @@ class course_module extends base {
                     'enableaitools',
                     new lang_string('enableaitoolsincourseactivity', 'ai'),
                     $this->get_entity_name(),
-                    "COALESCE({$modulealias}.enableaitools, 0)"
+                    "COALESCE({$modulealias}.enableaitools, 1)" // Changed 0 to 1 to mirror Moodle core logic.
                 ))
                     ->add_joins($this->get_joins());
             }

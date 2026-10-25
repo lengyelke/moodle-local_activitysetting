@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['allaiactionsenabled'] = 'All available AI features enabled';
 $string['assignmentnamewithlink'] = 'Assignment Name with Link';
 $string['assignmentsetting'] = 'Assignment Settings';
 $string['categorydepth'] = 'Gradebook Category Depth';

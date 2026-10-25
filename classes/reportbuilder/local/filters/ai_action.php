@@ -70,12 +70,10 @@ class ai_action extends select {
         $operator = (int) ($values["{$this->name}_operator"] ?? self::ANY_VALUE);
         $value = (string) ($values["{$this->name}_value"] ?? '');
 
-        // No filtering required.
         if ($operator === self::ANY_VALUE || $value === '') {
             return ['', []];
         }
 
-        // Ensure the submitted value is one of our available AI actions.
         if (!array_key_exists($value, $this->get_select_options())) {
             return ['', []];
         }
@@ -83,17 +81,33 @@ class ai_action extends select {
         $fieldsql = $this->filter->get_field_sql();
         $params = $this->filter->get_field_params();
 
-        $paramname = database::generate_param_name();
+        // IMPORTANT: To get the master toggle, we need to derive the table alias.
+        // Since $fieldsql is "alias.enabledaiactions", we split it to get "alias".
+        $parts = explode('.', $fieldsql);
+        $alias = $parts[0];
+        $mastertoggle = "{$alias}.enableaitools";
 
+        $paramname = database::generate_param_name();
         $pattern = '%"' . $DB->sql_like_escape($value) . '":1%';
+
+        // EFFECTIVE LOGIC:
+        // The action is effectively ENABLED if:
+        // (Master Toggle is NOT 0) AND (JSON is NULL OR JSON contains action:1).
+
+        $effectivelyenabled = "({$mastertoggle} IS NULL OR {$mastertoggle} = 1) AND ({$fieldsql} IS NULL OR " . $DB->sql_like($fieldsql, ":$paramname", false) . ")";
 
         switch ($operator) {
             case self::EQUAL_TO:
-                $sql = $DB->sql_like($fieldsql, ":$paramname", false);
+                // Match records where the action is effectively enabled.
+                $sql = "{$effectivelyenabled}";
                 break;
 
             case self::NOT_EQUAL_TO:
-                $sql = $DB->sql_like($fieldsql, ":$paramname", false, true);
+                // Match records where the action is effectively disabled.
+                // This includes:
+                // 1. Master toggle is 0.
+                // 2. Master toggle is ON, but JSON explicitly says 0 (or is not NULL and doesn't contain 1).
+                $sql = "NOT ({$effectivelyenabled})";
                 break;
 
             default:
@@ -118,3 +132,4 @@ class ai_action extends select {
         ];
     }
 }
+
