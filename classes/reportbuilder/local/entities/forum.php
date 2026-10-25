@@ -65,7 +65,7 @@ class forum extends base {
             $this->add_filter($filter);
         }
 
-        $conditions = $this->get_all_filters();
+        $conditions = $this->get_all_conditions();
         foreach ($conditions as $condition) {
             $this->add_condition($condition);
         }
@@ -196,11 +196,11 @@ class forum extends base {
             ->add_field("{$forumalias}.course", "cid")
             ->add_callback(function ($value, $row) use ($DB, $CFG) {
                 // If the value is 1, it means not allowed.
-                if ($value == 1) {
+                if ($value === 1) {
                     return get_string('uploadnotallowed', 'core');
                 }
                 // If the value is 0, it means site/course limit.
-                if ($value == 0) {
+                if ($value === 0) {
                     return get_string('uploadsiteorcourse', 'local_activitysetting');
                 }
                 // Render as human-friendly size.
@@ -299,7 +299,7 @@ class forum extends base {
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.lockdiscussionafter")
             ->add_callback(static function ($value, $row) {
-                return ($value == 0) ? get_string('discussionlockingdisabled', 'forum') : format::format_time($value, $row);
+                return ($value === 0) ? get_string('discussionlockingdisabled', 'forum') : format::format_time($value, $row);
             });
 
         // Block period.
@@ -313,7 +313,7 @@ class forum extends base {
             ->set_is_sortable(true)
             ->add_field("{$forumalias}.blockperiod")
             ->add_callback(static function ($value, $row) {
-                return ($value == 0) ? get_string('blockperioddisabled', 'forum') : format::format_time($value, $row);
+                return ($value === 0) ? get_string('blockperioddisabled', 'forum') : format::format_time($value, $row);
             });
 
         // Block after.
@@ -725,5 +725,15 @@ class forum extends base {
             ->add_joins($this->get_joins());
 
         return $filters;
+    }
+
+    /**
+     * Returns list of all available filters as conditions.
+     * @return filter[]
+     *
+     */
+    protected function get_all_conditions(): array {
+        // Instead of duplicating the code, just return the filters.
+        return $this->get_all_filters();
     }
 }
