@@ -87,6 +87,8 @@ class course_section extends base {
      * The result is either HTML or plain text based on the download parameter.
      *
      * @param int $sectionid
+     * @param int $courseid
+     * @param string|null $availability
      * @return string
      */
     private static function format_section_availability($sectionid, int $courseid, ?string $availability): string {

@@ -90,13 +90,14 @@ class course_module extends base {
      * The result is either HTML or plain text based on the download parameter.
      *
      * @param int $cmid
+     * @param int $courseid
+     * @param string|null $availability
      * @return string
      */
     private static function format_availability($cmid, int $courseid, ?string $availability): string {
         global $OUTPUT;
 
         // First get the basic course module record.
-        //$cm = get_coursemodule_from_id('', $cmid, 0, false, MUST_EXIST);
         $json = $availability;
 
         if (empty($json)) {
