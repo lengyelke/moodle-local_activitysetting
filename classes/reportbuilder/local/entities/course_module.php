@@ -76,7 +76,7 @@ class course_module extends base {
             $this->add_filter($filter);
         }
 
-        $conditions = $this->get_all_filters();
+        $conditions = $this->get_all_conditions();
         foreach ($conditions as $condition) {
             $this->add_condition($condition);
         }
@@ -92,20 +92,20 @@ class course_module extends base {
      * @param int $cmid
      * @return string
      */
-    private static function format_availability($cmid) {
+    private static function format_availability($cmid, int $courseid, ?string $availability): string {
         global $OUTPUT;
 
         // First get the basic course module record.
-        $cm = get_coursemodule_from_id('', $cmid, 0, false, MUST_EXIST);
-        $json = $cm->availability;
+        //$cm = get_coursemodule_from_id('', $cmid, 0, false, MUST_EXIST);
+        $json = $availability;
 
         if (empty($json)) {
             return get_string('none', 'core');
         }
 
         // Then get the cm_info object.
-        $modinfo = get_fast_modinfo($cm->course);
-        $cminfo = $modinfo->get_cm($cm->id);
+        $modinfo = get_fast_modinfo($courseid);
+        $cminfo = $modinfo->get_cm($cmid);
 
         try {
             $info = new \core_availability\info_module($cminfo);
@@ -116,7 +116,7 @@ class course_module extends base {
             } else {
                 $notfullhtml = $converted;
             }
-            $html = \core_availability\info::format_info($notfullhtml, $cm->course);
+            $html = \core_availability\info::format_info($notfullhtml, $courseid);
 
             // Remove HTML tags and decode HTML entities.
             $nonhtml = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -345,8 +345,14 @@ class course_module extends base {
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
             ->add_field("{$modulealias}.id")
-            ->add_callback(function ($value) {
-                return self::format_availability($value);
+            ->add_field("{$modulealias}.course", "courseid")
+            ->add_field("{$modulealias}.availability", "availability")
+            ->add_callback(function ($value, $row) {
+                return self::format_availability(
+                    $value,
+                    (int) $row->courseid,
+                    $row->availability
+                );
             });
 
         // Course module deletioninprogress.
@@ -382,7 +388,14 @@ class course_module extends base {
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
             ->set_is_sortable(true)
-            ->add_field("{$modulealias}.lang");
+            ->add_field("{$modulealias}.lang")
+            ->add_callback(function ($value) {
+                if (empty($value)) {
+                    return get_string('forceno', 'core');
+                }
+                $langname = get_string_manager()->get_list_of_translations()[$value] ?? $value;
+                return $langname;
+            });
 
         // Enable AI tools since Moodle 5.1.
         if ($CFG->version >= 2025110500) {
@@ -528,10 +541,6 @@ class course_module extends base {
         $this->add_join("JOIN {modules} {$modalias}
                         ON {$modalias}.id = {$modulealias}.module");
         $groupingalias = $this->get_table_alias('groupings');
-
-        $this->add_join("LEFT JOIN {groupings} {$groupingalias}
-                        ON {$groupingalias}.id = {$modulealias}.groupingid
-                        AND {$groupingalias}.courseid = {$modulealias}.course");
 
         // General filters
         // Course module visible.
@@ -693,9 +702,7 @@ class course_module extends base {
             "{$modulealias}.lang"
         ))
             ->add_joins($this->get_joins())
-            ->set_options([
-                get_string_manager()->get_list_of_translations(),
-            ]);
+            ->set_options(['' => get_string('forceno')] + get_string_manager()->get_list_of_translations());
 
         // Enable AI tools filter since Moodle 5.1.
         if ($CFG->version >= 2025110500) {
@@ -759,15 +766,12 @@ class course_module extends base {
     }
 
     /**
-     * Return list of all available conditions - not used - same as filters
-     *
-     * @return array
+     * Returns list of all available filters as conditions.
+     * @return filter[]
      *
      */
     protected function get_all_conditions(): array {
-
-        $conditions = [];
-
-        return $conditions;
+        // Instead of duplicating the code, just return the filters.
+        return $this->get_all_filters();
     }
 }
