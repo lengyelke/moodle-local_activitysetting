@@ -27,6 +27,7 @@ use local_activitysetting\reportbuilder\local\entities\course_module;
 use local_activitysetting\reportbuilder\local\entities\grade_item;
 use local_activitysetting\reportbuilder\local\entities\course_section;
 use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helper;
+use local_activitysetting\reportbuilder\local\entities\grade_category;
 
 
 /**
@@ -111,6 +112,15 @@ class quizzes extends datasource {
                             AND $gradeitemalias.itemmodule = 'quiz'
                             AND $gradeitemalias.courseid = $quizalias.course";
         $this->add_entity($gradeitementity->add_join($gradeitemjoin));
+
+        // Add the grade category entity.
+        $gradecategoryentity = new grade_category();
+        $gradecategoryalias = $gradecategoryentity->get_table_alias('grade_categories');
+        $gradecategoryentity->add_joins($courseentity->get_joins());
+        $gradecategoryentity->add_joins($gradeitementity->get_joins());
+        $gradecategoryjoin = "LEFT JOIN {grade_categories} $gradecategoryalias
+                                ON $gradecategoryalias.id = $gradeitemalias.categoryid";
+        $this->add_entity($gradecategoryentity->add_join($gradecategoryjoin));
 
         $this->add_column(
             activity_link_column_helper::create_name_with_link_column(

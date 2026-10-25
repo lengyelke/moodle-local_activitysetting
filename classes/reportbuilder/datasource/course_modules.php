@@ -24,6 +24,7 @@ use core_course\reportbuilder\local\entities\course_category;
 use local_activitysetting\reportbuilder\local\entities\course_module;
 use local_activitysetting\reportbuilder\local\entities\grade_item;
 use local_activitysetting\reportbuilder\local\entities\course_section;
+use local_activitysetting\reportbuilder\local\entities\grade_category;
 
 /**
  * Course Modules settings datasource
@@ -106,6 +107,15 @@ class course_modules extends datasource {
                             AND $gradeitemalias.itemmodule = {$modulesalias}.name
                             AND $gradeitemalias.itemtype = 'mod'";
         $this->add_entity($gradeitementity->add_join($gradeitemjoin));
+
+        // Add the grade category entity.
+        $gradecategoryentity = new grade_category();
+        $gradecategoryalias = $gradecategoryentity->get_table_alias('grade_categories');
+        $gradecategoryentity->add_joins($courseentity->get_joins());
+        $gradecategoryentity->add_joins($gradeitementity->get_joins());
+        $gradecategoryjoin = "LEFT JOIN {grade_categories} $gradecategoryalias
+                                ON $gradecategoryalias.id = $gradeitemalias.categoryid";
+        $this->add_entity($gradecategoryentity->add_join($gradecategoryjoin));
 
         $this->add_all_from_entities();
     }
