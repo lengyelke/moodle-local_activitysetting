@@ -89,8 +89,8 @@ class assignments extends datasource {
         $coursemoduleentity = new course_module();
         $coursemodulealias = $coursemoduleentity->get_table_alias('course_modules');
         $coursemoduleentity->add_joins($courseentity->get_joins());
-        $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $assignalias.id = $coursemodulealias.instance
-                            and $coursemodulealias.module = (SELECT id FROM {modules} WHERE name = 'assign')";
+        $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $coursemodulealias.instance = $assignalias.id
+                             JOIN {modules} m ON m.id = $coursemodulealias.module AND m.name = 'assign'";
         $this->add_entity($coursemoduleentity->add_join($coursemodulejoin));
 
         // Add the course section entity.

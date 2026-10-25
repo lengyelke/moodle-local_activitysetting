@@ -90,8 +90,8 @@ class scorms extends datasource {
         $coursemoduleentity = new course_module();
         $coursemodulealias = $coursemoduleentity->get_table_alias('course_modules');
         $coursemoduleentity->add_joins($courseentity->get_joins());
-        $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $scormalias.id = $coursemodulealias.instance
-                            and $coursemodulealias.module = (SELECT id FROM {modules} WHERE name = 'scorm')";
+        $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON  $coursemodulealias.instance = $scormalias.id
+                             JOIN {modules} m ON m.id = $coursemodulealias.module AND m.name = 'scorm'";
         $this->add_entity($coursemoduleentity->add_join($coursemodulejoin));
 
         // Add the course section entity.

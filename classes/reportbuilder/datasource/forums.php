@@ -90,8 +90,8 @@ class forums extends datasource {
         $coursemoduleentity = new course_module();
         $coursemodulealias = $coursemoduleentity->get_table_alias('course_modules');
         $coursemoduleentity->add_joins($courseentity->get_joins());
-        $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $forumalias.id = $coursemodulealias.instance
-                            and $coursemodulealias.module = (SELECT id FROM {modules} WHERE name = 'forum')";
+        $coursemodulejoin = "JOIN {course_modules} $coursemodulealias ON $coursemodulealias.instance = $forumalias.id
+                             JOIN {modules} m ON m.id = $coursemodulealias.module AND m.name = 'forum'";
         $this->add_entity($coursemoduleentity->add_join($coursemodulejoin));
 
         // Add the course section entity.
