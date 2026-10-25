@@ -74,7 +74,7 @@ class assignment extends base {
             $this->add_filter($filter);
         }
 
-        $conditions = $this->get_all_filters();
+        $conditions = $this->get_all_conditions();
         foreach ($conditions as $condition) {
             $this->add_condition($condition);
         }
@@ -603,10 +603,6 @@ class assignment extends base {
         $assignalias = $this->get_table_alias('assign');
         $groupingalias = $this->get_table_alias('groupings');
 
-        $this->add_join("LEFT JOIN {groupings} {$groupingalias}
-                        ON {$groupingalias}.id = {$assignalias}.teamsubmissiongroupingid
-                        AND {$groupingalias}.courseid = {$assignalias}.course");
-
         // Assignment name filter.
         $filters[] = (new filter(
             text::class,
@@ -1017,14 +1013,12 @@ class assignment extends base {
     }
 
     /**
-     * Return list of all available conditions - not used - same as filters
+     * Returns list of all available filters as conditions.
+     * @return filter[]
      *
-     * @return array
      */
     protected function get_all_conditions(): array {
-
-        $conditions = [];
-
-        return $conditions;
+        // Instead of duplicating the code, just return the filters.
+        return $this->get_all_filters();
     }
 }
