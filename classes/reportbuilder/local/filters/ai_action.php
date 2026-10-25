@@ -94,7 +94,10 @@ class ai_action extends select {
         // The action is effectively ENABLED if:
         // (Master Toggle is NOT 0) AND (JSON is NULL OR JSON contains action:1).
 
-        $effectivelyenabled = "({$mastertoggle} IS NULL OR {$mastertoggle} = 1) AND ({$fieldsql} IS NULL OR " . $DB->sql_like($fieldsql, ":$paramname", false) . ")";
+        $effectivelyenabled = "({$mastertoggle} IS NULL
+                                    OR {$mastertoggle} = 1)
+                                     AND ({$fieldsql} IS NULL
+                                      OR " . $DB->sql_like($fieldsql, ":$paramname", false) . ")";
 
         switch ($operator) {
             case self::EQUAL_TO:
