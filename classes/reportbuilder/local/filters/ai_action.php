@@ -135,4 +135,3 @@ class ai_action extends select {
         ];
     }
 }
-
