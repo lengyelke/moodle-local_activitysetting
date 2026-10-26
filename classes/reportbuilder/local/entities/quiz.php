@@ -669,7 +669,7 @@ class quiz extends base {
             });
 
         // Safe Exam Browser Yes/No fields.
-        $columns[] = (new column(
+        $sebconfigyesnocolumn = (new column(
             'safeexambrowserconfigyesno',
             new lang_string('sebconfigyesno', 'local_activitysetting'),
             $this->get_entity_name()
@@ -692,60 +692,82 @@ class quiz extends base {
             ->add_field("{$quizaccessalias}.muteonstartup", "muteonstartup")
             ->add_field("{$quizaccessalias}.allowcapturecamera", "allowcapturecamera")
             ->add_field("{$quizaccessalias}.allowcapturemicrophone", "allowcapturemicrophone")
-            ->add_field("{$quizaccessalias}.filterembeddedcontent", "filterembeddedcontent")
+            ->add_field("{$quizaccessalias}.filterembeddedcontent", "filterembeddedcontent");
 
-            ->add_callback(function ($value, $row) use ($quizaccessalias): string {
-                $options = [];
-                if ($row->showsebdownloadlink) {
-                    $options[] = get_string('seb_showsebdownloadlink', 'quizaccess_seb');
-                }
-                if ($row->userconfirmquit) {
-                    $options[] = get_string('seb_userconfirmquit', 'quizaccess_seb');
-                }
-                if ($row->allowuserquitseb) {
-                    $options[] = get_string('seb_allowuserquitseb', 'quizaccess_seb');
-                }
-                if ($row->allowreloadinexam) {
-                    $options[] = get_string('seb_allowreloadinexam', 'quizaccess_seb');
-                }
-                if ($row->showsebtaskbar) {
-                    $options[] = get_string('seb_showsebtaskbar', 'quizaccess_seb');
-                }
-                if ($row->showsebtaskbar && $row->showreloadbutton) {
-                    $options[] = get_string('seb_showreloadbutton', 'quizaccess_seb');
-                }
-                if ($row->showsebtaskbar && $row->showtime) {
-                    $options[] = get_string('seb_showtime', 'quizaccess_seb');
-                }
-                if ($row->showsebtaskbar && $row->showkeyboardlayout) {
-                    $options[] = get_string('seb_showkeyboardlayout', 'quizaccess_seb');
-                }
-                if ($row->showsebtaskbar && $row->showwificontrol) {
-                    $options[] = get_string('seb_showwificontrol', 'quizaccess_seb');
-                }
-                if ($row->enableaudiocontrol) {
-                    $options[] = get_string('seb_enableaudiocontrol', 'quizaccess_seb');
-                }
-                if ($row->enableaudiocontrol && $row->muteonstartup) {
-                    $options[] = get_string('seb_muteonstartup', 'quizaccess_seb');
-                }
-                if ($row->allowcapturecamera) {
-                    $options[] = get_string('seb_allowcapturecamera', 'quizaccess_seb');
-                }
-                if ($row->allowcapturemicrophone) {
-                    $options[] = get_string('seb_allowcapturemicrophone', 'quizaccess_seb');
-                }
-                if ($row->allowspellchecking) {
-                    $options[] = get_string('seb_allowspellchecking', 'quizaccess_seb');
-                }
-                if ($row->activateurlfiltering) {
-                    $options[] = get_string('seb_activateurlfiltering', 'quizaccess_seb');
-                }
-                if ($row->activateurlfiltering && $row->filterembeddedcontent) {
-                    $options[] = get_string('seb_filterembeddedcontent', 'quizaccess_seb');
-                }
-                return $options ? implode('; ', $options) : get_string('none');
-            });
+        // Screen capture was added to Safe Exam Browser settings in Moodle 5.2.
+        if ($CFG->version >= 2026042000) {
+            $sebconfigyesnocolumn->add_field("{$quizaccessalias}.allowscreencapture", "allowscreencapture");
+        }
+
+        $columns[] = $sebconfigyesnocolumn->add_callback(function ($value, $row) use ($quizaccessalias, $CFG): string {
+            $options = [];
+            if ($row->showsebdownloadlink) {
+                $options[] = get_string('seb_showsebdownloadlink', 'quizaccess_seb');
+            }
+            if ($row->userconfirmquit) {
+                $options[] = get_string('seb_userconfirmquit', 'quizaccess_seb');
+            }
+            if ($row->allowuserquitseb) {
+                $options[] = get_string('seb_allowuserquitseb', 'quizaccess_seb');
+            }
+            if ($row->allowreloadinexam) {
+                $options[] = get_string('seb_allowreloadinexam', 'quizaccess_seb');
+            }
+            if ($row->showsebtaskbar) {
+                $options[] = get_string('seb_showsebtaskbar', 'quizaccess_seb');
+            }
+            if ($row->showsebtaskbar && $row->showreloadbutton) {
+                $options[] = get_string('seb_showreloadbutton', 'quizaccess_seb');
+            }
+            if ($row->showsebtaskbar && $row->showtime) {
+                $options[] = get_string('seb_showtime', 'quizaccess_seb');
+            }
+            if ($row->showsebtaskbar && $row->showkeyboardlayout) {
+                $options[] = get_string('seb_showkeyboardlayout', 'quizaccess_seb');
+            }
+            if ($row->showsebtaskbar && $row->showwificontrol) {
+                $options[] = get_string('seb_showwificontrol', 'quizaccess_seb');
+            }
+            if ($row->enableaudiocontrol) {
+                $options[] = get_string('seb_enableaudiocontrol', 'quizaccess_seb');
+            }
+            if ($row->enableaudiocontrol && $row->muteonstartup) {
+                $options[] = get_string('seb_muteonstartup', 'quizaccess_seb');
+            }
+            if ($row->allowcapturecamera) {
+                $options[] = get_string('seb_allowcapturecamera', 'quizaccess_seb');
+            }
+            if ($row->allowcapturemicrophone) {
+                $options[] = get_string('seb_allowcapturemicrophone', 'quizaccess_seb');
+            }
+            if ($row->allowspellchecking) {
+                $options[] = get_string('seb_allowspellchecking', 'quizaccess_seb');
+            }
+            if ($row->activateurlfiltering) {
+                $options[] = get_string('seb_activateurlfiltering', 'quizaccess_seb');
+            }
+            if ($row->activateurlfiltering && $row->filterembeddedcontent) {
+                $options[] = get_string('seb_filterembeddedcontent', 'quizaccess_seb');
+            }
+            if ($CFG->version >= 2026042000 && !empty($row->allowscreencapture)) {
+                $options[] = get_string('seb_allowscreencapture', 'quizaccess_seb');
+            }
+            return $options ? implode('; ', $options) : get_string('none');
+        });
+
+        // Safe Exam Browser numeric fields.
+        // SEB Maximum allowed displays - Since Moodle 5.3.
+        if ($CFG->version >= 2026100500) {
+            $columns[] = (new column(
+                'alloweddisplaysmaxnumber',
+                new lang_string('seb_alloweddisplaysmaxnumber', 'quizaccess_seb'),
+                $this->get_entity_name()
+            ))
+                ->set_type(column::TYPE_INTEGER)
+                ->set_is_sortable(true)
+                ->add_joins($this->get_joins())
+                ->add_field("{$quizaccessalias}.alloweddisplaysmaxnumber");
+        }
 
         // Safe Exam Browser Text fields.
         // Quit password.
@@ -1256,6 +1278,18 @@ class quiz extends base {
                 3 => get_string('seb_use_upload', 'quizaccess_seb'),
                 4 => get_string('seb_use_client', 'quizaccess_seb'),
             ]);
+
+        // SEB Maximum allowed displays filter. Since Moodle 5.3.
+        if ($CFG->version >= 2026100500) {
+            $filters[] = (new filter(
+                number::class,
+                'alloweddisplaysmaxnumber',
+                new lang_string('seb_alloweddisplaysmaxnumber', 'quizaccess_seb'),
+                $this->get_entity_name(),
+                "{$quizaccessalias}.alloweddisplaysmaxnumber"
+            ))
+                ->add_joins($this->get_joins());
+        }
 
         // Require password filter.
         $filters[] = (new filter(
