@@ -1,12 +1,25 @@
 # Changelog
 
-## [Unreleased]
+## v1.4.0 [unknown date, unreleased]
 
-To improve performance and support more advanced Gradebook reporting, most of the Grade Category Settings (Gradebook) will be available via a new dedicated entity.
+> [!NOTE]
+> To improve performance and support more advanced **Gradebook reporting**, most of the `Gradebook Category Settings` are now available via a new dedicated entity.
 
-### (will be) Added
 
-- New `Grade Category Settings` entity with the following Coulmns+Filters
+### Removed
+> [!WARNING]
+> Important information, please read it before upgrading the plugin
+- The following three columns and their corresponding filters from the `Grade Item Settings` entity have been removed!
+  - Gradebook Category Path
+  - Gradebook Category Depth
+  - Top Subcategory Name
+- If you have created Custom Reports using any of the columns listed above, **those reports will need to be updated after the upgrade**.
+- These columns are replaced by equivalent columns in a new, dedicated **Gradebook Category Settings** entity.
+
+
+### Added
+
+- New `Gradebook Category Settings` entity with the following Columns + Filters
   - Category Path (replacing Gradebook Category Path from Grade Item Settings)
   - Category Depth (replacing Gradebook Category Depth from Grade Item Settings)
   - Top subcategory name (replacing Top subcategory name from Grade Item Settings)
@@ -18,14 +31,37 @@ To improve performance and support more advanced Gradebook reporting, most of th
   - Include outcomes in aggregation
   - Hidden
   - Last modified
-  - and many more ...
+  - and many more...
 
-### (will be) Removed
-- The following three columns and their corresponding filters from the `Grade Item Settings` entity
-  - Gradebook Category Path
-  - Gradebook Category Depth
-  - Top Subcategory Name
-- If you have created Custom Reports using any of the columns listed above, **those reports will need to be updated after the next upgrade**.
+- The new `Gradebook Category Settings` entity is available in all the other existing datasources, replacing the three `Grade Item Settings` columns, see Removed section below
+
+- There is a new `Gradebook Category Settings` datasource on its own, including
+  - Gradebook Category Settings
+  - Course
+  - Course category
+  - Grade Item Settings
+
+- New columns and filters in the `Grade Item Settings` entity
+  - Multiplicator, Offset, Grade display type, Grade display decimal points, Scale name
+
+- New settings in relevant activities due to new Moodle release
+  - Since Moodle 5.3
+    - A new `Number of optional markers` option is availabe in **Assignments** - corresponding Column+Filter are available in the `Assignment Settings` entity.
+    - A new `Maximum allowed displays` setting is available in **Quizzes** under Safe Exam Browser - corresponding Column+Filter are available in the `Quiz Settings` entity.
+  - Since Moodle 5.2
+    - A new `Allow browser access to screen` setting is available in **Quizzes** under Safe Exam Browser - corresponding value is available in the `Safe Exam Browser Config Yes/No fields` within the `Quiz Settings` entity.
+
+### Fixed
+- Force language filter never worked properly in the `Course Module Settings` entity
+- Course Section and Course Module availability (Access restrictions) should be converted faster to human readable format even in large reports
+- It turns out that Moodle is using a "default-to-ON" logic for the **AI tools**. NULL in AI tools related fields is treated as YES, therefore the two relevant Columns + Filters were not working properly in the previous version of the plugin.
+  - Allow AI tools in this activity
+    - NULL or 1 = Yes
+    - 0 = No
+  - Enabled AI features for this activity
+    - NULL = All of them are enabled without mentioning anything in the field
+    - {"summarise_text":0,"explain_text":0} 0 = No, missing feature (generate_text) is set to Yes
+    - {"summarise_text":0,"explain_text":1,"generate_text":0} 1 = Yes; 0 = No
 
 
 ## v1.3.1 (2026-10-17)
@@ -44,9 +80,9 @@ To improve performance and support more advanced Gradebook reporting, most of th
 - In the Quiz entity the 'Require the use of Safe Exam Browser' was mistreated. The 'Not set' option has been removed, so the filter should work now.
 - In the assignment entity two different columns had the same key
   - the `submissionattachments` column was called `submissionattachments`
-  - but unfortunatley the `alwaysshowdescription` column was also called `submissionattachments`
+  - but unfortunately the `alwaysshowdescription` column was also called `submissionattachments`
 -  In the assignment entity one filter was using the wrong field
-  - the `alwaysshowdescription` filter was using the `nosubmissions` field's value
+   - the `alwaysshowdescription` filter was using the `nosubmissions` field's value
 
 ### Deprecated
   - The following columns are currently available through the `Grade Item Setting` entity:
@@ -114,7 +150,7 @@ Same as v1.2.0
 - The Course Module entity now has a new column called 'Activity Plugin Type'
   - = modules.name
 
-- New Course Modules Datasource without a specific activity (showing all)
+- New Course Modules datasource without a specific activity (showing all)
   - Course Module Settings
     - New 'Activity Plugin Type' column, can be used as filter
   - Course
@@ -122,7 +158,7 @@ Same as v1.2.0
   - Course Section Settings
   - Grade Item Settings
 
-- New Course Sections Datasource (without any activity)
+- New Course Sections datasource (without any activity)
   - Course Sections Settings
   - Course
   - Course category
@@ -165,7 +201,7 @@ Fixing all the PHP coding errors and making the 'Last modified' column & filter 
 ### Changed
 
 - The name of the Timemodified (last modified) column comes from the local_activitysetting language file for consistency,
-and it is called 'Last modified' accross the entities.
+and it is called 'Last modified' across the entities.
   - Assign
   - Forum
 
