@@ -416,6 +416,23 @@ class assignment extends base {
                 });
         }
 
+        // Optional markers column - Since 5.3.
+        if ($CFG->version >= 2026100500) {
+            $columns[] = (new column(
+                'optionalmarkercount',
+                new lang_string('optionalmarkercount', 'mod_assign'),
+                $this->get_entity_name()
+            ))
+                ->add_joins($this->get_joins())
+                ->set_type(column::TYPE_INTEGER)
+                ->set_is_sortable(false)
+                ->add_field("{$assignalias}.optionalmarkercount", 'optionalmarkercount')
+                ->add_field("{$assignalias}.markingallocation", 'markingallocation')
+                ->add_callback(static function ($value, $row): string {
+                    return empty($row->markingallocation) ? '' : (string)$value;
+                });
+        }
+
         // Multimarkmethod column, Since 5.2.
         if ($CFG->version >= 2026042000) {
             $columns[] = (new column(
@@ -879,6 +896,18 @@ class assignment extends base {
                 new lang_string('markercount', 'mod_assign'),
                 $this->get_entity_name(),
                 "CASE WHEN {$assignalias}.markingallocation = 1 THEN {$assignalias}.markercount ELSE NULL END"
+            ))
+                ->add_joins($this->get_joins());
+        }
+
+        // Optional markers filter - Since 5.3.
+        if ($CFG->version >= 2026100500) {
+            $filters[] = (new filter(
+                number::class,
+                'optionalmarkercount',
+                new lang_string('optionalmarkercount', 'mod_assign'),
+                $this->get_entity_name(),
+                "CASE WHEN {$assignalias}.markingallocation = 1 THEN {$assignalias}.optionalmarkercount ELSE NULL END"
             ))
                 ->add_joins($this->get_joins());
         }
