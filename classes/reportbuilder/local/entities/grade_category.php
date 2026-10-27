@@ -180,14 +180,22 @@ class grade_category extends base {
             ->set_type(column::TYPE_INTEGER)
             ->set_is_sortable(true)
             ->add_field("{$gradecategoriesalias}.aggregation")
-            ->add_callback(static function (int|null $value): string {
+            ->add_field("{$gradecategoryasitemalias}.calculation", 'calculation_val')
+            ->add_callback(static function (int|null $value, $row): string {
                 if ($value === null) {
                     return '';
                 }
 
-                // Use core's helper.
+                // Get the standard aggregation string (e.g., "Weighted mean of grades").
                 $strings = \grade_helper::get_aggregation_strings();
-                return $strings[$value] ?? get_string('unknown', 'local_activitysetting');
+                $aggregationname = $strings[$value] ?? get_string('unknown', 'local_activitysetting');
+
+                // If it's a calculated grade, add the prefix.
+                if ($row->calculation_val !== null) {
+                    return get_string('calculatedgrade', 'grades') . ' (' . $aggregationname . ')';
+                }
+
+                return $aggregationname;
             });
 
         // Keep the highest column.
