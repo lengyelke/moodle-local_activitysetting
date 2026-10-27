@@ -269,6 +269,21 @@ class course_section extends base {
         ))
             ->add_joins($this->get_joins());
 
+        // Course section availability filter.
+        $filters[] = (new filter(
+            text::class,
+            'availability',
+            new lang_string('accessrestrictions', 'availability'),
+            $this->get_entity_name(),
+            "{$sectionalias}.availability"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_limited_operators([
+                text::ANY_VALUE,
+                text::IS_EMPTY,
+                text::IS_NOT_EMPTY,
+            ]);
+
         // Course section component filter.
         $filters[] = (new filter(
             select::class,
