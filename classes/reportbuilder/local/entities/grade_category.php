@@ -795,6 +795,21 @@ class grade_category extends base {
         ))
             ->add_joins($this->get_joins());
 
+        // Grade category calculation filter.
+        $filters[] = (new filter(
+            text::class,
+            'calculation',
+            new lang_string('calculation', 'grades'),
+            $this->get_entity_name(),
+            "{$gradecategoryasitemalias}.calculation"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_limited_operators([
+                text::ANY_VALUE,
+                text::IS_EMPTY,
+                text::IS_NOT_EMPTY,
+            ]);
+
         // Grade type filter.
         $filters[] = (new filter(
             select::class,
