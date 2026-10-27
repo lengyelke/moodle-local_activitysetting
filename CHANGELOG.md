@@ -58,6 +58,9 @@
     - Empty
     - Not empty
 
+- Core **tag** columns are now available in the `Course Module Settings` datasource
+  - Course Module Settings datasource = Course Module settings + Course (core) + Course category (core) + Course Section Settings + Grade Item Settings + Gradebook Category Settings + Tag (core)
+
 
 ### Fixed
 - Force language filter never worked properly in the `Course Module Settings` entity
