@@ -103,7 +103,7 @@ class grade_category extends base {
 
         $this->add_join("LEFT JOIN {grade_items} {$gradecategoryasitemalias}
          ON {$gradecategoryasitemalias}.iteminstance = {$gradecategoriesalias}.id
-         AND {$gradecategoryasitemalias}.itemtype = 'category'");
+         AND {$gradecategoryasitemalias}.itemtype in ('category', 'course')");
 
         $this->add_join("LEFT JOIN {scale} {$gradecategoryscalealias}
          ON {$gradecategoryscalealias}.id = {$gradecategoryasitemalias}.scaleid");
