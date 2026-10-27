@@ -682,6 +682,21 @@ class course_module extends base {
         ))
             ->add_joins($this->get_joins());
 
+        // Course module availability filter.
+        $filters[] = (new filter(
+            text::class,
+            'availability',
+            new lang_string('accessrestrictions', 'availability'),
+            $this->get_entity_name(),
+            "{$modulealias}.availability"
+        ))
+            ->add_joins($this->get_joins())
+            ->set_limited_operators([
+                text::ANY_VALUE,
+                text::IS_EMPTY,
+                text::IS_NOT_EMPTY,
+            ]);
+
         // Course module deletioninprogress.
         $filters[] = (new filter(
             boolean_select::class,
