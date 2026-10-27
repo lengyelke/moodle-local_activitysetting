@@ -51,6 +51,14 @@
   - Since Moodle 5.2
     - A new `Allow browser access to screen` setting is available in **Quizzes** under Safe Exam Browser - corresponding value is available in the `Safe Exam Browser Config Yes/No fields` within the `Quiz Settings` entity.
 
+- New Access restrictions (Availability) filter with limited operators to
+  - `Course Section Settings`
+  - `Course Module Settings`
+    - Any value
+    - Empty
+    - Not empty
+
+
 ### Fixed
 - Force language filter never worked properly in the `Course Module Settings` entity
 - Course Section and Course Module availability (Access restrictions) should be converted faster to human readable format even in large reports
