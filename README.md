@@ -54,7 +54,8 @@ Entities included
 - Shared or common entities
   - Course Section (course_sections)
   - Course Module (course_modules)
-  - Grade Item (grade_items) including Gradebook Category Path
+  - Grade Item (grade_items)
+  - Gradebook Category (grade_categories + grade_items) including Gradebook Category Path
 - Activity related entities
   -   Assignment (mod_assign)
   -   Forum (mod_forum)
@@ -64,14 +65,15 @@ Entities included
 Datasources included
 --------------------
 Every activity specific data source comes with information about the course (core Moodle), course category (core Moodle),
-course section, course modules and grade items.
+course section, course modules, grade items and gradebook categories.
 
 -   Assignments ( = mod_assign + course + course_categories + all shared entities)
 -   Forums ( = mod_forum + course + course_categories + all shared entities)
 -   Quizzes ( = mod_quiz + course + course_categories + all shared entities)
 -   SCORMs ( = mod_scorm + course + course_categories + all shared entities)
--   Course Modules ( = course_modules + course + course_categories + grade_items)
+-   Course Modules ( = course_modules + course + course_categories + grade_items + all shared entities + **tags**)
 -   Course Sections ( = course_sections + course + course_categories)
+-   Gradebook Categories ( = grade_categories + course + course_categories + grade_items)
 
 Changelog
 ---------
