@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.4.0 [unknown date, unreleased]
+## v1.4.0 [2026-11-02]
 
 > [!NOTE]
 > To improve performance and support more advanced **Gradebook reporting**, most of the `Gradebook Category Settings` are now available via a new dedicated entity.
