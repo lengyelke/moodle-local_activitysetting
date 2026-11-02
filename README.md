@@ -51,7 +51,7 @@ You need to know the corresponding database tables and the meaning of their colu
 
 Entities included
 -------------------
-- Shared or common entities
+- **Shared** or common entities
   - Course Section (course_sections)
   - Course Module (course_modules)
   - Grade Item (grade_items)
