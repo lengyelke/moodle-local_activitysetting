@@ -408,7 +408,7 @@ class assignment extends base {
             ))
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_INTEGER)
-                ->set_is_sortable(false)
+                ->set_is_sortable(true)
                 ->add_field("{$assignalias}.markercount", 'markercount')
                 ->add_field("{$assignalias}.markingallocation", 'markingallocation')
                 ->add_callback(static function ($value, $row): string {
@@ -425,7 +425,7 @@ class assignment extends base {
             ))
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_INTEGER)
-                ->set_is_sortable(false)
+                ->set_is_sortable(true)
                 ->add_field("{$assignalias}.optionalmarkercount", 'optionalmarkercount')
                 ->add_field("{$assignalias}.markingallocation", 'markingallocation')
                 ->add_callback(static function ($value, $row): string {
@@ -442,7 +442,7 @@ class assignment extends base {
             ))
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_TEXT)
-                ->set_is_sortable(false)
+                ->set_is_sortable(true)
                 ->add_field("{$assignalias}.multimarkmethod", 'multimarkmethod')
                 ->add_field("{$assignalias}.markingallocation", 'markingallocation')
                 ->add_callback(static function (string|null $multimarkmethod, $row): string {
@@ -467,7 +467,7 @@ class assignment extends base {
             ))
                 ->add_joins($this->get_joins())
                 ->set_type(column::TYPE_TEXT)
-                ->set_is_sortable(false)
+                ->set_is_sortable(true)
                 ->add_field("{$assignalias}.multimarkrounding", 'multimarkrounding')
                 ->add_field("{$assignalias}.markingallocation", 'markingallocation')
                 ->add_callback(static function (string|null $multimarkrounding, $row): string {
