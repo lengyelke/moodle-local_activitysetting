@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.4.1 [unknown]
+
+### Added
+
+- Tags are now available in all datasources where it is applicable
+  - Assignment
+  - Forum
+  - Quiz
+  - SCORM
+
+### Fixed
+
+- Some columns were unsortable in
+  - Assignment
+  - SCORM
+
 ## v1.4.0 [2026-11-02]
 
 > [!NOTE]
