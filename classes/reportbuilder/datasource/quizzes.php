@@ -28,6 +28,7 @@ use local_activitysetting\reportbuilder\local\entities\grade_item;
 use local_activitysetting\reportbuilder\local\entities\course_section;
 use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helper;
 use local_activitysetting\reportbuilder\local\entities\grade_category;
+use core_tag\reportbuilder\local\entities\tag;
 
 
 /**
@@ -134,6 +135,11 @@ class quizzes extends datasource {
                 '/mod/quiz/view.php'
             )
         );
+
+        $tagentity = new tag();
+        $this->add_entity($tagentity->add_joins(
+            $tagentity->get_tag_joins('core', 'course_modules', "{$coursemodulealias}.id")
+        ));
 
         $this->add_all_from_entities();
     }
