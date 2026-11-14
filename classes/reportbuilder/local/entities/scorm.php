@@ -199,7 +199,7 @@ class scorm extends base {
             $this->get_entity_name()
         ))
             ->set_type(column::TYPE_TEXT)
-            ->set_is_sortable(false)
+            ->set_is_sortable(true)
             ->add_joins($this->get_joins())
             ->add_field("{$scormalias}.options");
 
