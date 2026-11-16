@@ -69,6 +69,16 @@ jobs:
           # Uncomment this to run Behat tests using the Moodle App.
           # MOODLE_APP: 'true'
 
+      - name: Add plugin dependencies
+        run: |
+          moodle-plugin-ci add-plugin --branch $MOODLE_BRANCH \
+            lengyelke/moodle-local_activitysetting
+      
+          moodle-plugin-ci add-plugin --branch $MOODLE_BRANCH \
+            danmarsden/moodle-mod_attendance
+        env:
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
       - name: PHP Lint
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phplint
