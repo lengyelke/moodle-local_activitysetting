@@ -16,6 +16,10 @@
   - Assignment
   - SCORM
 
+### Changed
+
+- Activity Type filter in Course Module entity is now a proper **multi-select** autocomplete form listing all possible types.
+
 ## v1.4.0 [2026-11-02]
 
 > [!NOTE]
