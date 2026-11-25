@@ -25,6 +25,7 @@ use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
 use local_activitysetting\reportbuilder\local\filters\ai_action;
+use local_activitysetting\reportbuilder\local\filters\module_selector;
 
 /**
  * Class course_module
@@ -778,11 +779,11 @@ class course_module extends base {
 
         // Course module plugin type.
         $filters[] = (new filter(
-            text::class,
+            module_selector::class,
             'modulename',
-            new lang_string('modulename', 'local_activitysetting'),
+            new lang_string('selectmodulename', 'local_activitysetting'),
             $this->get_entity_name(),
-            "{$modalias}.name"
+            "{$modalias}.id"
         ))
             ->add_joins($this->get_joins());
 

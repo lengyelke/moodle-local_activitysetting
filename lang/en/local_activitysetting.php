@@ -67,6 +67,7 @@ $string['sebconfigyesno'] = 'Safe Exam Browser Config Yes/No fields';
 $string['sectionname'] = 'Section Name';
 $string['sectionnumber'] = 'Section Number';
 $string['sectionvisibility'] = 'Section Visibility';
+$string['selectmodulename'] = 'Select Activity Plugin Type';
 $string['timemodified'] = 'Last modified';
 $string['topcategoryname'] = 'Top Subcategory Name';
 $string['unknown'] = 'Unknown';
