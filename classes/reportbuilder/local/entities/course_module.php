@@ -777,10 +777,20 @@ class course_module extends base {
             }
         }
 
-        // Course module plugin type.
+        // Course module plugin type filter to keep.
+        $filters[] = (new filter(
+            text::class,
+            'modulename',
+            new lang_string('modulename', 'local_activitysetting'),
+            $this->get_entity_name(),
+            "{$modalias}.name"
+        ))
+            ->add_joins($this->get_joins());
+
+        // Course module plugin type multiselect.
         $filters[] = (new filter(
             module_selector::class,
-            'modulename',
+            'selectmodulename',
             new lang_string('selectmodulename', 'local_activitysetting'),
             $this->get_entity_name(),
             "{$modalias}.id"

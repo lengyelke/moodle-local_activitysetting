@@ -21,6 +21,7 @@ namespace local_activitysetting\reportbuilder\local\filters;
 use MoodleQuickForm;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\filters\base;
+use core\lang_string;
 
 /**
  * Class module_selector
@@ -31,19 +32,13 @@ use core_reportbuilder\local\filters\base;
  */
 class module_selector extends base {
     /** @var int Any value */
-    public const ANY_VALUE = 0;
+    public const ANY_VALUE = -1;
 
-    /** @var int Tags are present */
-    public const NOT_EMPTY = 1;
+    /** @var int Filter for selected types */
+    public const EQUAL_TO = 0;
 
-    /** @var int Filter for selected tags */
-    public const EQUAL_TO = 2;
-
-    /** @var int Tags are not present */
-    public const EMPTY = 3;
-
-    /** @var int Filter for excluded tags */
-    public const NOT_EQUAL_TO = 4;
+    /** @var int Filter for excluded types */
+    public const NOT_EQUAL_TO = 1;
 
     /**
      * Returns an array of comparison operators
@@ -53,8 +48,6 @@ class module_selector extends base {
     private function get_operators(): array {
         $operators = [
             self::ANY_VALUE => new lang_string('filterisanyvalue', 'core_reportbuilder'),
-            self::NOT_EMPTY => new lang_string('filterisnotempty', 'core_reportbuilder'),
-            self::EMPTY => new lang_string('filterisempty', 'core_reportbuilder'),
             self::EQUAL_TO => new lang_string('filterisequalto', 'core_reportbuilder'),
             self::NOT_EQUAL_TO => new lang_string('filterisnotequalto', 'core_reportbuilder'),
         ];
@@ -68,7 +61,11 @@ class module_selector extends base {
     public function setup_form(MoodleQuickForm $mform): void {
         global $DB;
 
-        $operatorlabel = get_string(
+        $operatorlabel = get_string('filterfieldoperator', 'core_reportbuilder', $this->get_header());
+        $mform->addElement('select', "{$this->name}_operator", $operatorlabel, $this->get_operators())
+            ->setHiddenLabel(true);
+
+        $valuelabel = get_string(
             'filterfieldvalue',
             'core_reportbuilder',
             $this->get_header()
@@ -83,10 +80,11 @@ class module_selector extends base {
         $mform->addElement(
             'autocomplete',
             $this->name . '_values',
-            $operatorlabel,
+            $valuelabel,
             $options,
             ['multiple' => true]
         )->setHiddenLabel(true);
+        $mform->hideIf("{$this->name}_values", "{$this->name}_operator", 'eq', self::ANY_VALUE);
     }
 
     /**
@@ -95,33 +93,49 @@ class module_selector extends base {
     public function get_sql_filter(array $values): array {
         global $DB;
 
-        $fieldsql = $this->filter->get_field_sql();
-        $params = $this->filter->get_field_params();
+        [$fieldsql, $params] = $this->filter->get_field_sql_and_params();
 
+        $operator = (int) ($values["{$this->name}_operator"] ?? self::ANY_VALUE);
         $moduleids = $values["{$this->name}_values"] ?? [];
 
+        // Any value is inactive.
+        if ($operator === self::ANY_VALUE) {
+            return ['', []];
+        }
+
+        // No selected module types means no meaningful equality/exclusion filter.
         if (empty($moduleids) || !is_array($moduleids)) {
             return ['', []];
         }
 
         // Ensure they are integers before binding them.
         $moduleids = array_map('intval', $moduleids);
-        $moduleids = array_filter($moduleids, static fn(int $id): bool => $id > 0);
+        $moduleids = array_filter(
+            $moduleids,
+            static fn(int $id): bool => $id > 0
+        );
 
         if (empty($moduleids)) {
             return ['', []];
         }
 
+        // Build the positive matching condition: cm.module IN (...).
         [$select, $sqlparams] = $DB->get_in_or_equal(
             $moduleids,
             SQL_PARAMS_NAMED,
-            database::generate_param_name('_')
+            database::generate_param_name('_'),
+            true
         );
 
-        return [
-            "{$fieldsql} {$select}",
-            array_merge($params, $sqlparams),
-        ];
+        $params = array_merge($params, $sqlparams);
+        $sql = "{$fieldsql} {$select}";
+
+        // Negate the entire positive condition for "Not equal to".
+        if ($operator === self::NOT_EQUAL_TO) {
+            $sql = "NOT ({$sql})";
+        }
+
+        return [$sql, $params];
     }
 
     /**
@@ -134,10 +148,11 @@ class module_selector extends base {
             "SELECT id
             FROM {modules}
             WHERE name IN ('assign', 'quiz')
-            ORDER BY id ASC"
+        ORDER BY id ASC"
         );
 
         return [
+            "{$this->name}_operator" => self::EQUAL_TO,
             "{$this->name}_values" => $moduleids,
         ];
     }
