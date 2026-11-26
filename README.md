@@ -67,11 +67,11 @@ Datasources included
 Every activity specific data source comes with information about the course (core Moodle), course category (core Moodle),
 course section, course modules, grade items and gradebook categories.
 
--   Assignments ( = mod_assign + course + course_categories + all shared entities)
--   Forums ( = mod_forum + course + course_categories + all shared entities)
--   Quizzes ( = mod_quiz + course + course_categories + all shared entities)
--   SCORMs ( = mod_scorm + course + course_categories + all shared entities)
--   Course Modules ( = course_modules + course + course_categories + grade_items + all shared entities + **tags**)
+-   Assignments ( = mod_assign + course + course_categories + all shared entities + tags)
+-   Forums ( = mod_forum + course + course_categories + all shared entities + tags)
+-   Quizzes ( = mod_quiz + course + course_categories + all shared entities + tags)
+-   SCORMs ( = mod_scorm + course + course_categories + all shared entities + tags)
+-   Course Modules ( = course_modules + course + course_categories + grade_items + all shared entities + tags)
 -   Course Sections ( = course_sections + course + course_categories)
 -   Gradebook Categories ( = grade_categories + course + course_categories + grade_items)
 

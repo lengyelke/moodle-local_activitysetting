@@ -4,12 +4,14 @@
 
 ### Added
 
-- Tags are now available in all datasources where it is applicable
+- **Tags** are now available in all datasources where it is applicable
   - Assignment
   - Forum
   - Quiz
   - SCORM
-- Activity Type filter in Course Module entity is now a proper **multi-select** autocomplete form listing all possible types.
+  - Course Module (since v1.4.0)
+
+- **Select Activity Plugin Type** filter in `Course Module` entity: **multi-select** autocomplete form listing all possible types.
 
 ### Fixed
 
