@@ -57,6 +57,8 @@ class module_selector extends base {
 
     /**
      * Add the multi-select module-type control.
+     *
+     * @param MoodleQuickForm $mform The form to add the control to.
      */
     public function setup_form(MoodleQuickForm $mform): void {
         global $DB;
@@ -89,6 +91,9 @@ class module_selector extends base {
 
     /**
      * Build the SQL condition.
+     *
+     * @param array $values The values from the form.
+     * @return array An array containing the SQL condition and parameters.
      */
     public function get_sql_filter(array $values): array {
         global $DB;

@@ -30,7 +30,6 @@ use local_activitysetting\reportbuilder\local\helpers\activity_link_column_helpe
 use local_activitysetting\reportbuilder\local\entities\grade_category;
 use core_tag\reportbuilder\local\entities\tag;
 
-
 /**
  * Assignment settings datasource
  *

@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace local_activitysetting\reportbuilder\local\entities;
 
-
 use html_writer;
 use lang_string;
 use mod_assign\assign;

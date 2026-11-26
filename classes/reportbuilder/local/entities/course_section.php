@@ -18,14 +18,12 @@ declare(strict_types=1);
 
 namespace local_activitysetting\reportbuilder\local\entities;
 
-
 use html_writer;
 use lang_string;
 use core_reportbuilder\local\filters\{boolean_select, date, duration, text, select, number};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
-
 
 /**
  * Class course_section
